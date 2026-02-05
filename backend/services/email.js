@@ -1,0 +1,250 @@
+// Email Service using SendGrid
+// Handles all email communications
+
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
+const SENDGRID_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || 'reports@amazonreach.com';
+
+class EmailService {
+    constructor() {
+        this.apiKey = SENDGRID_API_KEY;
+        this.fromEmail = SENDGRID_FROM_EMAIL;
+    }
+
+    /**
+     * Send a simple email
+     */
+    async sendEmail(to, subject, htmlContent, textContent = '') {
+        if (!this.apiKey) {
+            console.warn('SendGrid API key not configured, email not sent');
+            return { success: false, error: 'Email service not configured' };
+        }
+
+        try {
+            const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    personalizations: [{
+                        to: [{ email: to }],
+                        subject: subject
+                    }],
+                    from: { email: this.fromEmail },
+                    content: [
+                        {
+                            type: 'text/html',
+                            value: htmlContent
+                        },
+                        {
+                            type: 'text/plain',
+                            value: textContent || htmlContent.replace(/<[^>]*>/g, '')
+                        }
+                    ]
+                })
+            });
+
+            if (response.ok) {
+                return { success: true };
+            } else {
+                const error = await response.text();
+                throw new Error(`SendGrid error: ${error}`);
+            }
+        } catch (error) {
+            console.error('Email send error:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Send email with attachment
+     */
+    async sendEmailWithAttachment(to, subject, htmlContent, attachment) {
+        if (!this.apiKey) {
+            console.warn('SendGrid API key not configured, email not sent');
+            return { success: false, error: 'Email service not configured' };
+        }
+
+        try {
+            const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    personalizations: [{
+                        to: [{ email: to }],
+                        subject: subject
+                    }],
+                    from: { email: this.fromEmail },
+                    content: [{
+                        type: 'text/html',
+                        value: htmlContent
+                    }],
+                    attachments: [{
+                        content: attachment.content, // Base64 encoded
+                        filename: attachment.filename,
+                        type: attachment.type || 'application/pdf',
+                        disposition: 'attachment'
+                    }]
+                })
+            });
+
+            if (response.ok) {
+                return { success: true };
+            } else {
+                const error = await response.text();
+                throw new Error(`SendGrid error: ${error}`);
+            }
+        } catch (error) {
+            console.error('Email send error:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Send purchase order to supplier
+     */
+    async sendPurchaseOrder(supplierEmail, product, quantity, deliveryDate) {
+        const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .header { background: linear-gradient(135deg, #6366F1 0%, #3B82F6 100%); color: white; padding: 20px; }
+          .content { padding: 20px; }
+          .order-details { background: #F9FAFB; padding: 15px; border-radius: 8px; margin: 20px 0; }
+          .footer { background: #F3F4F6; padding: 15px; text-align: center; font-size: 12px; color: #64748B; }
+          table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          th, td { padding: 12px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+          th { background: #F9FAFB; font-weight: 600; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>🛒 Purchase Order</h1>
+          <p>From: AmazonReach Auto-Reorder System</p>
+        </div>
+        
+        <div class="content">
+          <p>Dear Supplier,</p>
+          
+          <p>This is an automated purchase order generated by our inventory management system.</p>
+          
+          <div class="order-details">
+            <h3>Order Details</h3>
+            <table>
+              <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Requested Delivery</th>
+              </tr>
+              <tr>
+                <td><strong>${product.name}</strong><br/>SKU: ${product.sku}</td>
+                <td>${quantity} units</td>
+                <td>${deliveryDate}</td>
+              </tr>
+            </table>
+          </div>
+          
+          <p><strong>Reason for Order:</strong> Our AI-powered inventory system has predicted that this item will run out of stock within 7 days based on current sales velocity.</p>
+          
+          <p>Please confirm receipt of this order and provide an estimated delivery date.</p>
+          
+          <p>Best regards,<br/>
+          AmazonReach Automated System</p>
+        </div>
+        
+        <div class="footer">
+          <p>This is an automated email from AmazonReach. For questions, contact support@amazonreach.com</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+        return await this.sendEmail(
+            supplierEmail,
+            `[PO] Automated Reorder - ${product.name}`,
+            html
+        );
+    }
+
+    /**
+     * Send weekly report
+     */
+    async sendWeeklyReport(to, reportData) {
+        const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .header { background: linear-gradient(135deg, #6366F1 0%, #3B82F6 100%); color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; max-width: 600px; margin: 0 auto; }
+          .metric { background: #F9FAFB; padding: 20px; border-radius: 12px; margin: 15px 0; }
+          .metric-value { font-size: 36px; font-weight: 800; color: #6366F1; }
+          .metric-label { font-size: 14px; color: #64748B; text-transform: uppercase; }
+          .insights { background: #EEF2FF; border-left: 4px solid #6366F1; padding: 15px; margin: 20px 0; }
+          .footer { background: #F3F4F6; padding: 20px; text-align: center; font-size: 12px; color: #64748B; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>📊 Weekly Performance Report</h1>
+          <p>${reportData.period}</p>
+        </div>
+        
+        <div class="content">
+          <h2>Key Metrics</h2>
+          
+          <div class="metric">
+            <div class="metric-label">Total Revenue</div>
+            <div class="metric-value">$${reportData.revenue.toLocaleString()}</div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-label">Total Orders</div>
+            <div class="metric-value">${reportData.orders}</div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-label">ROAS (Return on Ad Spend)</div>
+            <div class="metric-value">${reportData.roas}x</div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-label">Top Product</div>
+            <div style="font-size: 18px; font-weight: 600; margin-top: 10px;">${reportData.topProduct}</div>
+          </div>
+          
+          <h2>AI Insights</h2>
+          <div class="insights">
+            ${reportData.aiInsights}
+          </div>
+          
+          <p style="text-align: center; margin-top: 30px;">
+            <a href="https://amazonreach.vercel.app/dashboard" style="background: linear-gradient(135deg, #6366F1 0%, #3B82F6 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block;">
+              View Full Dashboard
+            </a>
+          </p>
+        </div>
+        
+        <div class="footer">
+          <p>AmazonReach Weekly Report • Powered by AI</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+        return await this.sendEmail(
+            to,
+            `📊 Weekly Report: $${reportData.revenue.toLocaleString()} Revenue`,
+            html
+        );
+    }
+}
+
+module.exports = new EmailService();

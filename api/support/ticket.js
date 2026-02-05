@@ -5,6 +5,7 @@ const { db } = require('../../backend/firebase-config');
 const { collection, addDoc, getDocs, query, where } = require('firebase/firestore');
 const jwt = require('jsonwebtoken');
 const { getPlanLimits } = require('../../backend/middleware/planAccess');
+const slack = require('../../backend/services/slack');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'amazonreach-jwt-secret-2026';
 
@@ -78,6 +79,14 @@ module.exports = async (req, res) => {
             };
 
             const ticketDoc = await addDoc(ticketsRef, newTicket);
+
+            // Send Slack notification for high priority tickets
+            if (supportLevel === 'priority') {
+                await slack.sendSupportEscalation({
+                    ...newTicket,
+                    id: ticketDoc.id
+                });
+            }
 
             // TODO: Send email notification
             // sendEmail(support@amazonreach.com, newTicket)

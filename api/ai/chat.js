@@ -5,6 +5,8 @@ const { db } = require('../../backend/firebase-config');
 const { collection, addDoc, getDocs, query, where, orderBy, limit } = require('firebase/firestore');
 const jwt = require('jsonwebtoken');
 const gemini = require('../../backend/services/gemini');
+const tracking = require('../../backend/services/tracking');
+const slack = require('../../backend/services/slack');
 const fs = require('fs');
 const path = require('path');
 
@@ -69,6 +71,50 @@ module.exports = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 error: 'Message required'
+            });
+        }
+
+        // Check if this is a shipment tracking query
+        const trackingNumber = tracking.extractTrackingNumber(message);
+
+        if (trackingNumber && (message.toLowerCase().includes('order') ||
+            message.toLowerCase().includes('shipment') ||
+            message.toLowerCase().includes('tracking') ||
+            message.toLowerCase().includes('where is'))) {
+            // Auto-resolve with tracking info
+            const trackingData = await tracking.trackShipment(trackingNumber);
+            const trackingResponse = tracking.formatTrackingResponse(trackingData);
+
+            // Save conversation
+            const newConversationId = conversationId || `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            const messagesRef = collection(db, 'ai_conversations');
+
+            await addDoc(messagesRef, {
+                conversationId: newConversationId,
+                role: 'user',
+                content: message,
+                userEmail: userInfo.email,
+                type: 'support',
+                autoResolved: true,
+                createdAt: new Date().toISOString()
+            });
+
+            await addDoc(messagesRef, {
+                conversationId: newConversationId,
+                role: 'assistant',
+                content: trackingResponse,
+                userEmail: userInfo.email,
+                type: 'support',
+                autoResolved: true,
+                createdAt: new Date().toISOString()
+            });
+
+            return res.status(200).json({
+                success: true,
+                response: trackingResponse,
+                conversationId: newConversationId,
+                type: 'support',
+                autoResolved: true
             });
         }
 
