@@ -7,21 +7,5 @@
             "destination": "/frontend/index.html",
             "permanent": false
         }
-    ],
-    "rewrites": [
-        {
-            "source": "/api/(.*)",
-            "destination": "/api/$1"
-        }
-    ],
-    "crons": [
-        {
-            "path": "/api/automation/auto-reorder",
-            "schedule": "0 0 * * *"
-        },
-        {
-            "path": "/api/automation/weekly-report",
-            "schedule": "0 9 * * 1"
-        }
     ]
 }
