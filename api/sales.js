@@ -4,6 +4,10 @@
 
 const { db } = require('../backend/firebase-config');
 const { collection, getDocs, query, where } = require('firebase/firestore');
+const { getPlanLimits } = require('../backend/middleware/planAccess');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'amazonreach-jwt-secret-2026';
 
 module.exports = async (req, res) => {
     // CORS headers
@@ -20,6 +24,29 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // Verify JWT and get user plan
+        const authHeader = req.headers.authorization;
+        let userPlan = 'starter'; // default
+
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            try {
+                const token = authHeader.substring(7);
+                const decoded = jwt.verify(token, JWT_SECRET);
+
+                // Get user's plan from Firestore
+                const sellersRef = collection(db, 'sellers');
+                const userQuery = query(sellersRef, where('email', '==', decoded.email));
+                const userSnapshot = await getDocs(userQuery);
+
+                if (!userSnapshot.empty) {
+                    userPlan = userSnapshot.docs[0].data().plan || 'starter';
+                }
+            } catch (err) {
+                console.log('Token verification failed, using starter plan');
+            }
+        }
+
+        const planLimits = getPlanLimits(userPlan);
         // Get orders from Firestore
         const ordersRef = collection(db, 'orders');
         const snapshot = await getDocs(ordersRef);

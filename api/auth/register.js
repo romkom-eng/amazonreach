@@ -66,6 +66,13 @@ module.exports = async (req, res) => {
             role: 'seller',
             status: 'active',
             totalRevenue: 0,
+            // Plan fields
+            plan: 'starter', // Default plan
+            planStartDate: new Date().toISOString(),
+            planExpiryDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14-day trial
+            revenueThisMonth: 0,
+            marketplaceIntegrations: [],
+            teamMembers: 1,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
