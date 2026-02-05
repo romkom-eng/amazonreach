@@ -48,3 +48,48 @@ document.querySelectorAll('.feature-card, .pricing-card').forEach(card => {
     card.style.transition = 'opacity 0.6s, transform 0.6s';
     observer.observe(card);
 });
+
+// Contact Form Handling
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = {
+            companyName: document.getElementById('companyName').value,
+            contactName: document.getElementById('contactName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value || '',
+            inquiryType: document.getElementById('inquiryType').value,
+            message: document.getElementById('message').value
+        };
+
+        const submitButton = e.target.querySelector('.btn-submit');
+        const originalText = submitButton.innerHTML;
+        submitButton.innerHTML = '<span>Sending...</span>';
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch('/contact-form', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+                contactForm.reset();
+            } else {
+                alert('Error: ' + (data.error || 'Please try again or email us directly at support@amazonreach.com'));
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            alert('Failed to send message. Please try again or email us at support@amazonreach.com');
+        } finally {
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+        }
+    });
+}
