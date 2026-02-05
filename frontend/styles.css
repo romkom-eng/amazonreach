@@ -332,6 +332,87 @@ body {
     line-height: 1.6;
 }
 
+.feature-link {
+    display: inline-block;
+    margin-top: 12px;
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.feature-link:hover {
+    transform: translateX(4px);
+}
+
+/* About Section */
+.about-section {
+    padding: var(--spacing-xl) 0;
+    background: var(--white);
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+.about-text h3 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.about-text h3:first-child {
+    margin-top: 0;
+}
+
+.about-text p {
+    color: #64748B;
+    line-height: 1.8;
+    margin-bottom: var(--spacing-md);
+}
+
+.about-list {
+    list-style: none;
+    padding: 0;
+}
+
+.about-list li {
+    padding: 12px 0;
+    color: var(--dark);
+    font-size: 16px;
+}
+
+.about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.stat-box {
+    background: var(--gradient-primary);
+    padding: var(--spacing-lg);
+    border-radius: 16px;
+    text-align: center;
+    color: var(--white);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-box .stat-number {
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.stat-box .stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
 /* Pricing Section */
 .pricing {
     padding: var(--spacing-xl) 0;
