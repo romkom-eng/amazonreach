@@ -1,0 +1,27 @@
+name = "amazonreach"
+main = "functions/scheduled.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Pages Integration
+pages_build_output_dir = "frontend"
+
+# Cron Triggers (Free tier!)
+[triggers]
+crons = [
+  "0 0 * * *",    # Daily at midnight - Auto-reorder
+  "0 9 * * 1"     # Monday 9 AM - Weekly report
+]
+
+# Environment Variables (configure in Cloudflare Dashboard)
+[vars]
+ENVIRONMENT = "production"
+
+# Custom routes
+[[routes]]
+pattern = "amazonreach.com/*"
+zone_name = "amazonreach.com"
+
+[[routes]]
+pattern = "www.amazonreach.com/*"
+zone_name = "amazonreach.com"
