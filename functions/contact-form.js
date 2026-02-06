@@ -136,7 +136,7 @@ async function sendAdminNotification({ companyName, contactName, email, phone, i
             'Authorization': `Bearer ${resendApiKey}`
         },
         body: JSON.stringify({
-            from: 'AmazonReach <noreply@amazonreach.com>',
+            from: 'AmazonReach <noreply@resend.dev>',
             to: [contactEmail],
             subject: `[New Inquiry] ${inquiryType} - ${companyName}`,
             html: emailHTML
@@ -201,7 +201,7 @@ async function sendCustomerConfirmation({ to, customerName, resendApiKey }) {
             'Authorization': `Bearer ${resendApiKey}`
         },
         body: JSON.stringify({
-            from: 'AmazonReach <noreply@amazonreach.com>',
+            from: 'AmazonReach <noreply@resend.dev>',
             to: [to],
             subject: 'Thank you for contacting AmazonReach',
             html: emailHTML
