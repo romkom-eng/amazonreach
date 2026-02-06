@@ -43,7 +43,11 @@ const loginLimiter = rateLimit({
 
 // ========== Middleware ==========
 app.use(cors({
-    origin: true, // Allow any origin (or specify your Vercel domain)
+    origin: [
+        'https://amazonreach.pages.dev',
+        'http://localhost:3000',
+        'http://localhost:3001'
+    ],
     credentials: true // Enable credentials (cookies, authorization headers)
 }));
 
