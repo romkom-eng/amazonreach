@@ -241,7 +241,8 @@
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                errorMessage.textContent = 'Connection error. Please check your internet or try again.';
+                // Show specific error for debugging (e.g. Failed to fetch = CORS or Network)
+                errorMessage.textContent = `Connection error: ${error.message}. Please check your internet.`;
                 errorMessage.style.display = 'block';
             }
         });
