@@ -33,7 +33,16 @@ try {
     console.error('❌ Firebase Admin Initialization Error:', error);
 }
 
-const db = admin.firestore();
-const auth = admin.auth();
+const db = admin.apps.length ? admin.firestore() : {
+    collection: () => ({
+        add: () => Promise.reject(new Error("Firebase not initialized")),
+        where: () => ({ limit: () => ({ get: () => Promise.reject(new Error("Firebase not initialized")) }) }),
+        doc: () => ({ get: () => Promise.reject(new Error("Firebase not initialized")), update: () => Promise.reject(new Error("Firebase not initialized")) }),
+        get: () => Promise.reject(new Error("Firebase not initialized")),
+        orderBy: () => ({ limit: () => ({ get: () => Promise.reject(new Error("Firebase not initialized")) }) })
+    })
+};
+
+const auth = admin.apps.length ? admin.auth() : {};
 
 module.exports = { admin, db, auth };
