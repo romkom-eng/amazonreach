@@ -479,6 +479,30 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Temporary Debug Endpoint for Firebase
+app.get('/api/debug/firebase', (req, res) => {
+    const { admin } = require('./firebase');
+    const envVar = process.env.FIREBASE_SERVICE_ACCOUNT;
+
+    let parseResult = 'N/A';
+    if (envVar) {
+        try {
+            JSON.parse(envVar);
+            parseResult = 'Valid JSON';
+        } catch (e) {
+            parseResult = `Invalid JSON: ${e.message}`;
+        }
+    }
+
+    res.json({
+        firebaseInitialized: !!admin.apps.length,
+        envVarPresent: !!envVar,
+        envVarLength: envVar ? envVar.length : 0,
+        envVarParseStatus: parseResult,
+        projectId: process.env.FIREBASE_PROJECT_ID || 'Not Set'
+    });
+});
+
 // ========== Error Handler ==========
 app.use((err, req, res, next) => {
     console.error('Error:', err);
