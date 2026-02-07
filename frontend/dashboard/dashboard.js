@@ -45,7 +45,7 @@ async function loadDashboardData() {
     try {
         // Fetch Sales/Financials
         try {
-            const salesRes = await fetch('/api/sales');
+            const salesRes = await fetch('/api/sales', { credentials: 'include' });
             const salesData = await salesRes.json();
 
             if (salesData.success) {
@@ -64,7 +64,7 @@ async function loadDashboardData() {
 
         // Fetch Orders for Active Count
         try {
-            const ordersRes = await fetch('/api/orders?limit=100');
+            const ordersRes = await fetch('/api/orders?limit=100', { credentials: 'include' });
             const ordersData = await ordersRes.json();
 
             if (ordersData.success) {
