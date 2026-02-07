@@ -176,15 +176,16 @@
 
         <div id="error-message" class="error-message"></div>
 
-        <form id="loginForm">
+        <form id="loginForm" autocomplete="off">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" required placeholder="you@example.com">
+                <input type="email" id="email" required placeholder="name@company.com" autocomplete="off">
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" required placeholder="Enter your password">
+                <input type="password" id="password" required placeholder="Enter your password"
+                    autocomplete="new-password">
             </div>
 
             <button type="submit" class="btn">Sign In</button>
@@ -196,9 +197,9 @@
     </div>
 
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:3000/api'
-            : '/api';
+        const BACKEND_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:3000'
+            : 'https://amazonreach-production.up.railway.app';
 
         const form = document.getElementById('loginForm');
         const errorMessage = document.getElementById('error-message');
@@ -212,27 +213,35 @@
             errorMessage.style.display = 'none';
 
             try {
-                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ email, password })
                 });
 
-                const data = await response.json();
-
-                if (data.success) {
-                    if (data.token) {
-                        localStorage.setItem('jwt_token', data.token);
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await response.json();
+                    if (data.success) {
+                        if (data.token) {
+                            localStorage.setItem('jwt_token', data.token);
+                        }
+                        window.location.href = '/dashboard/dashboard.html';
+                    } else {
+                        errorMessage.textContent = data.error || 'Login failed';
+                        errorMessage.style.display = 'block';
                     }
-                    window.location.href = '/dashboard/dashboard.html';
                 } else {
-                    errorMessage.textContent = data.error || 'Login failed';
+                    // Non-JSON response (likely 500 error page or 404)
+                    const text = await response.text();
+                    console.error('Login Failed:', response.status, text);
+                    errorMessage.textContent = `Server Error (${response.status}). Please try again later.`;
                     errorMessage.style.display = 'block';
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                errorMessage.textContent = 'Server error. Please try again.';
+                errorMessage.textContent = 'Connection error. Please check your internet or try again.';
                 errorMessage.style.display = 'block';
             }
         });

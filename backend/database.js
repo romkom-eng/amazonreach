@@ -1,30 +1,11 @@
 // ============================================
-// In-Memory User Database (for demo)
-// Replace with actual PostgreSQL in production
+// Real Database (Firebase Firestore)
 // ============================================
 
 const bcrypt = require('bcryptjs');
-
-// In-memory users store
-const users = [
-    {
-        id: 1,
-        email: 'admin@nextgate.com',
-        password_hash: bcrypt.hashSync('Admin@123456', 10),
-        name: 'NextGate Admin',
-        role: 'admin',
-        subscription_status: 'active',
-        subscription_plan: 'enterprise',
-        created_at: new Date(),
-        account_locked: false,
-        failed_login_attempts: 0
-    }
-];
-
-// In-memory audit logs
-const auditLogs = [];
-
-let nextUserId = 2;
+const { db } = require('./firebase');
+const USERS_COLLECTION = 'users';
+const AUDIT_COLLECTION = 'audit_logs';
 
 class Database {
     // ========== User Methods ==========
@@ -33,7 +14,8 @@ class Database {
         const { email, password, name, company_name } = userData;
 
         // Check if user exists
-        if (users.find(u => u.email === email)) {
+        const existingUser = await this.findUserByEmail(email);
+        if (existingUser) {
             throw new Error('User with this email already exists');
         }
 
@@ -44,44 +26,53 @@ class Database {
         const password_expires_at = new Date();
         password_expires_at.setDate(password_expires_at.getDate() + 365);
 
-        const user = {
-            id: nextUserId++,
+        const newUser = {
             email,
             password_hash,
             name: name || email.split('@')[0],
             company_name: company_name || null,
             role: 'user',
-            subscription_status: 'inactive', // Requires payment
-            subscription_plan: null,
+            subscription_status: 'active', // Default to active (Free Trial)
+            subscription_plan: 'free_trial',
             stripe_customer_id: null,
             subscription_id: null,
             mfa_enabled: false,
             mfa_secret: null,
             account_locked: false,
             failed_login_attempts: 0,
-            password_created_at: new Date(),
-            password_expires_at,
-            last_password_change: new Date(),
-            created_at: new Date(),
-            updated_at: new Date(),
+            password_created_at: new Date().toISOString(),
+            password_expires_at: password_expires_at.toISOString(),
+            last_password_change: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
             last_login: null,
             ip_address: null
         };
 
-        users.push(user);
-        return this.sanitizeUser(user);
+        // Add to Firestore
+        const docRef = await db.collection(USERS_COLLECTION).add(newUser);
+
+        // Return user with ID
+        return { id: docRef.id, ...newUser };
     }
 
     async findUserByEmail(email) {
-        return users.find(u => u.email === email) || null;
+        const snapshot = await db.collection(USERS_COLLECTION).where('email', '==', email).limit(1).get();
+        if (snapshot.empty) return null;
+
+        const doc = snapshot.docs[0];
+        return { id: doc.id, ...doc.data() };
     }
 
     async findUserById(id) {
-        return users.find(u => u.id === id) || null;
+        const doc = await db.collection(USERS_COLLECTION).doc(id).get();
+        if (!doc.exists) return null;
+        return { id: doc.id, ...doc.data() };
     }
 
     async getAllUsers() {
-        return users.map(user => this.sanitizeUser(user));
+        const snapshot = await db.collection(USERS_COLLECTION).get();
+        return snapshot.docs.map(doc => this.sanitizeUser({ id: doc.id, ...doc.data() }));
     }
 
     async verifyPassword(plainPassword, hashedPassword) {
@@ -89,39 +80,39 @@ class Database {
     }
 
     async updateUser(userId, updates) {
-        const userIndex = users.findIndex(u => u.id === userId);
-        if (userIndex === -1) {
-            throw new Error('User not found');
-        }
-
-        users[userIndex] = {
-            ...users[userIndex],
+        // Update timestamp
+        const finalUpdates = {
             ...updates,
-            updated_at: new Date()
+            updated_at: new Date().toISOString()
         };
 
-        return this.sanitizeUser(users[userIndex]);
+        await db.collection(USERS_COLLECTION).doc(userId).update(finalUpdates);
+        return this.findUserById(userId);
     }
 
     async incrementFailedLogins(userId) {
         const user = await this.findUserById(userId);
         if (!user) return;
 
-        user.failed_login_attempts += 1;
-        user.last_failed_login = new Date();
+        let failedAttempts = (user.failed_login_attempts || 0) + 1;
+        let accountLocked = user.account_locked;
 
-        // Lock account after 5 failed attempts
-        if (user.failed_login_attempts >= 5) {
-            user.account_locked = true;
+        if (failedAttempts >= 5) {
+            accountLocked = true;
         }
+
+        await this.updateUser(userId, {
+            failed_login_attempts: failedAttempts,
+            last_failed_login: new Date().toISOString(),
+            account_locked: accountLocked
+        });
     }
 
     async resetFailedLogins(userId) {
-        const user = await this.findUserById(userId);
-        if (!user) return;
-
-        user.failed_login_attempts = 0;
-        user.last_failed_login = null;
+        await this.updateUser(userId, {
+            failed_login_attempts: 0,
+            last_failed_login: null
+        });
     }
 
     async updateSubscription(userId, subscriptionData) {
@@ -134,10 +125,10 @@ class Database {
         });
     }
 
-    // Remove sensitive fields
     sanitizeUser(user) {
         if (!user) return null;
         const { password_hash, ...sanitized } = user;
+        // Convert Firestore Timestamps to Dates if needed, but we stored ISO strings above
         return sanitized;
     }
 
@@ -145,29 +136,27 @@ class Database {
 
     async createAuditLog(logData) {
         const log = {
-            id: auditLogs.length + 1,
             user_id: logData.user_id,
             action: logData.action,
             details: logData.details || null,
             ip_address: logData.ip_address || null,
             user_agent: logData.user_agent || null,
-            created_at: new Date()
+            created_at: new Date().toISOString()
         };
 
-        auditLogs.push(log);
-        return log;
+        const docRef = await db.collection(AUDIT_COLLECTION).add(log);
+        return { id: docRef.id, ...log };
     }
 
     async getAuditLogs(userId = null, limit = 100) {
-        let logs = auditLogs;
+        let query = db.collection(AUDIT_COLLECTION).orderBy('created_at', 'desc').limit(limit);
 
         if (userId) {
-            logs = logs.filter(l => l.user_id === userId);
+            query = query.where('user_id', '==', userId);
         }
 
-        return logs
-            .sort((a, b) => b.created_at - a.created_at)
-            .slice(0, limit);
+        const snapshot = await query.get();
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     }
 
     // ========== Password Methods ==========
@@ -185,8 +174,8 @@ class Database {
 
         return await this.updateUser(userId, {
             password_hash,
-            password_expires_at,
-            last_password_change: new Date()
+            password_expires_at: password_expires_at.toISOString(),
+            last_password_change: new Date().toISOString()
         });
     }
 }

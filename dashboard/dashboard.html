@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AmazonReach</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <a href="https://nextgate.com"
+                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+                <span>🚀</span> AmazonReach
+            </a>
+        </div>
+
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link active">
+                    <span>📊</span> Overview
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="inventory.html" class="nav-link">
+                    <span>📦</span> Inventory
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="analytics.html" class="nav-link">
+                    <span>📈</span> Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <span>⚙️</span> Settings
+                </a>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <div class="avatar">U</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">User</div>
+                <div class="user-role" id="userRole">Seller</div>
+            </div>
+            <button class="btn-logout" id="logoutBtn" title="Logout">
+                🚪
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1 class="page-title">Dashboard Overview</h1>
+            <div class="date-display">February 5, 2026</div>
+        </header>
+
+        <!-- Warning Banner -->
+        <div class="mock-data-banner">
+            <span>ℹ️</span>
+            <div>
+                <strong>Amazon SP-API Not Connected</strong><br>
+                User account is saved to Firebase. Business metrics below are sample data until you connect your Amazon
+                Seller Account.
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-title">Total Revenue</div>
+                <div class="card-value" id="totalRevenueDisplay">...</div>
+                <div class="card-trend up" id="revenueTrendDisplay">
+                    <span>-</span> Loading...
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Active Orders</div>
+                <div class="card-value" id="activeOrdersDisplay">...</div>
+                <div class="card-trend up" id="ordersTrendDisplay">
+                    <span>-</span> Loading...
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Inventory Health</div>
+                <div class="card-value" id="inventoryHealthDisplay">...</div>
+                <div class="card-trend" id="inventoryTrendDisplay">
+                    <span>-</span> Loading...
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Area (Placeholder) -->
+        <div class="card">
+            <div class="card-title">Revenue Trend (Mock)</div>
+            <div class="chart-container">
+                [ Chart Visualization Placeholder ]
+            </div>
+        </div>
+    </main>
+
+    <script src="dashboard.js"></script>
+    <script>
+        // Check Amazon Connection Status
+        async function checkAmazonStatus() {
+            try {
+                const response = await fetch('/api/amazon/status');
+                const data = await response.json();
+
+                if (data.connected) {
+                    // Hide the warning banner
+                    const banner = document.querySelector('.mock-data-banner');
+                    if (banner) {
+                        banner.style.display = 'none';
+                    }
+
+                    // Optional: Update dashboard title or add success indicator
+                    const header = document.querySelector('.header');
+                    if (header) {
+                        const badge = document.createElement('div');
+                        badge.className = 'status-badge';
+                        badge.style.display = 'inline-flex';
+                        badge.style.marginLeft = '16px';
+                        badge.innerHTML = '<span>●</span> Amazon Connected';
+                        header.querySelector('.page-title').appendChild(badge);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to check Amazon status', error);
+            }
+        }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', checkAmazonStatus);
+    </script>
+</body>
+
+</html>

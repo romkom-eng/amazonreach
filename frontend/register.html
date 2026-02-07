@@ -147,6 +147,32 @@
             margin-bottom: 16px;
             display: none;
         }
+
+        .password-requirements {
+            margin-top: 8px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+
+        .requirement-item.valid {
+            color: #4ADE80;
+        }
+
+        .requirement-item.valid::before {
+            content: '✓ ';
+            margin-right: 5px;
+        }
+
+        .requirement-item.invalid::before {
+            content: '○ ';
+            margin-right: 5px;
+        }
     </style>
 </head>
 
@@ -180,8 +206,15 @@
             </div>
 
             <div class="form-group">
-                <label for="password">Password * (min. 8 characters)</label>
-                <input type="password" id="password" required minlength="8" placeholder="Create a strong password">
+                <label for="password">Password * (min. 12 chars, strong)</label>
+                <input type="password" id="password" required minlength="12" placeholder="Create a strong password">
+                <div class="password-requirements">
+                    <div id="req-length" class="requirement-item invalid">At least 12 characters</div>
+                    <div id="req-upper" class="requirement-item invalid">Uppercase letter (A-Z)</div>
+                    <div id="req-lower" class="requirement-item invalid">Lowercase letter (a-z)</div>
+                    <div id="req-number" class="requirement-item invalid">Number (0-9)</div>
+                    <div id="req-special" class="requirement-item invalid">Special character (!@#$)</div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -198,13 +231,35 @@
     </div>
 
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:3000/api'
-            : '/api';
+        const BACKEND_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:3000'
+            : 'https://amazonreach-production.up.railway.app';
 
         const form = document.getElementById('registerForm');
         const errorMessage = document.getElementById('error-message');
         const successMessage = document.getElementById('success-message');
+        const passwordInput = document.getElementById('password');
+
+        // Real-time Checklist Logic (Strict Mode)
+        passwordInput.addEventListener('input', () => {
+            const val = passwordInput.value;
+            updateReq('req-length', val.length >= 12);
+            updateReq('req-upper', /[A-Z]/.test(val));
+            updateReq('req-lower', /[a-z]/.test(val));
+            updateReq('req-number', /[0-9]/.test(val));
+            updateReq('req-special', /[!@#$%^&*(),.?":{}|<>]/.test(val));
+        });
+
+        function updateReq(id, valid) {
+            const el = document.getElementById(id);
+            if (valid) {
+                el.classList.add('valid');
+                el.classList.remove('invalid');
+            } else {
+                el.classList.remove('valid');
+                el.classList.add('invalid');
+            }
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -218,6 +273,20 @@
             errorMessage.style.display = 'none';
             successMessage.style.display = 'none';
 
+            // Amazon Compliance Check
+            const errors = [];
+            if (password.length < 12) errors.push('Password must be 12+ chars');
+            if (!/[A-Z]/.test(password)) errors.push('Missing uppercase letter');
+            if (!/[a-z]/.test(password)) errors.push('Missing lowercase letter');
+            if (!/[0-9]/.test(password)) errors.push('Missing number');
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) errors.push('Missing special character');
+
+            if (errors.length > 0) {
+                errorMessage.innerHTML = 'Password too weak for Amazon policy:<br>' + errors.join(', ');
+                errorMessage.style.display = 'block';
+                return;
+            }
+
             if (password !== confirmPassword) {
                 errorMessage.textContent = 'Passwords do not match';
                 errorMessage.style.display = 'block';
@@ -225,10 +294,15 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                const response = await fetch(`${BACKEND_URL}/api/auth/signup`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, companyName, phone })
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        company_name: companyName, // Map to backend field
+                        name: companyName || 'User'
+                    })
                 });
 
                 const data = await response.json();
@@ -237,10 +311,8 @@
                     if (data.token) {
                         localStorage.setItem('jwt_token', data.token);
                     }
-
                     successMessage.textContent = 'Account created! Redirecting to dashboard...';
                     successMessage.style.display = 'block';
-
                     setTimeout(() => {
                         window.location.href = '/dashboard/dashboard.html';
                     }, 2000);

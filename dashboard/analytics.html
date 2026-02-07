@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - AmazonReach</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <a href="https://nextgate.com"
+                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+                <span>🚀</span> AmazonReach
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="dashboard.html" class="nav-link"><span>📊</span> Overview</a></li>
+            <li class="nav-item"><a href="inventory.html" class="nav-link"><span>📦</span> Inventory</a></li>
+            <li class="nav-item"><a href="#" class="nav-link active"><span>📈</span> Analytics</a></li>
+            <li class="nav-item"><a href="settings.html" class="nav-link"><span>⚙️</span> Settings</a></li>
+        </ul>
+        <div class="user-profile">
+            <div class="avatar">U</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">User</div>
+                <div class="user-role" id="userRole">Seller</div>
+            </div>
+            <button class="btn-logout" id="logoutBtn">🚪</button>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="header">
+            <h1 class="page-title">Analytics & Reports</h1>
+        </header>
+        <div class="card">
+            <div class="card-title">Revenue Trend (Last 30 Days)</div>
+            <div style="height: 400px; position: relative; margin-top: 16px;">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Fetch Analytics Data
+            try {
+                const response = await fetch('/api/sales');
+                const result = await response.json();
+
+                if (result.success && result.data.revenueTrend) {
+                    const ctx = document.getElementById('revenueChart').getContext('2d');
+                    const trendData = result.data.revenueTrend;
+
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: trendData.map(d => d.date.split('-').slice(1).join('/')),
+                            datasets: [{
+                                label: 'Revenue ($)',
+                                data: trendData.map(d => d.revenue),
+                                borderColor: '#FF9900',
+                                backgroundColor: 'rgba(255, 153, 0, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    labels: { color: '#94A3B8' }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                                    ticks: { color: '#94A3B8' }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#94A3B8' }
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        });
+    </script>
+</body>
+
+</html>

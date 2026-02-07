@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory - AmazonReach</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <a href="https://nextgate.com"
+                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+                <span>🚀</span> AmazonReach
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="dashboard.html" class="nav-link"><span>📊</span> Overview</a></li>
+            <li class="nav-item"><a href="#" class="nav-link active"><span>📦</span> Inventory</a></li>
+            <li class="nav-item"><a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a></li>
+            <li class="nav-item"><a href="settings.html" class="nav-link"><span>⚙️</span> Settings</a></li>
+        </ul>
+        <div class="user-profile">
+            <div class="avatar">U</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">User</div>
+                <div class="user-role" id="userRole">Seller</div>
+            </div>
+            <button class="btn-logout" id="logoutBtn">🚪</button>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="header">
+            <h1 class="page-title">Inventory Management</h1>
+        </header>
+        <div class="card">
+            <div class="card-title">Inventory Items</div>
+            <div id="inventoryContainer">
+                <div class="loading-state">
+                    <span class="spinner"></span> Loading inventory...
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('inventoryContainer');
+
+            try {
+                const response = await fetch('/api/inventory');
+                const result = await response.json();
+
+                if (result.success && result.data.products.length > 0) {
+                    const products = result.data.products;
+
+                    let html = `
+                        <table class="data-table" style="width:100%; border-collapse: collapse; margin-top: 16px;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">
+                                    <th style="padding: 12px; color: #94A3B8;">Product Name</th>
+                                    <th style="padding: 12px; color: #94A3B8;">ASIN/SKU</th>
+                                    <th style="padding: 12px; color: #94A3B8;">Status</th>
+                                    <th style="padding: 12px; color: #94A3B8;">Available</th>
+                                    <th style="padding: 12px; color: #94A3B8;">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    products.forEach(p => {
+                        const statusColor = p.Status.includes('Out') ? '#EF4444' : (p.Status.includes('Low') ? '#F59E0B' : '#10B981');
+
+                        html += `
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 16px 12px; font-weight: 500;">${p.ProductName}</td>
+                                <td style="padding: 16px 12px; color: #94A3B8; font-size: 0.9em;">
+                                    ${p.ASIN}<br>${p.SKU || ''}
+                                </td>
+                                <td style="padding: 16px 12px;">
+                                    <span style="background: ${statusColor}20; color: ${statusColor}; padding: 4px 8px; border-radius: 4px; font-size: 0.85em;">
+                                        ${p.Status}
+                                    </span>
+                                </td>
+                                <td style="padding: 16px 12px;">${p.Available || p.FulfillableQuantity || 0}</td>
+                                <td style="padding: 16px 12px;">$${p.Price || '0.00'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="padding: 20px; color: #94A3B8; text-align: center;">No inventory items found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading inventory:', error);
+                container.innerHTML = '<p style="padding: 20px; color: #EF4444; text-align: center;">Failed to load inventory data.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

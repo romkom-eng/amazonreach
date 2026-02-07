@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AmazonReach</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <a href="https://nextgate.com"
+                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+                <span>🚀</span> AmazonReach
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="dashboard.html" class="nav-link"><span>📊</span> Overview</a></li>
+            <li class="nav-item"><a href="inventory.html" class="nav-link"><span>📦</span> Inventory</a></li>
+            <li class="nav-item"><a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a></li>
+            <li class="nav-item"><a href="#" class="nav-link active"><span>⚙️</span> Settings</a></li>
+        </ul>
+        <div class="user-profile">
+            <div class="avatar">U</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">User</div>
+                <div class="user-role" id="userRole">Seller</div>
+            </div>
+            <button class="btn-logout" id="logoutBtn">🚪</button>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="header">
+            <h1 class="page-title">Account Settings</h1>
+        </header>
+        <div class="card">
+            <div class="card-title">Integration Center</div>
+            <div class="integration-section">
+                <!-- Amazon Integration Card -->
+                <div class="integration-card">
+                    <div class="integration-left">
+                        <div class="integration-icon">
+                            <!-- Simple Amazon Icon Representation -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M17.3999 15.6C17.3999 15.6 13.7999 17.5 11.2999 17.5C8.09991 17.5 6.09991 15.8 6.09991 12.9C6.09991 10.1 8.29991 7.9 11.5999 7.9C13.8999 7.9 15.2999 8.7 15.2999 8.7V7C15.2999 7 13.8999 6 11.4999 6C7.09991 6 3.69991 9.2 3.69991 13.6C3.69991 17.9 6.89991 20 10.9999 20C14.0999 20 17.3999 18.5 17.3999 18.5V15.6Z"
+                                    fill="#FF9900" />
+                                <path
+                                    d="M17.6 6.5V13.8C17.6 13.8 17.1 14.1 16.4 14.1C15.6 14.1 15.3 13.4 15.3 12.9V9.2C15.3 9.2 14.5 9.1 14.2 9.1C13.8 9.1 13 9.2 13 9.9V12.8C13 13.9 13.7 15.7 16.3 15.7C17.8 15.7 19.3 14.6 19.3 14.6V6.5H17.6Z"
+                                    fill="#FF9900" />
+                                <path
+                                    d="M18.8 17.6C18.8 17.6 20.3 18.2 21.2 17.8C22.1 17.4 22.5 16.6 22.5 16.6C22.5 16.6 22.2 17.8 21 18.8C19.8 19.8 18.8 17.6 18.8 17.6Z"
+                                    fill="#FF9900" />
+                            </svg>
+                        </div>
+                        <div class="integration-details">
+                            <h3>Amazon Seller Central</h3>
+                            <p>Sync orders, inventory, and financial data in real-time.</p>
+                        </div>
+                    </div>
+
+                    <div class="integration-action">
+                        <button id="connectAmazonBtn" class="btn-connect">
+                            <span class="spinner"></span>
+                            <span class="btn-text">Connect Store</span>
+                        </button>
+                        <div id="amazonStatus" class="status-badge" style="display:none;">
+                            <span>●</span> Connected
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Check for connection status URL param
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('amazon_connected') === 'true') {
+                const btn = document.getElementById('connectAmazonBtn');
+                const status = document.getElementById('amazonStatus');
+                if (btn) btn.style.display = 'none';
+                if (status) status.style.display = 'inline-flex';
+
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // Button Click Handler
+            const connectBtn = document.getElementById('connectAmazonBtn');
+            if (connectBtn) {
+                connectBtn.addEventListener('click', async () => {
+                    const btnText = connectBtn.querySelector('.btn-text');
+
+                    // Set Loading State
+                    connectBtn.classList.add('loading');
+                    btnText.textContent = 'Redirecting...';
+                    connectBtn.disabled = true;
+
+                    try {
+                        console.log('Fetching auth URL...');
+                        const response = await fetch('/api/amazon/auth');
+                        const data = await response.json();
+
+                        console.log('Response:', data);
+
+                        if (data.url) {
+                            window.location.href = data.url;
+                        } else {
+                            throw new Error('No redirection URL returned from server');
+                        }
+                    } catch (error) {
+                        console.error('Connection Error:', error);
+                        alert('Could not initiate Amazon connection. Please check console for details.');
+
+                        // Reset State on Error
+                        connectBtn.classList.remove('loading');
+                        btnText.textContent = 'Connect Store';
+                        connectBtn.disabled = false;
+                    }
+                });
+            }
+        </script>
+    </main>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

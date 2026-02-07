@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Analytics - AmazonReach</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .feature-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+
+        .feature-hero h1 {
+            font-size: 48px;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .feature-hero p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .feature-content {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 0 24px;
+        }
+
+        .feature-section {
+            margin-bottom: 80px;
+        }
+
+        .feature-section h2 {
+            font-size: 36px;
+            margin-bottom: 24px;
+            color: #1E293B;
+        }
+
+        .feature-section p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #64748B;
+            margin-bottom: 24px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .benefit-card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .benefit-card h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: #1E293B;
+        }
+
+        .benefit-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefit-card li {
+            padding: 8px 0;
+            color: #64748B;
+        }
+
+        .benefit-card li::before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 80px 24px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+        }
+
+        .cta-section h2 {
+            font-size: 36px;
+            margin-bottom: 24px;
+        }
+
+        .cta-section .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .cta-section .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">🚀</span>
+                <span class="logo-text">AmazonReach</span>
+            </div>
+            <div class="nav-links">
+                <a href="/#features">Features</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/#about">About</a>
+                <a href="/login.html" class="nav-login">Sign In</a>
+                <a href="/register.html" class="nav-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Feature Hero -->
+    <section class="feature-hero">
+        <div class="container">
+            <div class="feature-icon" style="font-size: 64px; margin-bottom: 24px;">📊</div>
+            <h1>Real-Time Analytics</h1>
+            <p>Track sales, inventory, and performance metrics in one beautiful dashboard</p>
+        </div>
+    </section>
+
+    <!-- Feature Content -->
+    <div class="feature-content">
+        <div class="feature-section">
+            <h2>Data-Driven Decisions Made Easy</h2>
+            <p>
+                Stop guessing and start knowing. AmazonReach's Real-Time Analytics dashboard aggregates data
+                from all your sales channels into a single, comprehensive view. Identify trends, monitor
+                profitability, and make informed decisions faster than ever before.
+            </p>
+            <p>
+                From granular SKU-level performance to global revenue overviews, our analytics engine
+                provides the insights you need to scale your business with confidence.
+            </p>
+        </div>
+
+        <div class="feature-section">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="benefit-card">
+                    <h3>📈 Sales Tracking</h3>
+                    <ul>
+                        <li>Real-time revenue updates</li>
+                        <li>Unit sales by region</li>
+                        <li>Refund & return analysis</li>
+                        <li>Year-over-year growth</li>
+                    </ul>
+                </div>
+                <div class="benefit-card">
+                    <h3>💰 Profitability</h3>
+                    <ul>
+                        <li>Net profit calculation</li>
+                        <li>COGS & fee breakdown</li>
+                        <li>Advertising ROI (ROAS)</li>
+                        <li>Daily P&L statements</li>
+                    </ul>
+                </div>
+                <div class="benefit-card">
+                    <h3>🔔 Smart Alerts</h3>
+                    <ul>
+                        <li>Low inventory notifications</li>
+                        <li>Sales spike alerts</li>
+                        <li>Buy Box status changes</li>
+                        <li>Review monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-section">
+            <h2>How It Works</h2>
+            <p>
+                <strong>1. Sync Your Accounts</strong><br>
+                Securely connect your Amazon Seller Central and other marketplace accounts.
+            </p>
+            <p>
+                <strong>2. Dashboard Auto-Populates</strong><br>
+                Our system instantly imports historical data and begins real-time tracking.
+            </p>
+            <p>
+                <strong>3. Customize Your View</strong><br>
+                Pin your most important metrics to the top and create custom reports.
+            </p>
+            <p>
+                <strong>4. Act on Insights</strong><br>
+                Use data to restock efficiently, adjust pricing, and optimize marketing campaigns.
+            </p>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Go Global?</h2>
+            <p style="color: #64748B; margin-bottom: 32px;">Start your 14-day free trial today—no credit card required
+            </p>
+            <a href="/register.html" class="btn">Start Free Trial</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">AmazonReach</span>
+                </div>
+                <p>Scale your Amazon business globally</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <a href="/#features">Features</a>
+                    <a href="/#pricing">Pricing</a>
+                    <a href="/dashboard/dashboard.html">Dashboard</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/#about">About</a>
+                    <a href="/#contact">Contact</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <a href="/privacy.html">Privacy</a>
+                    <a href="/terms.html">Terms</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 AmazonReach. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

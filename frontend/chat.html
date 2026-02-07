@@ -283,7 +283,10 @@
                 }
 
                 // Call AI chat API
-                const response = await fetch('/api/ai/chat', {
+                const BACKEND_URL = window.location.hostname === 'localhost'
+                    ? 'http://localhost:3000'
+                    : 'https://amazonreach-production.up.railway.app';
+                const response = await fetch(`${BACKEND_URL}/api/ai/chat`, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify({
