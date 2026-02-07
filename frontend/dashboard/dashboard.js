@@ -59,7 +59,9 @@ async function loadDashboardData() {
             }
         } catch (e) {
             console.error('Fetch Sales Error:', e);
-            document.getElementById('totalRevenueDisplay').textContent = 'Network Err';
+        } catch (e) {
+            console.error('Fetch Sales Error:', e);
+            document.getElementById('totalRevenueDisplay').textContent = 'Err: ' + e.message;
         }
 
         // Fetch Orders for Active Count
@@ -77,7 +79,9 @@ async function loadDashboardData() {
             }
         } catch (e) {
             console.error('Fetch Orders Error:', e);
-            document.getElementById('activeOrdersDisplay').textContent = 'Network Err';
+        } catch (e) {
+            console.error('Fetch Orders Error:', e);
+            document.getElementById('activeOrdersDisplay').textContent = 'Err: ' + e.message;
         }
 
         // Inventory Health (Placeholder logic until we have better metrics)

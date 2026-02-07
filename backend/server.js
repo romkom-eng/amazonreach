@@ -32,6 +32,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ========== Security Middleware ==========
+app.set('trust proxy', 1); // Trust first proxy (Railway/Heroku/AWS LB) - Required for Secure Cookies
 app.use(helmet({
     contentSecurityPolicy: false // Disable for development
 }));
