@@ -170,11 +170,15 @@ app.get('/api/sales', isAuthenticated, hasActiveSubscription, (req, res) => {
             let totalOrders = 0;
             let revenueGrowth = 0;
             let ordersGrowth = 0;
-            let usingMock = !process.env.AMAZON_REFRESH_TOKEN;
+
+            // Get user's amazon refresh token from DB
+            const user = await db.findUserById(req.session.user.id);
+            const refreshToken = user ? user.amazon_refresh_token : null;
+            let usingMock = !refreshToken;
 
             if (!usingMock) {
                 try {
-                    const amazonResponse = await amazonService.getOrders();
+                    const amazonResponse = await amazonService.getOrders(refreshToken);
                     if (amazonResponse.payload && amazonResponse.payload.Orders) {
                         const orders = amazonResponse.payload.Orders;
 
@@ -215,9 +219,18 @@ app.get('/api/sales', isAuthenticated, hasActiveSubscription, (req, res) => {
                         totalRevenue = currentRevenue;
                         totalOrders = currentOrders;
 
-                        // Calculate growth
-                        revenueGrowth = previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue * 100) : 100;
-                        ordersGrowth = previousOrders > 0 ? ((currentOrders - previousOrders) / previousOrders * 100) : 100;
+                        // Calculate growth (Avoid NaN)
+                        if (previousRevenue === 0) {
+                            revenueGrowth = currentRevenue > 0 ? 100.0 : 0.0;
+                        } else {
+                            revenueGrowth = ((currentRevenue - previousRevenue) / previousRevenue * 100);
+                        }
+
+                        if (previousOrders === 0) {
+                            ordersGrowth = currentOrders > 0 ? 100.0 : 0.0;
+                        } else {
+                            ordersGrowth = ((currentOrders - previousOrders) / previousOrders * 100);
+                        }
 
                         revenueTrend = Object.keys(dailyRevenue).sort().map(date => ({
                             date: date,
@@ -274,19 +287,20 @@ app.get('/api/orders', isAuthenticated, hasActiveSubscription, async (req, res) 
     try {
         let ordersData = [];
         let totalCount = 0;
-        let usingMock = !process.env.AMAZON_REFRESH_TOKEN;
+        const user = await db.findUserById(req.session.user.id);
+        const refreshToken = user ? user.amazon_refresh_token : null;
+        let usingMock = !refreshToken;
         let source = usingMock ? 'Mock' : 'Amazon';
 
         if (!usingMock) {
             try {
-                const amazonResponse = await amazonService.getOrders();
+                const amazonResponse = await amazonService.getOrders(refreshToken);
                 if (amazonResponse.payload && amazonResponse.payload.Orders) {
                     ordersData = amazonResponse.payload.Orders;
                     totalCount = ordersData.length;
                 }
             } catch (err) {
                 console.error('Orders API Amazon Error:', err.message);
-                // Return empty but real source
                 ordersData = [];
                 totalCount = 0;
             }
@@ -334,10 +348,12 @@ app.get('/api/inventory', isAuthenticated, hasActiveSubscription, async (req, re
 
     try {
         let inventoryData = [];
+        const user = await db.findUserById(req.session.user.id);
+        const refreshToken = user ? user.amazon_refresh_token : null;
 
-        if (process.env.AMAZON_REFRESH_TOKEN) {
+        if (refreshToken) {
             try {
-                const amazonResponse = await amazonService.getInventorySummaries();
+                const amazonResponse = await amazonService.getInventorySummaries(refreshToken);
                 // Map Amazon FBA Inventory to our Dashboard Format
                 if (amazonResponse.payload && amazonResponse.payload.inventorySummaries) {
                     inventoryData = amazonResponse.payload.inventorySummaries.map(item => ({
@@ -345,12 +361,12 @@ app.get('/api/inventory', isAuthenticated, hasActiveSubscription, async (req, re
                         ProductName: item.productName || 'Amazon Product',
                         Status: item.totalQuantity > 0 ? 'In Stock' : 'Out of Stock',
                         Available: item.totalQuantity || 0,
-                        Price: 0 // Price API is separate, placeholder
+                        Price: 0
                     }));
                 }
             } catch (err) {
                 console.error('Failed to fetch inventory from Amazon:', err.message);
-                inventoryData = mockInventory;
+                inventoryData = [];
             }
         } else {
             inventoryData = mockInventory;
@@ -412,12 +428,14 @@ app.get('/api/dashboard/summary', isAuthenticated, hasActiveSubscription, async 
         let pendingOrders = 0;
         let shippedOrders = 0;
         let deliveredOrders = 0;
-        let source = 'Mock';
-        let usingMock = !process.env.AMAZON_REFRESH_TOKEN;
+        const user = await db.findUserById(req.session.user.id);
+        const refreshToken = user ? user.amazon_refresh_token : null;
+        let usingMock = !refreshToken;
+        let source = usingMock ? 'Mock' : 'Amazon';
 
         if (!usingMock) {
             try {
-                const amazonResponse = await amazonService.getOrders();
+                const amazonResponse = await amazonService.getOrders(refreshToken);
                 if (amazonResponse.payload && amazonResponse.payload.Orders) {
                     const orders = amazonResponse.payload.Orders;
                     source = 'Amazon';
@@ -439,7 +457,6 @@ app.get('/api/dashboard/summary', isAuthenticated, hasActiveSubscription, async 
                             currentRevenue += amount;
                             currentOrders++;
 
-                            // Status breakdown for current period
                             const status = (order.OrderStatus || '').toLowerCase();
                             if (status === 'shipped') shippedOrders++;
                             else if (status === 'delivered') deliveredOrders++;
@@ -452,18 +469,27 @@ app.get('/api/dashboard/summary', isAuthenticated, hasActiveSubscription, async 
 
                     revenue = currentRevenue.toFixed(2);
                     totalOrders = currentOrders;
-                    revenueGrowth = previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue * 100) : 100;
-                    ordersGrowth = previousOrders > 0 ? ((currentOrders - previousOrders) / previousOrders * 100) : 100;
+
+                    // Growth Calculation (Avoid NaN)
+                    if (previousRevenue === 0) {
+                        revenueGrowth = currentRevenue > 0 ? 100.0 : 0.0;
+                    } else {
+                        revenueGrowth = ((currentRevenue - previousRevenue) / previousRevenue * 100);
+                    }
+
+                    if (previousOrders === 0) {
+                        ordersGrowth = currentOrders > 0 ? 100.0 : 0.0;
+                    } else {
+                        ordersGrowth = ((currentOrders - previousOrders) / previousOrders * 100);
+                    }
                 }
             } catch (error) {
                 console.error('Summary API Amazon Error:', error.message);
-                // Return 0s if error
                 revenue = "0.00";
                 totalOrders = 0;
                 source = 'Amazon';
             }
         } else {
-            // Mock Fallback
             const financials = generateMockFinancials();
             revenue = financials.totalRevenue;
             totalOrders = mockOrders.length;

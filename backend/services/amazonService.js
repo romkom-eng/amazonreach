@@ -89,28 +89,35 @@ class AmazonService {
     }
 
     // 1. Get/Refresh LWA Access Token
-    async getAccessToken() {
-        if (this.accessToken && Date.now() < this.tokenExpiresAt) {
+    async getAccessToken(customRefreshToken = null) {
+        // If a specific token is provided, we skip the cache since it's global
+        if (!customRefreshToken && this.accessToken && Date.now() < this.tokenExpiresAt) {
             return this.accessToken;
         }
 
         try {
+            const refreshToken = customRefreshToken || (process.env.AMAZON_REFRESH_TOKEN ? process.env.AMAZON_REFRESH_TOKEN.trim() : '');
+
             console.log('🔄 Refreshing Amazon Access Token...');
             const response = await axios.post('https://api.amazon.com/auth/o2/token', querystring.stringify({
                 grant_type: 'refresh_token',
-                grant_type: 'refresh_token',
-                refresh_token: process.env.AMAZON_REFRESH_TOKEN ? process.env.AMAZON_REFRESH_TOKEN.trim() : '',
+                refresh_token: refreshToken,
                 client_id: process.env.AMAZON_CLIENT_ID ? process.env.AMAZON_CLIENT_ID.trim() : '',
                 client_secret: process.env.AMAZON_CLIENT_SECRET ? process.env.AMAZON_CLIENT_SECRET.trim() : ''
             }), {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });
 
-            this.accessToken = response.data.access_token;
-            // Set expiry slightly before actual expiry (3600s) to be safe
-            this.tokenExpiresAt = Date.now() + (response.data.expires_in - 60) * 1000;
+            const newToken = response.data.access_token;
+
+            // Only cache if we're using the default global token
+            if (!customRefreshToken) {
+                this.accessToken = newToken;
+                this.tokenExpiresAt = Date.now() + (response.data.expires_in - 60) * 1000;
+            }
+
             console.log('✅ Access Token Refreshed');
-            return this.accessToken;
+            return newToken;
         } catch (error) {
             console.error('Failed to refresh token:', error.response?.data || error.message);
             throw new Error('Failed to authenticate with Amazon');
@@ -154,11 +161,9 @@ class AmazonService {
     }
 
     // 2. Fetch Orders
-    async getOrders(createdAfter = null) {
+    async getOrders(refreshToken = null, createdAfter = null) {
         try {
-            // Force refresh token logic
-            if (!this.accessToken) await this.getAccessToken();
-            const token = this.accessToken;
+            const token = await this.getAccessToken(refreshToken);
 
             // Default to orders created in last 60 days if not specified (for trend comparison)
             if (!createdAfter) {
@@ -212,9 +217,9 @@ class AmazonService {
 
     // 3. Fetch Inventory (Summary)
     // Note: Use FBA Inventory API for simpler stock levels
-    async getInventorySummaries() {
+    async getInventorySummaries(refreshToken = null) {
         try {
-            const token = await this.getAccessToken();
+            const token = await this.getAccessToken(refreshToken);
 
             const response = await axios.get(`${ENDPOINT} /fba/inventory / v1 / summaries`, {
                 headers: {

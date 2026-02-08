@@ -8,22 +8,24 @@ const CLIENT_ID = process.env.AMAZON_CLIENT_ID;
 const CLIENT_SECRET = process.env.AMAZON_CLIENT_SECRET;
 const REDIRECT_URI = process.env.BASE_URL + '/api/amazon/callback';
 
-// 0. Check Connection Status
-router.get('/status', (req, res) => {
-    const isConnected = !!process.env.AMAZON_REFRESH_TOKEN;
-    res.json({
-        connected: isConnected,
-        merchantId: 'A36...' // Mock or extract from DB in real implementation
-    });
-});
+const db = require('../database');
 
 // 0. Check Connection Status
-router.get('/status', (req, res) => {
-    const isConnected = !!process.env.AMAZON_REFRESH_TOKEN;
-    res.json({
-        connected: isConnected,
-        merchantId: 'A36...'
-    });
+router.get('/status', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.json({ connected: false });
+        }
+        const user = await db.findUserById(req.session.user.id);
+        const isConnected = !!(user && user.amazon_refresh_token);
+        res.json({
+            connected: isConnected,
+            merchantId: user ? user.amazon_merchant_id : null
+        });
+    } catch (error) {
+        console.error('Status Check Error:', error);
+        res.status(500).json({ connected: false, error: 'Failed to check status' });
+    }
 });
 
 // 1. Generate Login with Amazon (LWA) Authorization URL
@@ -55,6 +57,10 @@ router.get('/callback', async (req, res) => {
         return res.status(400).send('Error: Authorization code missing');
     }
 
+    if (!req.session.user) {
+        return res.status(401).send('Error: User must be logged in');
+    }
+
     try {
         // Exchange code for LWA Access Token & Refresh Token
         const tokenResponse = await axios.post('https://api.amazon.com/auth/o2/token', querystring.stringify({
@@ -69,18 +75,16 @@ router.get('/callback', async (req, res) => {
 
         const { access_token, refresh_token, expires_in } = tokenResponse.data;
 
-        // In a real app, save these tokens securely to the database linked to the user
-        console.log('Amazon Connection Successful!');
-        console.log('Access Token:', access_token.substring(0, 10) + '...');
-        console.log('Refresh Token:', refresh_token.substring(0, 10) + '...');
+        // Save tokens securely to the database linked to the user
+        await db.updateAmazonCredentials(req.session.user.id, {
+            refresh_token: refresh_token,
+            merchant_id: selling_partner_id
+        });
 
-        // If we received selling_partner_id (Merchant ID), save it too
-        if (selling_partner_id) {
-            console.log('Selling Partner ID:', selling_partner_id);
-        }
+        console.log('Amazon Connection Successful for user:', req.session.user.email);
 
         // Redirect back to dashboard settings with success
-        res.redirect('/dashboard/settings.html?amazon_connected=true');
+        res.redirect('/settings.html?amazon_connected=true');
 
     } catch (error) {
         console.error('Amazon OAuth Error:', error.response?.data || error.message);

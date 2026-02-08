@@ -46,7 +46,10 @@ class Database {
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             last_login: null,
-            ip_address: null
+            ip_address: null,
+            amazon_refresh_token: null,
+            amazon_merchant_id: null,
+            amazon_connected_at: null
         };
 
         // Add to Firestore
@@ -122,6 +125,15 @@ class Database {
             subscription_status: subscriptionData.status,
             subscription_plan: subscriptionData.plan,
             subscription_current_period_end: subscriptionData.current_period_end
+        });
+    }
+
+    async updateAmazonCredentials(userId, credentials) {
+        const { refresh_token, merchant_id } = credentials;
+        return await this.updateUser(userId, {
+            amazon_refresh_token: refresh_token,
+            amazon_merchant_id: merchant_id,
+            amazon_connected_at: new Date().toISOString()
         });
     }
 
