@@ -6,7 +6,19 @@ const querystring = require('querystring');
 // Environment variables
 const CLIENT_ID = process.env.AMAZON_CLIENT_ID;
 const CLIENT_SECRET = process.env.AMAZON_CLIENT_SECRET;
-const REDIRECT_URI = process.env.BASE_URL + '/api/amazon/callback';
+
+// Dynamic REDIRECT_URI helper
+const getRedirectUri = (req) => {
+    // If running on localhost, use the actual host from the request
+    // This handles different ports like 3000, 3006, etc.
+    if (req.hostname === 'localhost' || req.hostname === '127.0.0.1') {
+        const protocol = req.protocol;
+        const host = req.get('host'); // includes port
+        return `${protocol}://${host}/api/amazon/callback`;
+    }
+    // Otherwise use BASE_URL from env or fallback
+    return (process.env.BASE_URL || 'https://amazonreach-production.up.railway.app') + '/api/amazon/callback';
+};
 
 const db = require('../database');
 
@@ -36,17 +48,16 @@ router.get('/auth', (req, res) => {
     // LWA endpoint (amazon.com/ap/oa) does not support SP-API scopes for draft apps.
     // URL format: https://sellercentral.amazon.com/apps/authorize/consent?application_id={appId}&state={state}&version=beta
 
-    const params = {
-        application_id: appId,
+    application_id: appId,
         state: 'random_state_string', // Should use a secure random string in production
-        version: 'beta', // REQUIRED for Draft apps
-        redirect_uri: REDIRECT_URI // Optional but good practice
-    };
+            version: 'beta', // REQUIRED for Draft apps
+                redirect_uri: getRedirectUri(req) // Dynamic based on current host
+};
 
-    const authUrl = 'https://sellercentral.amazon.com/apps/authorize/consent?' + querystring.stringify(params);
+const authUrl = 'https://sellercentral.amazon.com/apps/authorize/consent?' + querystring.stringify(params);
 
-    console.log('Redirecting to Seller Central Auth:', authUrl);
-    res.json({ url: authUrl });
+console.log('Redirecting to Seller Central Auth:', authUrl);
+res.json({ url: authUrl });
 });
 
 // 2. OAuth Callback
@@ -66,7 +77,7 @@ router.get('/callback', async (req, res) => {
         const tokenResponse = await axios.post('https://api.amazon.com/auth/o2/token', querystring.stringify({
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: REDIRECT_URI,
+            redirect_uri: getRedirectUri(req),
             client_id: CLIENT_ID,
             client_secret: CLIENT_SECRET
         }), {
