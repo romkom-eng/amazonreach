@@ -84,7 +84,9 @@ router.get('/callback', async (req, res) => {
         console.log('Amazon Connection Successful for user:', req.session.user.email);
 
         // Redirect back to dashboard settings with success
-        res.redirect('/settings.html?amazon_connected=true');
+        // Use FRONTEND_URL if available (e.g., https://amazonreach.pages.dev)
+        const frontendUrl = process.env.FRONTEND_URL || '';
+        res.redirect(`${frontendUrl}/dashboard/settings.html?amazon_connected=true`);
 
     } catch (error) {
         console.error('Amazon OAuth Error:', error.response?.data || error.message);

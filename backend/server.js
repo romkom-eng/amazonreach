@@ -94,8 +94,8 @@ app.use(session({
 }));
 
 // Serve static files
-app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
-app.use('/dashboard', express.static(path.join(__dirname, '../dashboard')));
+app.use(express.static(path.join(__dirname, '../frontend')));
+app.use('/dashboard', express.static(path.join(__dirname, '../frontend/dashboard')));
 
 // ========== Routes ==========
 app.use('/api/auth', authRoutes);
