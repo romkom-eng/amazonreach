@@ -48,7 +48,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Fetch Analytics Data
             try {
-                const response = await fetch('/api/sales');
+                const response = await fetch(`${BACKEND_URL}/api/sales`, { credentials: 'include' });
                 const result = await response.json();
 
                 if (result.success && result.data.revenueTrend) {

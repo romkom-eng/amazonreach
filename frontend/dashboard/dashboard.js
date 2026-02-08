@@ -45,7 +45,7 @@ async function loadDashboardData() {
     try {
         // Fetch Sales/Financials
         try {
-            const salesRes = await fetch('/api/sales', { credentials: 'include' });
+            const salesRes = await fetch(`${BACKEND_URL}/api/sales`, { credentials: 'include' });
             const salesData = await salesRes.json();
 
             if (salesData.success) {
@@ -59,14 +59,12 @@ async function loadDashboardData() {
             }
         } catch (e) {
             console.error('Fetch Sales Error:', e);
-        } catch (e) {
-            console.error('Fetch Sales Error:', e);
             document.getElementById('totalRevenueDisplay').textContent = 'Err: ' + e.message;
         }
 
         // Fetch Orders for Active Count
         try {
-            const ordersRes = await fetch('/api/orders?limit=100', { credentials: 'include' });
+            const ordersRes = await fetch(`${BACKEND_URL}/api/orders?limit=100`, { credentials: 'include' });
             const ordersData = await ordersRes.json();
 
             if (ordersData.success) {
@@ -77,8 +75,6 @@ async function loadDashboardData() {
                 document.getElementById('activeOrdersDisplay').textContent = 'Error';
                 document.getElementById('ordersTrendDisplay').textContent = ordersData.error || 'Failed to load';
             }
-        } catch (e) {
-            console.error('Fetch Orders Error:', e);
         } catch (e) {
             console.error('Fetch Orders Error:', e);
             document.getElementById('activeOrdersDisplay').textContent = 'Err: ' + e.message;

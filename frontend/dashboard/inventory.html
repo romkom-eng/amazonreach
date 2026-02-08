@@ -50,7 +50,7 @@
             const container = document.getElementById('inventoryContainer');
 
             try {
-                const response = await fetch('/api/inventory');
+                const response = await fetch(`${BACKEND_URL}/api/inventory`, { credentials: 'include' });
                 const result = await response.json();
 
                 if (result.success && result.data.products.length > 0) {

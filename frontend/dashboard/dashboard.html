@@ -112,7 +112,7 @@
         // Check Amazon Connection Status
         async function checkAmazonStatus() {
             try {
-                const response = await fetch('/api/amazon/status');
+                const response = await fetch(`${BACKEND_URL}/api/amazon/status`, { credentials: 'include' });
                 const data = await response.json();
 
                 if (data.connected) {
