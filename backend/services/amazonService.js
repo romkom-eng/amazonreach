@@ -160,10 +160,10 @@ class AmazonService {
             if (!this.accessToken) await this.getAccessToken();
             const token = this.accessToken;
 
-            // Default to orders created in last 30 days if not specified
+            // Default to orders created in last 60 days if not specified (for trend comparison)
             if (!createdAfter) {
                 const date = new Date();
-                date.setDate(date.getDate() - 30);
+                date.setDate(date.getDate() - 60);
                 createdAfter = date.toISOString();
             }
 

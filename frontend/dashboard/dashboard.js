@@ -50,8 +50,16 @@ async function loadDashboardData() {
 
             if (salesData.success) {
                 const data = salesData.data;
+                const sourceBadge = data.source === 'Amazon' ? '<span class="badge real">Real</span>' : '<span class="badge mock">Sample</span>';
+
                 document.getElementById('totalRevenueDisplay').textContent = '$' + parseFloat(data.totalRevenue).toLocaleString();
-                document.getElementById('revenueTrendDisplay').innerHTML = `<span>↑</span> 12.5% vs last month`;
+
+                const growthClass = parseFloat(data.revenueGrowth) >= 0 ? 'up' : 'down';
+                const growthIcon = parseFloat(data.revenueGrowth) >= 0 ? '↑' : '↓';
+
+                document.getElementById('revenueTrendDisplay').innerHTML = `
+                    <span class="${growthClass}">${growthIcon} ${Math.abs(data.revenueGrowth)}%</span> vs last month ${sourceBadge}
+                `;
             } else {
                 console.warn('Sales API failed:', salesData);
                 document.getElementById('totalRevenueDisplay').textContent = 'Error';
@@ -67,9 +75,23 @@ async function loadDashboardData() {
             const ordersRes = await fetch(`${BACKEND_URL}/api/orders?limit=100`, { credentials: 'include' });
             const ordersData = await ordersRes.json();
 
+            // We also need the growth from the Sales API for the total orders card if possible, 
+            // but let's just use what we have from the sales call since it already computes it.
+            // Actually, let's just reuse the sales data if it's already there.
+            const salesRes = await fetch(`${BACKEND_URL}/api/sales`, { credentials: 'include' });
+            const salesData = await salesRes.json();
+            const ordersGrowth = salesData.success ? salesData.data.ordersGrowth : '0.0';
+
             if (ordersData.success) {
-                document.getElementById('activeOrdersDisplay').textContent = ordersData.data.total;
-                document.getElementById('ordersTrendDisplay').innerHTML = `<span>↑</span> 8.2% vs last month`;
+                const total = ordersData.data.total;
+                document.getElementById('activeOrdersDisplay').textContent = total;
+
+                const growthClass = parseFloat(ordersGrowth) >= 0 ? 'up' : 'down';
+                const growthIcon = parseFloat(ordersGrowth) >= 0 ? '↑' : '↓';
+
+                document.getElementById('ordersTrendDisplay').innerHTML = `
+                    <span class="${growthClass}">${growthIcon} ${Math.abs(ordersGrowth)}%</span> vs last month
+                `;
             } else {
                 console.warn('Orders API failed:', ordersData);
                 document.getElementById('activeOrdersDisplay').textContent = 'Error';

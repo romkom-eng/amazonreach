@@ -161,83 +161,85 @@ app.use('/api/stripe', stripeRoutes);
 // ========== Dashboard API Routes (Protected) ==========
 
 // Get sales overview
+// Get sales overview
 app.get('/api/sales', isAuthenticated, hasActiveSubscription, (req, res) => {
     (async () => {
         try {
             let totalRevenue = 0;
             let revenueTrend = [];
             let totalOrders = 0;
-            let usingMock = true;
+            let revenueGrowth = 0;
+            let ordersGrowth = 0;
+            let usingMock = !process.env.AMAZON_REFRESH_TOKEN;
 
-
-            // 1. Try fetching from Amazon
-            if (process.env.AMAZON_REFRESH_TOKEN) {
+            if (!usingMock) {
                 try {
                     const amazonResponse = await amazonService.getOrders();
-
                     if (amazonResponse.payload && amazonResponse.payload.Orders) {
                         const orders = amazonResponse.payload.Orders;
-                        usingMock = false;
 
-                        // Calculate detailed financials
-                        totalRevenue = 0;
-                        totalOrders = orders.length;
+                        // Calculate metrics for current period (last 30 days) and previous period (30-60 days ago)
+                        const now = new Date();
+                        const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+                        const sixtyDaysAgo = new Date(now.getTime() - (60 * 24 * 60 * 60 * 1000));
 
-                        // Create 30-day bucket for trend
+                        let currentRevenue = 0;
+                        let previousRevenue = 0;
+                        let currentOrders = 0;
+                        let previousOrders = 0;
+
                         const dailyRevenue = {};
-                        const today = new Date();
+                        // Initialize last 30 days bucket
                         for (let i = 0; i < 30; i++) {
-                            const d = new Date();
-                            d.setDate(today.getDate() - i);
+                            const d = new Date(now.getTime() - (i * 24 * 60 * 60 * 1000));
                             dailyRevenue[d.toISOString().slice(0, 10)] = 0;
                         }
 
                         orders.forEach(order => {
-                            if (order.OrderTotal && order.OrderTotal.Amount) {
-                                const amount = parseFloat(order.OrderTotal.Amount);
-                                totalRevenue += amount;
+                            const purchaseDate = new Date(order.PurchaseDate);
+                            const amount = order.OrderTotal && order.OrderTotal.Amount ? parseFloat(order.OrderTotal.Amount) : 0;
 
-                                // Add to bucket
-                                const orderDate = new Date(order.PurchaseDate).toISOString().slice(0, 10);
-                                if (dailyRevenue[orderDate] !== undefined) {
-                                    dailyRevenue[orderDate] += amount;
+                            if (purchaseDate >= thirtyDaysAgo) {
+                                currentRevenue += amount;
+                                currentOrders++;
+                                const dateStr = purchaseDate.toISOString().slice(0, 10);
+                                if (dailyRevenue[dateStr] !== undefined) {
+                                    dailyRevenue[dateStr] += amount;
                                 }
+                            } else if (purchaseDate >= sixtyDaysAgo) {
+                                previousRevenue += amount;
+                                previousOrders++;
                             }
                         });
 
-                        // Convert bucket to array format expected by frontend
-                        // Start from oldest date
+                        totalRevenue = currentRevenue;
+                        totalOrders = currentOrders;
+
+                        // Calculate growth
+                        revenueGrowth = previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue * 100) : 100;
+                        ordersGrowth = previousOrders > 0 ? ((currentOrders - previousOrders) / previousOrders * 100) : 100;
+
                         revenueTrend = Object.keys(dailyRevenue).sort().map(date => ({
                             date: date,
                             amount: dailyRevenue[date]
                         }));
                     }
                 } catch (err) {
-                    console.error('Sales API Error (Real):', err.message);
-                    // If error is 400 or empty, valid to show 0
-                    if (err.message.includes('400') || err.message.includes('Orders')) {
-                        usingMock = false;
-                        revenueTrend = Array(30).fill({ amount: 0 }); // Flat line
-                    }
-                }
-            }
-
-            // 2. Fallback only if NOT connected
-            if (usingMock) {
-                // ... keep existing mock logic only if strictly needed, or just default to 0
-                // deciding to default to 0 if Amazon connected but no data
-                if (!process.env.AMAZON_REFRESH_TOKEN) {
-                    const financials = generateMockFinancials();
-                    totalRevenue = parseFloat(financials.totalRevenue);
-                    revenueTrend = generateRevenueTrend();
-                    totalOrders = mockOrders.length;
-                } else {
-                    // Connected but failing or empty -> 0
+                    console.error('Sales API Amazon Error:', err.message);
+                    // Return empty but real source
                     revenueTrend = Array(30).fill(0).map((_, i) => ({
                         date: new Date(Date.now() - (29 - i) * 86400000).toISOString().slice(0, 10),
                         amount: 0
                     }));
                 }
+            } else {
+                // Fallback to mock
+                const financials = generateMockFinancials();
+                totalRevenue = parseFloat(financials.totalRevenue);
+                totalOrders = mockOrders.length;
+                revenueTrend = generateRevenueTrend();
+                revenueGrowth = 12.5; // Mock values
+                ordersGrowth = 8.2;
             }
 
             res.json({
@@ -248,7 +250,10 @@ app.get('/api/sales', isAuthenticated, hasActiveSubscription, (req, res) => {
                     profitMargin: totalRevenue > 0 ? '30%' : '0%',
                     revenueTrend: revenueTrend,
                     totalOrders: totalOrders,
-                    averageOrderValue: totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : '0.00'
+                    averageOrderValue: totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : '0.00',
+                    revenueGrowth: revenueGrowth.toFixed(1),
+                    ordersGrowth: ordersGrowth.toFixed(1),
+                    source: usingMock ? 'Mock' : 'Amazon'
                 }
             });
 
@@ -269,26 +274,23 @@ app.get('/api/orders', isAuthenticated, hasActiveSubscription, async (req, res) 
     try {
         let ordersData = [];
         let totalCount = 0;
-        let source = 'Mock';
+        let usingMock = !process.env.AMAZON_REFRESH_TOKEN;
+        let source = usingMock ? 'Mock' : 'Amazon';
 
-        // 1. Try fetching from Amazon SP-API first
-        if (process.env.AMAZON_REFRESH_TOKEN) {
+        if (!usingMock) {
             try {
-                console.log('Fetching data for Orders API...');
                 const amazonResponse = await amazonService.getOrders();
                 if (amazonResponse.payload && amazonResponse.payload.Orders) {
                     ordersData = amazonResponse.payload.Orders;
                     totalCount = ordersData.length;
-                    source = 'Amazon';
-                    console.log(`Fetched ${totalCount} requests from Amazon SP-API`);
                 }
             } catch (err) {
-                console.error('Failed to fetch from Amazon, falling back to mock:', err.message);
-                ordersData = mockOrders; // Fallback
-                totalCount = mockOrders.length;
+                console.error('Orders API Amazon Error:', err.message);
+                // Return empty but real source
+                ordersData = [];
+                totalCount = 0;
             }
         } else {
-            console.log('No AMAZON_REFRESH_TOKEN found, using mock orders.');
             ordersData = mockOrders;
             totalCount = mockOrders.length;
         }
@@ -402,67 +404,95 @@ app.get('/api/shipping', isAuthenticated, hasActiveSubscription, async (req, res
 // Get dashboard summary (all key metrics)
 // Get dashboard summary (all key metrics)
 app.get('/api/dashboard/summary', isAuthenticated, hasActiveSubscription, async (req, res) => {
-    let revenue = 0;
-    let profit = 0;
-    let profitMargin = '30%';
-    let totalOrders = 0;
-    let pendingOrders = 0;
-    let shippedOrders = 0;
-    let deliveredOrders = 0;
+    try {
+        let revenue = 0;
+        let totalOrders = 0;
+        let revenueGrowth = 0;
+        let ordersGrowth = 0;
+        let pendingOrders = 0;
+        let shippedOrders = 0;
+        let deliveredOrders = 0;
+        let source = 'Mock';
+        let usingMock = !process.env.AMAZON_REFRESH_TOKEN;
 
-    // Default fallback to mock
-    const mockFinancials = generateMockFinancials();
-    revenue = mockFinancials.totalRevenue;
-    profit = mockFinancials.netProfit;
-    totalOrders = mockOrders.length;
-    pendingOrders = mockOrders.filter(o => o.OrderStatus === 'Pending').length;
-    shippedOrders = mockOrders.filter(o => o.OrderStatus === 'Shipped').length;
-    deliveredOrders = mockOrders.filter(o => o.OrderStatus === 'Delivered').length;
+        if (!usingMock) {
+            try {
+                const amazonResponse = await amazonService.getOrders();
+                if (amazonResponse.payload && amazonResponse.payload.Orders) {
+                    const orders = amazonResponse.payload.Orders;
+                    source = 'Amazon';
 
-    // Try fetching real data from Amazon
-    if (process.env.AMAZON_REFRESH_TOKEN) {
-        try {
-            const amazonResponse = await amazonService.getOrders();
-            if (amazonResponse.payload && amazonResponse.payload.Orders) {
-                const orders = amazonResponse.payload.Orders;
+                    const now = new Date();
+                    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+                    const sixtyDaysAgo = new Date(now.getTime() - (60 * 24 * 60 * 60 * 1000));
 
-                // Calculate Real Revenue
-                const realRevenue = orders.reduce((sum, order) => {
-                    if (order.OrderTotal && order.OrderTotal.Amount) {
-                        return sum + parseFloat(order.OrderTotal.Amount);
-                    }
-                    return sum;
-                }, 0);
+                    let currentRevenue = 0;
+                    let previousRevenue = 0;
+                    let currentOrders = 0;
+                    let previousOrders = 0;
 
-                revenue = realRevenue.toFixed(2);
-                profit = (realRevenue * 0.3).toFixed(2); // Est. 30% margin
-                totalOrders = orders.length;
+                    orders.forEach(order => {
+                        const purchaseDate = new Date(order.PurchaseDate);
+                        const amount = order.OrderTotal && order.OrderTotal.Amount ? parseFloat(order.OrderTotal.Amount) : 0;
 
-                // Count Refined Statuses
-                pendingOrders = orders.filter(o => o.OrderStatus === 'Unshipped' || o.OrderStatus === 'Pending').length;
-                shippedOrders = orders.filter(o => o.OrderStatus === 'Shipped').length;
-                deliveredOrders = orders.filter(o => o.OrderStatus === 'Delivered').length; // Amazon API might not use 'Delivered' status directly in initial list
+                        if (purchaseDate >= thirtyDaysAgo) {
+                            currentRevenue += amount;
+                            currentOrders++;
+
+                            // Status breakdown for current period
+                            const status = (order.OrderStatus || '').toLowerCase();
+                            if (status === 'shipped') shippedOrders++;
+                            else if (status === 'delivered') deliveredOrders++;
+                            else pendingOrders++;
+                        } else if (purchaseDate >= sixtyDaysAgo) {
+                            previousRevenue += amount;
+                            previousOrders++;
+                        }
+                    });
+
+                    revenue = currentRevenue.toFixed(2);
+                    totalOrders = currentOrders;
+                    revenueGrowth = previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue * 100) : 100;
+                    ordersGrowth = previousOrders > 0 ? ((currentOrders - previousOrders) / previousOrders * 100) : 100;
+                }
+            } catch (error) {
+                console.error('Summary API Amazon Error:', error.message);
+                // Return 0s if error
+                revenue = "0.00";
+                totalOrders = 0;
+                source = 'Amazon';
             }
-        } catch (error) {
-            console.error('Dashboard Summary Amazon Fetch Error:', error.message);
-            // Fallback to mock is already set
+        } else {
+            // Mock Fallback
+            const financials = generateMockFinancials();
+            revenue = financials.totalRevenue;
+            totalOrders = mockOrders.length;
+            revenueGrowth = 12.5;
+            ordersGrowth = 8.2;
+            pendingOrders = mockOrders.filter(o => o.OrderStatus === 'Pending').length;
+            shippedOrders = mockOrders.filter(o => o.OrderStatus === 'Shipped').length;
+            deliveredOrders = mockOrders.filter(o => o.OrderStatus === 'Delivered').length;
         }
-    }
 
-    res.json({
-        success: true,
-        data: {
-            revenue: revenue,
-            profit: profit,
-            profitMargin: profitMargin,
-            totalOrders: totalOrders,
-            pendingOrders: pendingOrders,
-            shippedOrders: shippedOrders,
-            deliveredOrders: deliveredOrders,
-            lowStockItems: mockInventory.filter(i => i.Status === 'Low Stock' || i.Status === 'Out of Stock').length,
-            activeShipments: mockShipments.filter(s => s.Status === 'In Transit').length
-        }
-    });
+        res.json({
+            success: true,
+            data: {
+                revenue,
+                totalOrders,
+                revenueGrowth: revenueGrowth.toFixed(1),
+                ordersGrowth: ordersGrowth.toFixed(1),
+                pendingOrders,
+                shippedOrders,
+                deliveredOrders,
+                source,
+                lowStockItems: mockInventory.filter(i => i.Status === 'Low Stock' || i.Status === 'Out of Stock').length,
+                activeShipments: mockShipments.filter(s => s.Status === 'In Transit').length
+            }
+        });
+    } catch (error) {
+        console.error('Summary API Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch summary' });
+    }
 });
 
 // ========== Health Check ==========
