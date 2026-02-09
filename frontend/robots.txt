@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /backend/
+Disallow: /functions/
+Disallow: /node_modules/
+Disallow: /config/
+Disallow: /.git/
+Disallow: /.env
+
+Sitemap: https://amazonreach.com/sitemap.xml
