@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - AmazonReach</title>
+    <meta name="description"
+        content="Latest insights, strategies, and news for K-Brands expanding to Amazon global marketplaces.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .blog-header {
+            background: var(--gradient-hero);
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+        }
+
+        .blog-header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .blog-header p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 32px;
+            padding: 80px 0;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .blog-image {
+            height: 200px;
+            background-color: #e2e8f0;
+            /* Placeholder color */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .blog-content {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .blog-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .blog-excerpt {
+            color: #64748B;
+            font-size: 15px;
+            margin-bottom: 24px;
+            flex: 1;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #94A3B8;
+            border-top: 1px solid #F1F5F9;
+            padding-top: 16px;
+        }
+
+        .read-more {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/"
+                    style="text-decoration: none; display: flex; align-items: center; gap: 12px; color: inherit;">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">AmazonReach</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="/#features">Features</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/blog/">Blog</a>
+                <a href="/#about">About</a>
+                <a href="/login.html" class="nav-login">Sign In</a>
+                <a href="/register.html" class="nav-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Header -->
+    <header class="blog-header">
+        <div class="container">
+            <h1>Resources & Insights</h1>
+            <p>Expert advice on scaling your Amazon business globally.</p>
+        </div>
+    </header>
+
+    <!-- Blog Grid -->
+    <section class="container">
+        <div class="blog-grid">
+            <!-- Article 1 -->
+            <article class="blog-card">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #6366F1 0%, #818cf8 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    🇺🇸</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Top 5 Strategies for K-Brands Expanding to Amazon US</h2>
+                    <p class="blog-excerpt">Entering the US market requires more than just translating your listings.
+                        Learn the key strategies for success in 2026.</p>
+                    <div class="blog-meta">
+                        <span>Feb 10, 2026</span>
+                        <a href="post-1.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 2 (Placeholder) -->
+            <article class="blog-card">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #10B981 0%, #34d399 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📦</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Logistics</span>
+                    <h2 class="blog-title">Understanding FBA Fees: A Guide for International Sellers</h2>
+                    <p class="blog-excerpt">Navigating Amazon's fulfillment fees can be tricky. Here's a breakdown of
+                        costs and how to optimize your margins.</p>
+                    <div class="blog-meta">
+                        <span>Feb 05, 2026</span>
+                        <span class="read-more">Coming Soon</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 3 (Placeholder) -->
+            <article class="blog-card">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #F59E0B 0%, #fbbf24 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📈</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Analytics</span>
+                    <h2 class="blog-title">Why Real-Time Data Matters for Global Inventory</h2>
+                    <p class="blog-excerpt">Stockouts kill rankings. Discover how real-time analytics can save your
+                        best-selling products from going out of stock.</p>
+                    <div class="blog-meta">
+                        <span>Jan 28, 2026</span>
+                        <span class="read-more">Coming Soon</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">🚀</span>
+                        <span class="logo-text">AmazonReach</span>
+                    </div>
+                    <p>Scale your Amazon business globally</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="/#features">Features</a>
+                        <a href="/#pricing">Pricing</a>
+                        <a href="/dashboard/dashboard.html">Dashboard</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="/#about">About</a>
+                        <a href="/blog/">Blog</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="/terms.html">Terms</a>
+                        <a href="/privacy.html">Privacy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AmazonReach. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
