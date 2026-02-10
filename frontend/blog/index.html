@@ -12,6 +12,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
     <style>
         .blog-header {
             background: var(--gradient-hero);
@@ -131,6 +140,7 @@
                 <a href="/#features">Features</a>
                 <a href="/#pricing">Pricing</a>
                 <a href="/blog/">Blog</a>
+                <a href="/reviews.html">Reviews</a>
                 <a href="/#about">About</a>
                 <a href="/login.html" class="nav-login">Sign In</a>
                 <a href="/register.html" class="nav-cta">Start Free Trial</a>
@@ -178,7 +188,7 @@
                         costs and how to optimize your margins.</p>
                     <div class="blog-meta">
                         <span>Feb 05, 2026</span>
-                        <span class="read-more">Coming Soon</span>
+                        <a href="post-2.html" class="read-more">Read Article →</a>
                     </div>
                 </div>
             </article>
@@ -195,7 +205,7 @@
                         best-selling products from going out of stock.</p>
                     <div class="blog-meta">
                         <span>Jan 28, 2026</span>
-                        <span class="read-more">Coming Soon</span>
+                        <a href="post-3.html" class="read-more">Read Article →</a>
                     </div>
                 </div>
             </article>

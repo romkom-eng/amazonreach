@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Stories - AmazonReach</title>
+    <meta name="description"
+        content="See how K-Brands are scaling on Amazon US with AmazonReach. Real results, revenue growth, and global expansion stories.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    <style>
+        .reviews-header {
+            background: var(--darker);
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+        }
+
+        .reviews-header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .reviews-header p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 32px;
+            padding: 80px 0;
+        }
+
+        .review-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .review-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .review-image-container {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Mosaic / Privacy Effect */
+        .review-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(8px);
+            /* The requested blur effect */
+            transform: scale(1.1);
+            /* Prevent blurred edges from showing */
+            opacity: 0.8;
+        }
+
+        .privacy-badge {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            backdrop-filter: blur(4px);
+        }
+
+        .review-content {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .review-metric {
+            display: inline-block;
+            margin-bottom: 16px;
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .review-text {
+            color: #475569;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .reviewer-info {
+            margin-top: auto;
+            border-top: 1px solid #F1F5F9;
+            padding-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .reviewer-details h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 2px;
+        }
+
+        .reviewer-details p {
+            font-size: 13px;
+            color: #94A3B8;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/"
+                    style="text-decoration: none; display: flex; align-items: center; gap: 12px; color: inherit;">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">AmazonReach</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="/#features">Features</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/blog/">Blog</a>
+                <a href="/reviews.html" style="color: var(--primary);">Reviews</a>
+                <a href="/#about">About</a>
+                <a href="/login.html" class="nav-login">Sign In</a>
+                <a href="/register.html" class="nav-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="reviews-header">
+        <div class="container">
+            <h1>Success Stories</h1>
+            <p>Real results from K-Brands scaling globally.</p>
+        </div>
+    </header>
+
+    <!-- Reviews Grid -->
+    <section class="container">
+        <div class="reviews-grid">
+
+            <!-- Review 1 -->
+            <div class="review-card">
+                <div class="review-image-container">
+                    <!-- Symbolic colored background for privacy focus -->
+                    <div
+                        style="width:100%; height:100%; background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);">
+                    </div>
+                    <div class="privacy-badge">Product Image Protected</div>
+                </div>
+                <div class="review-content">
+                    <div class="review-metric">+340% Revenue</div>
+                    <p class="review-text">"We were struggling with FBA fees killing our margins. AmazonReach's audit
+                        tool found $4,000 in monthly savings instantly. Our US sales have tripled."</p>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">K</div>
+                        <div class="reviewer-details">
+                            <h4>J. Kim</h4>
+                            <p>CEO, K-Beauty Skincare Brand</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="review-card">
+                <div class="review-image-container">
+                    <div
+                        style="width:100%; height:100%; background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);">
+                    </div>
+                    <div class="privacy-badge">Product Image Protected</div>
+                </div>
+                <div class="review-content">
+                    <div class="review-metric">No More Stockouts</div>
+                    <p class="review-text">"The AI inventory prediction is scary accurate. It told us to restock 3 weeks
+                        before we usually do, and we avoided a major stockout during Prime Day."</p>
+                    <div class="reviewer-details">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">L</div>
+                            <div class="reviewer-details">
+                                <h4>S. Lee</h4>
+                                <p>Director, Home & Living Brand</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="review-card">
+                <div class="review-image-container">
+                    <div
+                        style="width:100%; height:100%; background: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);">
+                    </div>
+                    <div class="privacy-badge">Product Image Protected</div>
+                </div>
+                <div class="review-content">
+                    <div class="review-metric">Ranked #1 in Category</div>
+                    <p class="review-text">"Localization is key. We used the transcreation service to rewrite our
+                        listings, and our conversion rate went from 2% to 12% in a month."</p>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">P</div>
+                        <div class="reviewer-details">
+                            <h4>M. Park</h4>
+                            <p>Founder, Fashion Accessories</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 4 -->
+            <div class="review-card">
+                <div class="review-image-container">
+                    <div
+                        style="width:100%; height:100%; background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);">
+                    </div>
+                    <div class="privacy-badge">Product Image Protected</div>
+                </div>
+                <div class="review-content">
+                    <div class="review-metric">Expanded to Japan</div>
+                    <p class="review-text">"We only sold in the US. The market expansion tool showed us high demand in
+                        Japan. We launched last month and it's already 20% of our revenue."</p>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">C</div>
+                        <div class="reviewer-details">
+                            <h4>H. Choi</h4>
+                            <p>VP of Sales, Electronics Brand</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">🚀</span>
+                        <span class="logo-text">AmazonReach</span>
+                    </div>
+                    <p>Scale your Amazon business globally</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="/#features">Features</a>
+                        <a href="/#pricing">Pricing</a>
+                        <a href="/dashboard/dashboard.html">Dashboard</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="/#about">About</a>
+                        <a href="/blog/">Blog</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="/terms.html">Terms</a>
+                        <a href="/privacy.html">Privacy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AmazonReach. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
