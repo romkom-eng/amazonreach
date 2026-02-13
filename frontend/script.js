@@ -1,6 +1,10 @@
 // AmazonReach - Frontend JavaScript
 
 // Smooth scrolling for anchor links
+const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000'
+    : 'https://amazonreach-production.up.railway.app';
+
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -70,7 +74,7 @@ if (contactForm) {
         submitButton.disabled = true;
 
         try {
-            const response = await fetch('/contact-form', {
+            const response = await fetch(`${BACKEND_URL}/contact-form`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

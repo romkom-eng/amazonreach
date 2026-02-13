@@ -1,12 +1,12 @@
-const BACKEND_URL = window.location.hostname === 'localhost'
-    ? `http://localhost:${window.location.port || '3000'}`
+const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000'
     : 'https://amazonreach-production.up.railway.app';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Check Authentication
     const token = localStorage.getItem('jwt_token');
     if (!token) {
-        window.location.href = '/frontend/login.html';
+        window.location.href = '/login.html';
         return;
     }
 
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 await fetch(`${BACKEND_URL}/api/auth/logout`, { method: 'POST' });
                 localStorage.removeItem('jwt_token');
-                window.location.href = '/frontend/login.html';
+                window.location.href = '/login.html';
             } catch (err) {
                 console.error('Logout failed', err);
             }

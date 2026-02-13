@@ -1,0 +1,3 @@
+# Cloudflare Pages redirects
+# Redirect /dashboard to /dashboard/dashboard.html if accessing directory
+/dashboard /dashboard/dashboard.html 301

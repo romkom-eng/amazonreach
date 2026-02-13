@@ -50,16 +50,12 @@ app.use(cors({
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = [
-            'http://localhost:3000',
-            'http://localhost:3001'
-        ];
-
-        // Allow all pages.dev subdomains and railway.app subdomains
-        if (allowedOrigins.indexOf(origin) !== -1 ||
+        // Allow any localhost or 127.0.0.1 with any port
+        if (/^http:\/\/localhost:\d+$/.test(origin) ||
+            /^http:\/\/127\.0\.0\.1:\d+$/.test(origin) ||
             origin.endsWith('.pages.dev') ||
             origin.endsWith('.railway.app') ||
-            origin.endsWith('amazonreach.com')) { // Future proofing
+            origin.endsWith('amazonreach.com')) {
             callback(null, true);
         } else {
             console.log('Blocked by CORS:', origin);
@@ -627,7 +623,7 @@ if (require.main === module) {
             console.log('');
             console.log('📍 Available Routes:');
             console.log(`   Landing Page:      http://localhost:${PORT}/`);
-            console.log(`   Login:             http://localhost:${PORT}/frontend/login.html`);
+            console.log(`   Login:             http://localhost:${PORT}/login.html`);
             console.log(`   Dashboard:         http://localhost:${PORT}/dashboard/dashboard.html`);
             console.log(`   API Health:        http://localhost:${PORT}/api/health`);
             console.log('');

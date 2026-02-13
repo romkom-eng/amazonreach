@@ -48,16 +48,17 @@ router.get('/auth', (req, res) => {
     // LWA endpoint (amazon.com/ap/oa) does not support SP-API scopes for draft apps.
     // URL format: https://sellercentral.amazon.com/apps/authorize/consent?application_id={appId}&state={state}&version=beta
 
-    application_id: appId,
+    const params = {
+        application_id: appId,
         state: 'random_state_string', // Should use a secure random string in production
-            version: 'beta', // REQUIRED for Draft apps
-                redirect_uri: getRedirectUri(req) // Dynamic based on current host
-};
+        version: 'beta', // REQUIRED for Draft apps
+        redirect_uri: getRedirectUri(req) // Dynamic based on current host
+    };
 
-const authUrl = 'https://sellercentral.amazon.com/apps/authorize/consent?' + querystring.stringify(params);
+    const authUrl = 'https://sellercentral.amazon.com/apps/authorize/consent?' + querystring.stringify(params);
 
-console.log('Redirecting to Seller Central Auth:', authUrl);
-res.json({ url: authUrl });
+    console.log('Redirecting to Seller Central Auth:', authUrl);
+    res.json({ url: authUrl });
 });
 
 // 2. OAuth Callback
@@ -95,9 +96,10 @@ router.get('/callback', async (req, res) => {
         console.log('Amazon Connection Successful for user:', req.session.user.email);
 
         // Redirect back to dashboard settings with success
-        // Use FRONTEND_URL if available (e.g., https://amazonreach.pages.dev)
+        // Construct the full URL if FRONTEND_URL is provided, otherwise use relative path
         const frontendUrl = process.env.FRONTEND_URL || '';
-        res.redirect(`${frontendUrl}/dashboard/settings.html?amazon_connected=true`);
+        const redirectPath = '/dashboard/settings.html?amazon_connected=true';
+        res.redirect(frontendUrl ? `${frontendUrl}${redirectPath}` : redirectPath);
 
     } catch (error) {
         console.error('Amazon OAuth Error:', error.response?.data || error.message);
