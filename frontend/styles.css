@@ -557,6 +557,12 @@ body {
     margin-bottom: var(--spacing-sm);
 }
 
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+}
+
 .footer-column h4 {
     color: var(--white);
     margin-bottom: var(--spacing-sm);
