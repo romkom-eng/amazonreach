@@ -7,10 +7,13 @@ try {
     // 1. Try Environment Variable (JSON String) - Best for Railway/Heroku
     if (process.env.FIREBASE_SERVICE_ACCOUNT) {
         try {
-            serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+            // Remove any potential whitespace and parse
+            const jsonString = process.env.FIREBASE_SERVICE_ACCOUNT.trim();
+            serviceAccount = JSON.parse(jsonString);
             console.log('✅ Loaded Firebase credentials from FIREBASE_SERVICE_ACCOUNT');
         } catch (e) {
             console.error('❌ Failed to parse FIREBASE_SERVICE_ACCOUNT JSON:', e.message);
+            console.error('First 100 chars of FIREBASE_SERVICE_ACCOUNT:', process.env.FIREBASE_SERVICE_ACCOUNT?.substring(0, 100));
         }
     }
 
@@ -24,7 +27,7 @@ try {
         console.log('✅ Loaded Firebase credentials from Individual Env Vars');
     }
 
-    // 3. Try Local File
+    // 3. Try Local File (Development only)
     if (!serviceAccount) {
         try {
             serviceAccount = require('./serviceAccountKey.json');
@@ -43,9 +46,16 @@ try {
         }
     } else {
         console.error('❌ No Firebase credentials found. Authentication will fail.');
+        console.error('Available env vars:', {
+            FIREBASE_SERVICE_ACCOUNT: !!process.env.FIREBASE_SERVICE_ACCOUNT,
+            FIREBASE_PROJECT_ID: !!process.env.FIREBASE_PROJECT_ID,
+            FIREBASE_CLIENT_EMAIL: !!process.env.FIREBASE_CLIENT_EMAIL,
+            FIREBASE_PRIVATE_KEY: !!process.env.FIREBASE_PRIVATE_KEY
+        });
     }
 } catch (error) {
     console.error('❌ Firebase Admin Initialization Error:', error);
+    console.error('Error stack:', error.stack);
 }
 
 const db = admin.apps.length ? admin.firestore() : {
