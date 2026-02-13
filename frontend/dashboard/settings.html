@@ -76,6 +76,11 @@
         </div>
 
         <script>
+            // Backend URL Configuration
+            const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:3000'
+                : 'https://amazonreach-production.up.railway.app';
+
             // Check for connection status URL param
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('amazon_connected') === 'true') {
