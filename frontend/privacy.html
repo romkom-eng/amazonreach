@@ -5,41 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - AmazonReach</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="description"
+        content="Privacy Policy for AmazonReach - How we collect, use, and protect your information.">
     <link rel="stylesheet" href="/styles.css">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D7F4VJGJM3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-D7F4VJGJM3');
+    </script>
+
     <style>
         .legal-container {
             max-width: 900px;
-            margin: 120px auto 80px;
-            padding: 0 24px;
+            margin: 120px auto 60px;
+            padding: 40px 20px;
         }
 
         .legal-container h1 {
-            font-size: 42px;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--dark);
             margin-bottom: 16px;
         }
 
-        .legal-container .last-updated {
-            color: #64748B;
+        .last-updated {
+            color: #64748b;
             margin-bottom: 40px;
         }
 
         .legal-container h2 {
-            font-size: 28px;
-            margin-top: 48px;
-            margin-bottom: 16px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 40px 0 16px;
         }
 
-        .legal-container p {
-            line-height: 1.8;
+        .legal-container p,
+        .legal-container li {
             color: #475569;
+            line-height: 1.8;
             margin-bottom: 16px;
         }
 
         .legal-container ul {
             margin-left: 24px;
-            line-height: 1.8;
-            color: #475569;
         }
     </style>
 </head>
@@ -49,13 +62,16 @@
     <nav class="nav">
         <div class="nav-container">
             <div class="nav-logo">
-                <span class="logo-icon">🚀</span>
-                <span class="logo-text">AmazonReach</span>
+                <a href="/"
+                    style="text-decoration: none; display: flex; align-items: center; gap: 12px; color: inherit;">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">AmazonReach</span>
+                </a>
             </div>
             <div class="nav-links">
                 <a href="/#features">Features</a>
                 <a href="/#pricing">Pricing</a>
-                <a href="/#about">About</a>
+                <a href="/blog/">Blog</a>
                 <a href="/login.html" class="nav-login">Sign In</a>
                 <a href="/register.html" class="nav-cta">Start Free Trial</a>
             </div>
@@ -64,143 +80,106 @@
 
     <div class="legal-container">
         <h1>Privacy Policy</h1>
-        <p class="last-updated">Last Updated: February 5, 2026</p>
+        <p class="last-updated">Last Updated: February 14, 2026</p>
 
-        <h2>1. Introduction</h2>
-        <p>
-            AmazonReach ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains
-            how we collect, use, disclose, and safeguard your information when you use our platform and services.
-        </p>
-
-        <h2>2. Information We Collect</h2>
-        <p><strong>Account Information:</strong></p>
+        <h2>1. Information We Collect</h2>
+        <p>We collect information you provide directly to us when you:</p>
         <ul>
-            <li>Email address</li>
-            <li>Company name</li>
-            <li>Billing information (processed securely through Stripe)</li>
-            <li>Profile preferences and settings</li>
+            <li>Create an account</li>
+            <li>Use our services</li>
+            <li>Contact us for support</li>
+            <li>Subscribe to our newsletter</li>
         </ul>
 
-        <p><strong>Business Data:</strong></p>
+        <h2>2. How We Use Your Information</h2>
+        <p>We use the information we collect to:</p>
         <ul>
-            <li>Amazon Seller Central data (orders, inventory, analytics)</li>
-            <li>Sales metrics and performance data</li>
-            <li>Shipping and fulfillment information</li>
+            <li>Provide, maintain, and improve our services</li>
+            <li>Process your transactions</li>
+            <li>Send you technical notices and support messages</li>
+            <li>Respond to your comments and questions</li>
+            <li>Analyze usage patterns and trends</li>
         </ul>
 
-        <p><strong>Usage Data:</strong></p>
+        <h2>3. Information Sharing</h2>
+        <p>We do not sell, trade, or rent your personal information to third parties. We may share your information only
+            in the following circumstances:</p>
         <ul>
-            <li>Log data and device information</li>
-            <li>IP addresses and browser information</li>
-            <li>Analytics and usage patterns</li>
+            <li>With your consent</li>
+            <li>To comply with legal obligations</li>
+            <li>To protect our rights and safety</li>
+            <li>With service providers who assist in our operations</li>
         </ul>
 
-        <h2>3. How We Use Your Information</h2>
-        <p>We use your information to:</p>
-        <ul>
-            <li>Provide and improve our services</li>
-            <li>Process transactions and send notifications</li>
-            <li>Analyze business performance and generate insights</li>
-            <li>Communicate with you about updates, support, and marketing</li>
-            <li>Detect and prevent fraud and security issues</li>
-            <li>Comply with legal obligations</li>
-        </ul>
+        <h2>4. Data Security</h2>
+        <p>We implement appropriate technical and organizational measures to protect your personal information against
+            unauthorized access, alteration, disclosure, or destruction.</p>
 
-        <h2>4. Information Sharing</h2>
-        <p>We may share your information with:</p>
-        <ul>
-            <li><strong>Service Providers:</strong> Stripe (payments), Firebase (database), Resend (email)</li>
-            <li><strong>Business Partners:</strong> Shipping carriers and fulfillment partners (as necessary)</li>
-            <li><strong>Legal Requirements:</strong> When required by law or to protect our rights</li>
-        </ul>
-        <p>We do NOT sell your personal information to third parties.</p>
-
-        <h2>5. Data Security</h2>
-        <p>
-            We implement industry-standard security measures to protect your data, including:
-        </p>
-        <ul>
-            <li>Encryption of data in transit (SSL/TLS)</li>
-            <li>Secure authentication and access controls</li>
-            <li>Regular security audits and monitoring</li>
-            <li>Firebase's enterprise-grade security infrastructure</li>
-        </ul>
-
-        <h2>6. Data Retention</h2>
-        <p>
-            We retain your information for as long as your account is active or as needed to provide services.
-            You may request deletion of your account and data at any time by contacting us at
-            <a href="mailto:privacy@amazonreach.com">privacy@amazonreach.com</a>.
-        </p>
-
-        <h2>7. Your Rights</h2>
+        <h2>5. Your Rights</h2>
         <p>You have the right to:</p>
         <ul>
-            <li>Access and review your personal information</li>
-            <li>Request corrections or updates to your data</li>
-            <li>Delete your account and associated data</li>
-            <li>Export your business data</li>
-            <li>Opt-out of marketing communications</li>
+            <li>Access your personal information</li>
+            <li>Correct inaccurate data</li>
+            <li>Request deletion of your data</li>
+            <li>Object to processing of your data</li>
+            <li>Export your data</li>
         </ul>
 
-        <h2>8. Cookies and Tracking</h2>
-        <p>
-            We use cookies and similar technologies to enhance your experience, analyze usage, and provide personalized
-            features. You can manage cookie preferences in your browser settings.
+        <h2>6. Cookies</h2>
+        <p>We use cookies and similar tracking technologies to track activity on our service and hold certain
+            information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
         </p>
 
-        <h2>9. Children's Privacy</h2>
-        <p>
-            Our services are not directed to individuals under 18. We do not knowingly collect personal information
-            from children.
-        </p>
+        <h2>7. Third-Party Services</h2>
+        <p>Our service may contain links to third-party websites. We are not responsible for the privacy practices of
+            these external sites.</p>
 
-        <h2>10. Changes to This Policy</h2>
-        <p>
-            We may update this Privacy Policy from time to time. We will notify you of significant changes via email
-            or through our platform.
-        </p>
+        <h2>8. Children's Privacy</h2>
+        <p>Our service is not intended for children under 13 years of age. We do not knowingly collect personal
+            information from children under 13.</p>
 
-        <h2>11. Contact Us</h2>
-        <p>
-            If you have questions about this Privacy Policy or our data practices, please contact us at:
-        </p>
-        <p>
-            <strong>Email:</strong> <a href="mailto:privacy@amazonreach.com">privacy@amazonreach.com</a><br>
-            <strong>Address:</strong> AmazonReach, Inc., 123 Global Street, San Francisco, CA 94105
-        </p>
+        <h2>9. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new
+            Privacy Policy on this page and updating the "Last Updated" date.</p>
+
+        <h2>10. Contact Us</h2>
+        <p>If you have questions about this Privacy Policy, please contact us through our <a href="/#contact"
+                style="color: var(--primary);">contact form</a>.</p>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-brand">
-                <div class="logo">
-                    <span class="logo-icon">🚀</span>
-                    <span class="logo-text" Amazon Reach</span>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">🚀</span>
+                        <span class="logo-text">AmazonReach</span>
+                    </div>
+                    <p>Scale your Amazon business globally</p>
                 </div>
-                <p>Scale your Amazon business globally</p>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="/#features">Features</a>
+                        <a href="/#pricing">Pricing</a>
+                        <a href="/dashboard/dashboard.html">Dashboard</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="/#about">About</a>
+                        <a href="/blog/">Blog</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="/privacy.html">Privacy</a>
+                        <a href="/terms.html">Terms</a>
+                    </div>
+                </div>
             </div>
-            <div class="footer-links">
-                <div class="footer-column">
-                    <h4>Product</h4>
-                    <a href="/#features">Features</a>
-                    <a href="/#pricing">Pricing</a>
-                </div>
-                <div class="footer-column">
-                    <h4>Company</h4>
-                    <a href="/#about">About</a>
-                    <a href="/#contact">Contact</a>
-                </div>
-                <div class="footer-column">
-                    <h4>Legal</h4>
-                    <a href="/privacy.html">Privacy</a>
-                    <a href="/terms.html">Terms</a>
-                </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AmazonReach. All rights reserved.</p>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 AmazonReach. All rights reserved.</p>
         </div>
     </footer>
 </body>
