@@ -311,6 +311,14 @@
                     if (data.token) {
                         localStorage.setItem('jwt_token', data.token);
                     }
+
+                    // Google Analytics: Track Sign-up Conversion
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'sign_up', {
+                            method: 'Email'
+                        });
+                    }
+
                     successMessage.textContent = 'Account created! Redirecting to dashboard...';
                     successMessage.style.display = 'block';
                     setTimeout(() => {
