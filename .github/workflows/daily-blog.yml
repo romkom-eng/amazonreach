@@ -25,13 +25,25 @@ jobs:
       - name: Generate Daily Post
         run: node scripts/generate_daily_post.js
 
-      - name: Publish Post and Update Sitemap
-        run: node scripts/blog_manager.js publish
-
-      - name: Commit and Push Changes
+      - name: Commit Draft (if created)
         run: |
           git config --global user.name 'AmazonReach Bot'
           git config --global user.email 'bot@amazonreach.com'
+          git add frontend/blog/_drafts/
+          
+          # Check if there are new drafts
+          if git diff --staged --quiet; then
+            echo "No new draft created"
+          else
+            git commit -m "📝 Generated new blog draft [skip ci]"
+            echo "Draft committed"
+          fi
+
+      - name: Publish Post and Update Sitemap
+        run: node scripts/blog_manager.js publish
+
+      - name: Commit and Push Published Changes
+        run: |
           git add frontend/blog/ frontend/sitemap.xml
           
           # Check if there are changes to commit
