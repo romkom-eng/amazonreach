@@ -1,11 +1,23 @@
 User-agent: *
 Allow: /
-Disallow: /dashboard/
-Disallow: /backend/
-Disallow: /functions/
-Disallow: /node_modules/
-Disallow: /config/
-Disallow: /.git/
-Disallow: /.env
 
-Sitemap: https://amazonreach.com/sitemap.xml
+Sitemap: https://amazonreach.pages.dev/sitemap.xml
+
+# Allow AI Crawlers for GEO Optimization
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
