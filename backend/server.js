@@ -25,6 +25,7 @@ const authRoutes = require('./routes/auth');
 const stripeRoutes = require('./routes/stripe');
 const adminRoutes = require('./routes/admin'); // Admin Routes
 const amazonRoutes = require('./routes/amazon'); // Amazon Routes
+const contactRoutes = require('./routes/contact'); // Contact Routes
 const db = require('./database');
 const amazonService = require('./services/amazonService.js');
 
@@ -98,6 +99,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/amazon', amazonRoutes); // Add Amazon Routes
+app.use('/contact-form', contactRoutes); // Add Contact Route
 app.use('/api/ai', require('./routes/ai'));
 
 // Landing page
