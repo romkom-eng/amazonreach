@@ -3,7 +3,14 @@ const router = express.Router();
 const { Resend } = require('resend');
 
 // Initialize Resend with API Key from environment variables
-const resend = new Resend(process.env.RESEND_API_KEY);
+const apiKey = process.env.RESEND_API_KEY;
+let resend;
+
+if (apiKey) {
+    resend = new Resend(apiKey);
+} else {
+    console.warn('⚠️ RESEND_API_KEY is missing. Email functionality will not work.');
+}
 
 router.post('/', async (req, res) => {
     try {
@@ -12,6 +19,11 @@ router.post('/', async (req, res) => {
         // Validating required fields
         if (!companyName || !contactName || !email || !inquiryType || !message) {
             return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        if (!resend) {
+            console.error('Resend client not initialized (missing API key)');
+            return res.status(500).json({ error: 'Email service not configured on server' });
         }
 
         const targetEmail = process.env.CONTACT_EMAIL || 'support@amazonreach.com';
