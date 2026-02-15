@@ -29,27 +29,7 @@ const contactRoutes = require('./routes/contact'); // Contact Routes
 const db = require('./database');
 const amazonService = require('./services/amazonService.js');
 
-// --- DEBUG ROUTE (Temporary) ---
-// This route helps verify if environment variables are loaded correctly in Railway.
 const app = express();
-app.get('/debug-env', (req, res) => {
-    res.json({
-        message: "Environment Variable Debugger v2",
-        timestamp: new Date().toISOString(),
-        service_info: {
-            service_name: process.env.RAILWAY_SERVICE_NAME || "Unknown",
-            environment_name: process.env.RAILWAY_ENVIRONMENT_NAME || "Unknown",
-            project_id: process.env.RAILWAY_PROJECT_ID || "Unknown"
-        },
-        resend_key_status: {
-            exists: !!process.env.RESEND_API_KEY,
-            length: process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.length : 0,
-            preview: process.env.RESEND_API_KEY ? `${process.env.RESEND_API_KEY.substring(0, 3)}...` : "N/A"
-        },
-        contact_email: process.env.CONTACT_EMAIL || "Not Set (Using Default)",
-        available_env_keys: Object.keys(process.env).sort()
-    });
-});
 const PORT = process.env.PORT || 3000;
 
 // ========== Security Middleware ==========

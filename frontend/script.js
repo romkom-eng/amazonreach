@@ -83,6 +83,15 @@ if (contactForm) {
             const data = await response.json();
 
             if (response.ok) {
+                // Google Analytics Event Tracking
+                if (typeof gtag === 'function') {
+                    gtag('event', 'generate_lead', {
+                        'event_category': 'Contact',
+                        'event_label': 'Contact Form Submission',
+                        'value': 1
+                    });
+                }
+
                 alert('Thank you for your message! We\'ll get back to you within 24 hours.');
                 contactForm.reset();
             } else {
