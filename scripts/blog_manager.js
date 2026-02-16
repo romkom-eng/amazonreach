@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const contentLibrary = require('./content_library');
 
 const BLOG_DIR = path.join(__dirname, '../frontend/blog');
 const SITEMAP_PATH = path.join(__dirname, '../frontend/sitemap.xml');
@@ -198,7 +199,50 @@ const TOPICS = [
 
 function generatePostContent(topicObj, dateStr) {
     const { title, category } = topicObj;
-    const headerImage = CATEGORY_IMAGES[category] || CATEGORY_IMAGES['Strategy'];
+
+    // Check if we have pre-written high quality content
+    const libraryEntry = contentLibrary[title];
+
+    // Default fallback images/content if not in library
+    let headerImage = '/images/blog/strategy-header.png';
+    let bodyContent = `
+        <p class="lead">In the rapidly evolving world of e-commerce, staying ahead of ${title} is crucial for survival. This comprehensive guide explores the strategies you need to succeed in 2026.</p>
+        
+        <h2>The Current State of ${category}</h2>
+        <p>Market data indicates a significant shift in how consumers and businesses are approaching ${title}. The old methods are becoming obsolete, replaced by data-driven insights and automation.</p>
+        
+        <h2>Why This Matters Now</h2>
+        <p>Ignoring this trend is not an option. Competitors who are adopting these new ${category} methodologies are seeing efficiency gains of upwards of 30%. It's strictly a matter of competitive advantage.</p>
+        
+        <h2>Detailed Analysis</h2>
+        <p>Let's break down the key components:</p>
+        <ul>
+            <li><strong>Efficiency:</strong> Streamlining operations to reduce overhead.</li>
+            <li><strong>Scalability:</strong> ensuring your systems can handle Q4 volume.</li>
+            <li><strong>Customer Experience:</strong> The end-goal of every optimization.</li>
+        </ul>
+        
+        <div class="stat-block">
+            "Innovation in ${title} is the primary driver of growth for top-tier sellers this year." — <em>Global E-commerce Report</em>
+        </div>
+
+        <h2>Future Outlook</h2>
+        <p>Looking ahead, we expect ${title} to become even more integrated with AI and machine learning. Start preparing your infrastructure today.</p>
+    `;
+
+    if (libraryEntry) {
+        headerImage = libraryEntry.image;
+        bodyContent = libraryEntry.content;
+    } else {
+        // Fallback image logic based on category
+        const catImages = {
+            'Logistics': '/images/blog/logistics-header.png',
+            'Marketing': '/images/blog/marketing-header.png',
+            'Trends': '/images/blog/trends-header.png',
+            'Strategy': '/images/blog/strategy-header.png'
+        };
+        headerImage = catImages[category] || catImages['Strategy'];
+    }
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -320,22 +364,10 @@ function generatePostContent(topicObj, dateStr) {
     </header>
 
     <article class="post-content">
-        <p><strong>Hook:</strong> Why is ${title} trending right now? Because it's a critical component for success in 2026.</p>
-        
-        <h2>Key Statistics</h2>
-        <div class="stat-block">
-            "Brands optimizing for ${title} see a significant uplift in conversion." — <em>E-commerce Monthly</em>
-        </div>
+        <h1 class="post-title mobile-only" style="display: none;">${title}</h1> <!-- Hidden on desktop via CSS if needed, or just let header handle it -->
+        <div class="post-meta mobile-only" style="display: none;">Published on ${dateStr}</div>
 
-        <h2>Actionable Strategy</h2>
-        <p>Here is how you can leverage this trend:</p>
-        <ul>
-            <li>Step 1: Audit your current approach to ${category}.</li>
-            <li>Step 2: Implement data-driven changes using the AmazonReach Dashboard.</li>
-            <li>Step 3: Monitor results and iterate based on real-time analytics.</li>
-        </ul>
-        
-        <p>Start optimizing your ${category} strategy today with our comprehensive tools.</p>
+        ${bodyContent}
     </article>
 
     <!-- Footer -->
@@ -401,29 +433,19 @@ function backfill() {
         // Extract metadata
         let metadata = extractMetadata(content);
 
-        // CHECK IF IT'S A PLACEHOLDER "New Post"
-        // If title is "New Post" OR specific empty content markers found
-        if (metadata.title === 'New Post' || content.includes('Click to read more...') || content.includes('Start Your Free Trial')) {
-            console.log(`♻️ Regenerating placeholder post: ${filename}`);
+        // CHECK IF IT'S A PLACEHOLDER "New Post" OR just Force Update All
+        // We want to force update ALL posts to ensure new styles and long content are applied.
+        console.log(`♻️ Regenerating/Updating post content for: ${filename} (${dateStr})`);
 
-            // Pick a topic based on index to be deterministic or random
-            const topic = TOPICS[index % TOPICS.length];
+        // Pick a topic based on index to be deterministic
+        const topic = TOPICS[index % TOPICS.length];
 
-            // Regenerate content
-            content = generatePostContent(topic, dateStr);
-            fs.writeFileSync(filepath, content);
+        // Regenerate content
+        content = generatePostContent(topic, dateStr);
+        fs.writeFileSync(filepath, content);
 
-            // Refresh metadata
-            metadata = extractMetadata(content);
-        } else {
-            // Update existing post date
-            content = content.replace(/Generated on \d{4}-\d{2}-\d{2}/, `Generated on ${dateStr}`);
-            // Also match simple YYYY-MM-DD patterns in meta if present
-            content = content.replace(/Published on \d{4}-\d{2}-\d{2}/, `Published on ${dateStr}`);
-            content = content.replace(/"datePublished": "\d{4}-\d{2}-\d{2}"/, `"datePublished": "${dateStr}"`);
-
-            fs.writeFileSync(filepath, content);
-        }
+        // Refresh metadata
+        metadata = extractMetadata(content);
 
         postsMetadata.push({
             filename,
