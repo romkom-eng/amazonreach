@@ -123,6 +123,34 @@
             text-decoration: none;
         }
     </style>
+
+    <script>
+        function filterPosts(category) {
+            const posts = document.querySelectorAll('.blog-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            // Update active button
+            buttons.forEach(btn => {
+                if (btn.innerText === category || (category === 'All' && btn.innerText === 'All')) {
+                    btn.classList.add('active');
+                    btn.style.backgroundColor = 'var(--primary)';
+                    btn.style.color = 'white';
+                } else {
+                    btn.classList.remove('active');
+                    btn.style.backgroundColor = 'white';
+                    btn.style.color = 'var(--dark)';
+                }
+            });
+
+            posts.forEach(post => {
+                if (category === 'All' || post.dataset.category === category) {
+                    post.style.display = 'flex';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </head>
 
 <body>
@@ -158,207 +186,30 @@
 
     <!-- Blog Grid -->
     <section class="container">
-        <div class="blog-grid">
-            
-            <!-- Generated Article post-1770787387708.html -->
-            <article class="blog-card">
+
+    <div class="filter-container" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap;">
+        <button class="filter-btn" onclick="filterPosts('All')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">All</button>
+        <button class="filter-btn" onclick="filterPosts('Logistics')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">Logistics</button>
+        <button class="filter-btn" onclick="filterPosts('Marketing')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">Marketing</button>
+        <button class="filter-btn" onclick="filterPosts('Trends')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">Trends</button>
+        <button class="filter-btn" onclick="filterPosts('Strategy')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">Strategy</button>
+    </div>
+
+    <div class="filter-container" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap;">
+        <button class="filter-btn" onclick="filterPosts('All')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">All</button>
+        <button class="filter-btn" onclick="filterPosts('Logistics')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">Logistics</button>
+        <button class="filter-btn" onclick="filterPosts('Marketing')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">Marketing</button>
+        <button class="filter-btn" onclick="filterPosts('Trends')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">Trends</button>
+        <button class="filter-btn" onclick="filterPosts('Strategy')" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; font-weight: 500;">Strategy</button>
+    </div>
+<div class="blog-grid">
+
+            <article class="blog-card" data-category="Strategy">
                 <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #121d5 0%, #d00536 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
                     📝</div>
                 <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Global Logistics Optimization</h2>
-                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-11</span>
-                        <a href="post-1770787387708.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1770873489878.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #12b2f9 0%, #2fc1e7 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Korean Skincare Trends US Market</h2>
-                    <p class="blog-excerpt">Expert analysis on Korean Skincare Trends US Market to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-12</span>
-                        <a href="post-1770873489878.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1770931872839.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #283cbc 0%, #d4537a 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Global Logistics Optimization</h2>
-                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-12</span>
-                        <a href="post-1770931872839.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1770932153747.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #d3aae9 0%, #9d5572 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Amazon PPC Strategy for Beginners</h2>
-                    <p class="blog-excerpt">Expert analysis on Amazon PPC Strategy for Beginners to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-12</span>
-                        <a href="post-1770932153747.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1770932154902.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #45342d 0%, #4bc984 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Brand Storytelling on Amazon</h2>
-                    <p class="blog-excerpt">Expert analysis on Brand Storytelling on Amazon to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-12</span>
-                        <a href="post-1770932154902.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1770932485464.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #ee7b6e 0%, #14f963 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Amazon FBA Fees 2026</h2>
-                    <p class="blog-excerpt">Expert analysis on Amazon FBA Fees 2026 to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-12</span>
-                        <a href="post-1770932485464.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1770959604282.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #b1053b 0%, #ff075 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Amazon PPC Strategy for Beginners</h2>
-                    <p class="blog-excerpt">Expert analysis on Amazon PPC Strategy for Beginners to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-13</span>
-                        <a href="post-1770959604282.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1771020889970.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #7b0b43 0%, #2723e6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Korean Skincare Trends US Market</h2>
-                    <p class="blog-excerpt">Expert analysis on Korean Skincare Trends US Market to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-13</span>
-                        <a href="post-1771020889970.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1771045134901.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #3f604 0%, #ddb2c9 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Global Logistics Optimization</h2>
-                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-14</span>
-                        <a href="post-1771045134901.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1771090212189.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #63cc5b 0%, #466eed 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Amazon FBA Fees 2026</h2>
-                    <p class="blog-excerpt">Expert analysis on Amazon FBA Fees 2026 to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-14</span>
-                        <a href="post-1771090212189.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1771174728857.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #1ec3b2 0%, #58f185 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Brand Storytelling on Amazon</h2>
-                    <p class="blog-excerpt">Expert analysis on Brand Storytelling on Amazon to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-15</span>
-                        <a href="post-1771174728857.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1771132313116.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #76f0e3 0%, #db1075 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
-                    <h2 class="blog-title">Global Logistics Optimization</h2>
-                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
-                    <div class="blog-meta">
-                        <span>2026-02-15</span>
-                        <a href="post-1771132313116.html" class="read-more">Read Article →</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Generated Article post-1771219223679.html -->
-            <article class="blog-card">
-                <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #64579 0%, #87f4f4 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📝</div>
-                <div class="blog-content">
-                    <span class="blog-tag">Update</span>
+                    <span class="blog-tag">Strategy</span>
                     <h2 class="blog-title">Korean Skincare Trends US Market</h2>
                     <p class="blog-excerpt">Expert analysis on Korean Skincare Trends US Market to help you scale your Amazon business globally.</p>
                     <div class="blog-meta">
@@ -367,58 +218,425 @@
                     </div>
                 </div>
             </article>
-            <!-- Article 1 -->
-            <article class="blog-card">
+            <article class="blog-card" data-category="Strategy">
                 <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #6366F1 0%, #818cf8 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    🇺🇸</div>
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
                 <div class="blog-content">
                     <span class="blog-tag">Strategy</span>
-                    <h2 class="blog-title">Top 5 Strategies for K-Brands Expanding to Amazon US</h2>
-                    <p class="blog-excerpt">Entering the US market requires more than just translating your listings.
-                        Learn the key strategies for success in 2026.</p>
+                    <h2 class="blog-title">Brand Storytelling on Amazon</h2>
+                    <p class="blog-excerpt">Expert analysis on Brand Storytelling on Amazon to help you scale your Amazon business globally.</p>
                     <div class="blog-meta">
-                        <span>Feb 10, 2026</span>
-                        <a href="post-1.html" class="read-more">Read Article →</a>
+                        <span>2026-02-15</span>
+                        <a href="post-1771174728857.html" class="read-more">Read Article →</a>
                     </div>
                 </div>
             </article>
-
-            <!-- Article 2 (Placeholder) -->
-            <article class="blog-card">
+            <article class="blog-card" data-category="Strategy">
                 <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #10B981 0%, #34d399 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📦</div>
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
                 <div class="blog-content">
-                    <span class="blog-tag">Logistics</span>
-                    <h2 class="blog-title">Understanding FBA Fees: A Guide for International Sellers</h2>
-                    <p class="blog-excerpt">Navigating Amazon's fulfillment fees can be tricky. Here's a breakdown of
-                        costs and how to optimize your margins.</p>
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Global Logistics Optimization</h2>
+                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
                     <div class="blog-meta">
-                        <span>Feb 05, 2026</span>
-                        <a href="post-2.html" class="read-more">Read Article →</a>
+                        <span>2026-02-14</span>
+                        <a href="post-1771132313116.html" class="read-more">Read Article →</a>
                     </div>
                 </div>
             </article>
-
-            <!-- Article 3 (Placeholder) -->
-            <article class="blog-card">
+            <article class="blog-card" data-category="Strategy">
                 <div class="blog-image"
-                    style="background-image: linear-gradient(135deg, #F59E0B 0%, #fbbf24 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
-                    📈</div>
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
                 <div class="blog-content">
-                    <span class="blog-tag">Analytics</span>
-                    <h2 class="blog-title">Why Real-Time Data Matters for Global Inventory</h2>
-                    <p class="blog-excerpt">Stockouts kill rankings. Discover how real-time analytics can save your
-                        best-selling products from going out of stock.</p>
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Amazon FBA Fees 2026</h2>
+                    <p class="blog-excerpt">Expert analysis on Amazon FBA Fees 2026 to help you scale your Amazon business globally.</p>
                     <div class="blog-meta">
-                        <span>Jan 28, 2026</span>
+                        <span>2026-02-13</span>
+                        <a href="post-1771090212189.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Global Logistics Optimization</h2>
+                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-12</span>
+                        <a href="post-1771045134901.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Korean Skincare Trends US Market</h2>
+                    <p class="blog-excerpt">Expert analysis on Korean Skincare Trends US Market to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-11</span>
+                        <a href="post-1771020889970.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Amazon PPC Strategy for Beginners</h2>
+                    <p class="blog-excerpt">Expert analysis on Amazon PPC Strategy for Beginners to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-10</span>
+                        <a href="post-1770959604282.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Amazon FBA Fees 2026</h2>
+                    <p class="blog-excerpt">Expert analysis on Amazon FBA Fees 2026 to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-09</span>
+                        <a href="post-1770932485464.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Brand Storytelling on Amazon</h2>
+                    <p class="blog-excerpt">Expert analysis on Brand Storytelling on Amazon to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-08</span>
+                        <a href="post-1770932154902.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Amazon PPC Strategy for Beginners</h2>
+                    <p class="blog-excerpt">Expert analysis on Amazon PPC Strategy for Beginners to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-07</span>
+                        <a href="post-1770932153747.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Global Logistics Optimization</h2>
+                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-06</span>
+                        <a href="post-1770931872839.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Korean Skincare Trends US Market</h2>
+                    <p class="blog-excerpt">Expert analysis on Korean Skincare Trends US Market to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-05</span>
+                        <a href="post-1770873489878.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Global Logistics Optimization</h2>
+                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-04</span>
+                        <a href="post-1770787387708.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Trends">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #6366F1 0%, #818cf8 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Trends</span>
+                    <h2 class="blog-title">New Post</h2>
+                    <p class="blog-excerpt">Click to read more...</p>
+                    <div class="blog-meta">
+                        <span>2026-02-03</span>
                         <a href="post-3.html" class="read-more">Read Article →</a>
                     </div>
                 </div>
             </article>
-        </div>
-    </section>
+            <article class="blog-card" data-category="Logistics">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #10B981 0%, #34d399 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Logistics</span>
+                    <h2 class="blog-title">New Post</h2>
+                    <p class="blog-excerpt">Click to read more...</p>
+                    <div class="blog-meta">
+                        <span>2026-02-02</span>
+                        <a href="post-2.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Marketing">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #F59E0B 0%, #fbbf24 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Marketing</span>
+                    <h2 class="blog-title">New Post</h2>
+                    <p class="blog-excerpt">Click to read more...</p>
+                    <div class="blog-meta">
+                        <span>2026-02-01</span>
+                        <a href="post-1.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Brand Storytelling on Amazon</h2>
+                    <p class="blog-excerpt">Expert analysis on Brand Storytelling on Amazon to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-16</span>
+                        <a href="post-1771174728857.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Global Logistics Optimization</h2>
+                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-15</span>
+                        <a href="post-1771132313116.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Amazon FBA Fees 2026</h2>
+                    <p class="blog-excerpt">Expert analysis on Amazon FBA Fees 2026 to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-14</span>
+                        <a href="post-1771090212189.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Global Logistics Optimization</h2>
+                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-13</span>
+                        <a href="post-1771045134901.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Korean Skincare Trends US Market</h2>
+                    <p class="blog-excerpt">Expert analysis on Korean Skincare Trends US Market to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-12</span>
+                        <a href="post-1771020889970.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Amazon PPC Strategy for Beginners</h2>
+                    <p class="blog-excerpt">Expert analysis on Amazon PPC Strategy for Beginners to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-11</span>
+                        <a href="post-1770959604282.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Amazon FBA Fees 2026</h2>
+                    <p class="blog-excerpt">Expert analysis on Amazon FBA Fees 2026 to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-10</span>
+                        <a href="post-1770932485464.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Brand Storytelling on Amazon</h2>
+                    <p class="blog-excerpt">Expert analysis on Brand Storytelling on Amazon to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-09</span>
+                        <a href="post-1770932154902.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Amazon PPC Strategy for Beginners</h2>
+                    <p class="blog-excerpt">Expert analysis on Amazon PPC Strategy for Beginners to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-08</span>
+                        <a href="post-1770932153747.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Global Logistics Optimization</h2>
+                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-07</span>
+                        <a href="post-1770931872839.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Korean Skincare Trends US Market</h2>
+                    <p class="blog-excerpt">Expert analysis on Korean Skincare Trends US Market to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-06</span>
+                        <a href="post-1770873489878.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Strategy">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #EC4899 0%, #f472b6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Strategy</span>
+                    <h2 class="blog-title">Global Logistics Optimization</h2>
+                    <p class="blog-excerpt">Expert analysis on Global Logistics Optimization to help you scale your Amazon business globally.</p>
+                    <div class="blog-meta">
+                        <span>2026-02-05</span>
+                        <a href="post-1770787387708.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Trends">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #6366F1 0%, #818cf8 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Trends</span>
+                    <h2 class="blog-title">New Post</h2>
+                    <p class="blog-excerpt">Click to read more...</p>
+                    <div class="blog-meta">
+                        <span>2026-02-04</span>
+                        <a href="post-3.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Logistics">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #10B981 0%, #34d399 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Logistics</span>
+                    <h2 class="blog-title">New Post</h2>
+                    <p class="blog-excerpt">Click to read more...</p>
+                    <div class="blog-meta">
+                        <span>2026-02-03</span>
+                        <a href="post-2.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+            <article class="blog-card" data-category="Marketing">
+                <div class="blog-image"
+                    style="background-image: linear-gradient(135deg, #F59E0B 0%, #fbbf24 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    📝</div>
+                <div class="blog-content">
+                    <span class="blog-tag">Marketing</span>
+                    <h2 class="blog-title">New Post</h2>
+                    <p class="blog-excerpt">Click to read more...</p>
+                    <div class="blog-meta">
+                        <span>2026-02-02</span>
+                        <a href="post-1.html" class="read-more">Read Article →</a>
+                    </div>
+                </div>
+            </article>
+</div>
+</section>
 
     <!-- Footer -->
     <footer class="footer">
