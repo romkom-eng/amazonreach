@@ -254,16 +254,49 @@ function generatePostContent(topicObj, dateStr) {
     <meta name="category" content="${category}">
     <link rel="stylesheet" href="/styles.css">
     
-    <!-- GEO Schema Markup -->
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://amazonreach.com/blog/${title.replace(/ /g, '-').toLowerCase()}.html">
+    <meta property="og:title" content="${title} - AmazonReach Blog">
+    <meta property="og:description" content="Expert analysis on ${title} to help you scale your Amazon business globally.">
+    <meta property="og:image" content="https://amazonreach.com${headerImage}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://amazonreach.com/blog/${title.replace(/ /g, '-').toLowerCase()}.html">
+    <meta property="twitter:title" content="${title} - AmazonReach Blog">
+    <meta property="twitter:description" content="Expert analysis on ${title} to help you scale your Amazon business globally.">
+    <meta property="twitter:image" content="https://amazonreach.com${headerImage}">
+    
+    <!-- GEO / Seasonal Schema Markup -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://amazonreach.com/blog/${title.replace(/ /g, '-').toLowerCase()}.html"
+      },
       "headline": "${title}",
+      "description": "Expert analysis on ${title} to help you scale your Amazon business globally.",
+      "image": "https://amazonreach.com${headerImage}",  
+      "author": {
+        "@type": "Organization",
+        "name": "AmazonReach Team",
+        "url": "https://amazonreach.com"
+      },  
+      "publisher": {
+        "@type": "Organization",
+        "name": "AmazonReach",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://amazonreach.com/images/logo.png"
+        }
+      },
       "datePublished": "${dateStr}",
+      "dateModified": "${dateStr}",
       "articleSection": "${category}",
-      "image": "${headerImage}",
-      "author": { "@type": "Organization", "name": "AmazonReach Team" }
+      "keywords": "${category}, Amazon FBA, US Market, ${title}" 
     }
     </script>
     <style>
