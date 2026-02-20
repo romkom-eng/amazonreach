@@ -71,11 +71,11 @@ app.use((req, res, next) => {
     if (req.originalUrl === '/api/stripe/webhook') {
         next();
     } else {
-        express.json()(req, res, next);
+        express.json({ limit: '10mb' })(req, res, next);
     }
 });
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Session configuration
 app.use(session({
