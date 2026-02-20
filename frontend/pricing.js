@@ -8,25 +8,23 @@
         ? 'http://localhost:3000'
         : 'https://amazonreach-production.up.railway.app';
 
-    let stripe = null;
-
-    // Initialize Stripe
-    async function initStripe() {
-        try {
-            const res = await fetch(`${BACKEND_URL}/api/stripe/config`);
-            const data = await res.json();
-            if (data.publishableKey) {
-                stripe = Stripe(data.publishableKey);
-            }
-        } catch (err) {
-            console.warn('Stripe config not available:', err.message);
+    // Get auth headers (JWT from localStorage)
+    function getAuthHeaders() {
+        const headers = { 'Content-Type': 'application/json' };
+        const token = localStorage.getItem('jwt_token');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
         }
+        return headers;
     }
 
     // Check if user is logged in
     async function checkAuth() {
         try {
-            const res = await fetch(`${BACKEND_URL}/api/auth/status`, { credentials: 'include' });
+            const res = await fetch(`${BACKEND_URL}/api/auth/status`, {
+                credentials: 'include',
+                headers: getAuthHeaders()
+            });
             const data = await res.json();
             return data.authenticated ? data : null;
         } catch {
@@ -48,15 +46,15 @@
             // Check auth first
             const auth = await checkAuth();
             if (!auth) {
-                // Not logged in — redirect to register with plan param
-                window.location.href = `/register.html?plan=${plan}`;
+                // Not logged in — redirect to login with plan param
+                window.location.href = `/login.html?plan=${plan}`;
                 return;
             }
 
             // Create checkout session
             const res = await fetch(`${BACKEND_URL}/api/stripe/create-checkout-session`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 credentials: 'include',
                 body: JSON.stringify({ plan })
             });
@@ -72,7 +70,7 @@
 
         } catch (error) {
             console.error('Checkout error:', error);
-            alert('Unable to start checkout. Please try again or contact support.');
+            alert('Unable to start checkout. Please try again or contact support.\n\nError: ' + error.message);
             if (btn) {
                 btn.disabled = false;
                 btn.textContent = originalText;
@@ -101,7 +99,6 @@
 
     // Initialize on DOM ready
     document.addEventListener('DOMContentLoaded', () => {
-        initStripe();
         bindPricingButtons();
     });
 })();

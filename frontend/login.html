@@ -223,6 +223,10 @@
         const form = document.getElementById('loginForm');
         const errorMessage = document.getElementById('error-message');
 
+        // Check for plan parameter (from pricing page redirect)
+        const urlParams = new URLSearchParams(window.location.search);
+        const pendingPlan = urlParams.get('plan');
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -246,13 +250,18 @@
                         if (data.token) {
                             localStorage.setItem('jwt_token', data.token);
                         }
-                        window.location.href = '/dashboard/dashboard.html';
+
+                        // If user came from pricing page, redirect to Stripe checkout
+                        if (pendingPlan && pendingPlan !== 'enterprise') {
+                            await startCheckoutAfterLogin(pendingPlan, data.token);
+                        } else {
+                            window.location.href = '/dashboard/dashboard.html';
+                        }
                     } else {
                         errorMessage.textContent = data.error || 'Login failed';
                         errorMessage.style.display = 'block';
                     }
                 } else {
-                    // Non-JSON response (likely 500 error page or 404)
                     const text = await response.text();
                     console.error('Login Failed:', response.status, text);
                     errorMessage.textContent = `Server Error (${response.status}). Please try again later.`;
@@ -260,11 +269,38 @@
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                // Show specific error for debugging (e.g. Failed to fetch = CORS or Network)
                 errorMessage.textContent = `Connection error: ${error.message}. Please check your internet.`;
                 errorMessage.style.display = 'block';
             }
         });
+
+        // Create Stripe checkout session after login
+        async function startCheckoutAfterLogin(plan, token) {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/stripe/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ plan })
+                });
+
+                const data = await res.json();
+
+                if (data.success && data.url) {
+                    window.location.href = data.url;
+                } else {
+                    console.error('Checkout error:', data.error);
+                    // Fallback to dashboard if checkout fails
+                    window.location.href = '/dashboard/dashboard.html';
+                }
+            } catch (err) {
+                console.error('Checkout redirect error:', err);
+                window.location.href = '/dashboard/dashboard.html';
+            }
+        }
     </script>
 </body>
 

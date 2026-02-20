@@ -94,6 +94,30 @@ app.use(session({
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/dashboard', express.static(path.join(__dirname, '../frontend/dashboard')));
 
+// JWT Auth Middleware — populate req.session.user from JWT if session is empty
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'nextgate-jwt-secret-change-in-production';
+
+app.use(async (req, res, next) => {
+    // Skip if session already has user
+    if (req.session && req.session.user) return next();
+
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        try {
+            const token = authHeader.split(' ')[1];
+            const decoded = jwt.verify(token, JWT_SECRET);
+            const user = await db.findUserById(decoded.id);
+            if (user) {
+                req.session.user = db.sanitizeUser(user);
+            }
+        } catch (err) {
+            // Invalid token — continue without auth
+        }
+    }
+    next();
+});
+
 // ========== Routes ==========
 app.use('/api/auth', authRoutes);
 app.use('/api/stripe', stripeRoutes);
