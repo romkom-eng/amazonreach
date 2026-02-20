@@ -352,9 +352,14 @@
                                 <input type="date" id="postDate">
                             </div>
                             <div class="form-group" style="flex: 2;">
-                                <label>Meta Description</label>
-                                <input type="text" id="postMeta" placeholder="SEO description...">
+                                <label>Target Keyword</label>
+                                <input type="text" id="postKeyword" placeholder="e.g. how to sell on amazon">
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Meta Description</label>
+                            <input type="text" id="postMeta" placeholder="SEO description...">
                         </div>
 
                         <div class="form-group">
@@ -509,6 +514,8 @@
                         <span class="status-badge ${p.status}">${p.status}</span>
                         <span>${p.category || ''}</span>
                         <span>${formatDate(p.updated_at || p.created_at)}</span>
+                        <span>👁️ ${p.views || 0} views</span>
+                        <span>🎯 ${p.target_keyword || 'No keyword'}</span>
                     </div>
                 </div>
             `).join('');
@@ -519,6 +526,7 @@
             document.getElementById('postTitle').value = '';
             document.getElementById('postCategory').value = 'Strategy';
             document.getElementById('postMeta').value = '';
+            document.getElementById('postKeyword').value = '';
 
             // Set default date to today's date in local time (YYYY-MM-DD)
             const today = new Date();
@@ -547,6 +555,7 @@
                     document.getElementById('postTitle').value = data.post.title || '';
                     document.getElementById('postCategory').value = data.post.category || 'Strategy';
                     document.getElementById('postMeta').value = data.post.meta_description || '';
+                    document.getElementById('postKeyword').value = data.post.target_keyword || '';
 
                     // Populate Date
                     if (data.post.created_at) {
@@ -578,6 +587,7 @@
             const title = document.getElementById('postTitle').value.trim();
             const category = document.getElementById('postCategory').value;
             const meta_description = document.getElementById('postMeta').value.trim();
+            const target_keyword = document.getElementById('postKeyword').value.trim();
             const dateInput = document.getElementById('postDate').value;
             const content = quill.root.innerHTML;
 
@@ -593,7 +603,7 @@
                 created_at = new Date(dateInput).toISOString();
             }
 
-            const body = { title, category, content, status, meta_description, created_at };
+            const body = { title, category, content, status, meta_description, created_at, target_keyword };
 
             try {
                 let res;

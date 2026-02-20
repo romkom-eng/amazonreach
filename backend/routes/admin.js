@@ -109,7 +109,7 @@ router.get('/blog/:id', async (req, res) => {
 // Create post
 router.post('/blog', async (req, res) => {
     try {
-        const { title, category, content, status, meta_description, created_at } = req.body;
+        const { title, category, content, status, meta_description, created_at, target_keyword } = req.body;
         if (!title) return res.status(400).json({ error: 'Title is required' });
 
         const slug = title.toLowerCase()
@@ -120,6 +120,7 @@ router.post('/blog', async (req, res) => {
             title, slug, category, content,
             status: status || 'draft',
             meta_description: meta_description || '',
+            target_keyword: target_keyword || '',
             created_at: created_at // Can be undefined, database.js handles fallback
         });
         res.json({ success: true, id: result.id, slug });
@@ -132,7 +133,7 @@ router.post('/blog', async (req, res) => {
 // Update post
 router.put('/blog/:id', async (req, res) => {
     try {
-        const { title, category, content, status, meta_description, created_at } = req.body;
+        const { title, category, content, status, meta_description, created_at, target_keyword } = req.body;
         const updates = {};
         if (title !== undefined) {
             updates.title = title;
@@ -143,6 +144,7 @@ router.put('/blog/:id', async (req, res) => {
         if (status !== undefined) updates.status = status;
         if (meta_description !== undefined) updates.meta_description = meta_description;
         if (created_at !== undefined) updates.created_at = created_at;
+        if (target_keyword !== undefined) updates.target_keyword = target_keyword;
 
         await db.updatePost(req.params.id, updates);
         res.json({ success: true });

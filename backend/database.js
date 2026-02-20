@@ -225,10 +225,23 @@ class Database {
             content: data.content || '',
             status: data.status || 'draft',
             meta_description: data.meta_description || '',
+            target_keyword: data.target_keyword || '',
+            views: 0,
             created_at: data.created_at || new Date().toISOString(),
             updated_at: new Date().toISOString()
         });
         return { id: docRef.id };
+    }
+
+    async incrementPostViews(postId) {
+        try {
+            const admin = require('firebase-admin');
+            await db.collection('blog_posts').doc(postId).update({
+                views: admin.firestore.FieldValue.increment(1)
+            });
+        } catch (error) {
+            console.error('Failed to increment views:', error);
+        }
     }
 
     async getPost(postId) {

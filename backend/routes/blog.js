@@ -34,9 +34,12 @@ router.get('/posts/:slug', async (req, res) => {
             return res.status(404).json({ success: false, error: 'Post not found' });
         }
 
+        // Increment view count since it was read by a user
+        await db.incrementPostViews(post.id);
+
         res.json({ success: true, post });
     } catch (error) {
-        console.error('Public Blog API Error (Single):', error);
+        console.error('Fetch post error:', error);
         res.status(500).json({ success: false, error: 'Failed to fetch post' });
     }
 });
