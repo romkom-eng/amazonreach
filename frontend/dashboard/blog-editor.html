@@ -139,7 +139,9 @@
         }
 
         .ql-editor {
-            color: #e2e8f0;
+            background-color: #ffffff;
+            color: #1e293b;
+            border-radius: 0 0 8px 8px;
             font-size: 1rem;
             line-height: 1.7;
             min-height: 300px;
@@ -335,8 +337,8 @@
                             <input type="text" id="postTitle" placeholder="Enter post title...">
                         </div>
 
-                        <div class="row-2">
-                            <div class="form-group">
+                        <div class="row-3" style="display: flex; gap: 16px;">
+                            <div class="form-group" style="flex: 1;">
                                 <label>Category</label>
                                 <select id="postCategory">
                                     <option value="Logistics">📦 Logistics</option>
@@ -345,7 +347,11 @@
                                     <option value="Strategy">🎯 Strategy</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Published Date</label>
+                                <input type="date" id="postDate">
+                            </div>
+                            <div class="form-group" style="flex: 2;">
                                 <label>Meta Description</label>
                                 <input type="text" id="postMeta" placeholder="SEO description...">
                             </div>
@@ -513,6 +519,14 @@
             document.getElementById('postTitle').value = '';
             document.getElementById('postCategory').value = 'Strategy';
             document.getElementById('postMeta').value = '';
+
+            // Set default date to today's date in local time (YYYY-MM-DD)
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('postDate').value = `${year}-${month}-${day}`;
+
             quill.setContents([]);
             document.getElementById('editorCard').style.display = '';
             document.getElementById('emptyEditor').style.display = 'none';
@@ -533,6 +547,15 @@
                     document.getElementById('postTitle').value = data.post.title || '';
                     document.getElementById('postCategory').value = data.post.category || 'Strategy';
                     document.getElementById('postMeta').value = data.post.meta_description || '';
+
+                    // Populate Date
+                    if (data.post.created_at) {
+                        const d = new Date(data.post.created_at);
+                        const year = d.getFullYear();
+                        const month = String(d.getMonth() + 1).padStart(2, '0');
+                        const day = String(d.getDate()).padStart(2, '0');
+                        document.getElementById('postDate').value = `${year}-${month}-${day}`;
+                    }
 
                     // Set content — try delta first, fall back to HTML
                     if (data.post.content) {
@@ -555,6 +578,7 @@
             const title = document.getElementById('postTitle').value.trim();
             const category = document.getElementById('postCategory').value;
             const meta_description = document.getElementById('postMeta').value.trim();
+            const dateInput = document.getElementById('postDate').value;
             const content = quill.root.innerHTML;
 
             if (!title) {
@@ -562,7 +586,14 @@
                 return;
             }
 
-            const body = { title, category, content, status, meta_description };
+            // Keep the selected date, otherwise fallback to now
+            let created_at = new Date().toISOString();
+            if (dateInput) {
+                // Parse date relative to timezone
+                created_at = new Date(dateInput).toISOString();
+            }
+
+            const body = { title, category, content, status, meta_description, created_at };
 
             try {
                 let res;

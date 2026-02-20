@@ -225,7 +225,7 @@ class Database {
             content: data.content || '',
             status: data.status || 'draft',
             meta_description: data.meta_description || '',
-            created_at: new Date().toISOString(),
+            created_at: data.created_at || new Date().toISOString(),
             updated_at: new Date().toISOString()
         });
         return { id: docRef.id };
