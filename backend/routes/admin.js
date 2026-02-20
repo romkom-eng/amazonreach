@@ -82,5 +82,82 @@ router.get('/audit-logs', async (req, res) => {
         res.status(500).json({ success: false, error: 'Failed to fetch logs' });
     }
 });
+// ========== Blog Management ==========
+
+// List all blog posts
+router.get('/blog', async (req, res) => {
+    try {
+        const posts = await db.getAllPosts();
+        res.json({ success: true, posts });
+    } catch (error) {
+        console.error('Blog list error:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch posts' });
+    }
+});
+
+// Get single post
+router.get('/blog/:id', async (req, res) => {
+    try {
+        const post = await db.getPost(req.params.id);
+        if (!post) return res.status(404).json({ error: 'Post not found' });
+        res.json({ success: true, post });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Failed to fetch post' });
+    }
+});
+
+// Create post
+router.post('/blog', async (req, res) => {
+    try {
+        const { title, category, content, status, meta_description } = req.body;
+        if (!title) return res.status(400).json({ error: 'Title is required' });
+
+        const slug = title.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+
+        const result = await db.createPost({
+            title, slug, category, content,
+            status: status || 'draft',
+            meta_description: meta_description || ''
+        });
+        res.json({ success: true, id: result.id, slug });
+    } catch (error) {
+        console.error('Blog create error:', error);
+        res.status(500).json({ success: false, error: 'Failed to create post' });
+    }
+});
+
+// Update post
+router.put('/blog/:id', async (req, res) => {
+    try {
+        const { title, category, content, status, meta_description } = req.body;
+        const updates = {};
+        if (title !== undefined) {
+            updates.title = title;
+            updates.slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+        if (category !== undefined) updates.category = category;
+        if (content !== undefined) updates.content = content;
+        if (status !== undefined) updates.status = status;
+        if (meta_description !== undefined) updates.meta_description = meta_description;
+
+        await db.updatePost(req.params.id, updates);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Blog update error:', error);
+        res.status(500).json({ success: false, error: 'Failed to update post' });
+    }
+});
+
+// Delete post
+router.delete('/blog/:id', async (req, res) => {
+    try {
+        await db.deletePost(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Failed to delete post' });
+    }
+});
 
 module.exports = router;

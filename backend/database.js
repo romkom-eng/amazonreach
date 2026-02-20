@@ -204,16 +204,55 @@ class Database {
     }
 
     async changePassword(userId, newPassword) {
+        const bcrypt = require('bcryptjs');
         const password_hash = await bcrypt.hash(newPassword, 10);
-
         const password_expires_at = new Date();
         password_expires_at.setDate(password_expires_at.getDate() + 365);
-
         return await this.updateUser(userId, {
             password_hash,
             password_expires_at: password_expires_at.toISOString(),
             last_password_change: new Date().toISOString()
         });
+    }
+
+    // ========== Blog Posts ==========
+
+    async createPost(data) {
+        const docRef = await db.collection('blog_posts').add({
+            title: data.title,
+            slug: data.slug,
+            category: data.category || 'Strategy',
+            content: data.content || '',
+            status: data.status || 'draft',
+            meta_description: data.meta_description || '',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        });
+        return { id: docRef.id };
+    }
+
+    async getPost(postId) {
+        const doc = await db.collection('blog_posts').doc(postId).get();
+        if (!doc.exists) return null;
+        return { id: doc.id, ...doc.data() };
+    }
+
+    async getAllPosts() {
+        const snapshot = await db.collection('blog_posts')
+            .orderBy('created_at', 'desc')
+            .get();
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+    async updatePost(postId, data) {
+        data.updated_at = new Date().toISOString();
+        await db.collection('blog_posts').doc(postId).update(data);
+        return { id: postId, ...data };
+    }
+
+    async deletePost(postId) {
+        await db.collection('blog_posts').doc(postId).delete();
+        return { success: true };
     }
 }
 

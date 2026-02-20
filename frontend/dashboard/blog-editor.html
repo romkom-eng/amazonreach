@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Editor - AmazonReach</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <style>
+        .blog-layout {
+            display: flex;
+            gap: 24px;
+        }
+
+        .post-list-panel {
+            width: 320px;
+            flex-shrink: 0;
+        }
+
+        .editor-panel {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .post-item {
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .post-item:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .post-item.active {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .post-item-title {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .post-item-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.draft {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+        }
+
+        .status-badge.published {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .editor-form .form-group {
+            margin-bottom: 16px;
+        }
+
+        .editor-form label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .editor-form input,
+        .editor-form select,
+        .editor-form textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .editor-form input:focus,
+        .editor-form select:focus,
+        .editor-form textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .editor-form select option {
+            background: #1e293b;
+            color: #fff;
+        }
+
+        /* Quill overrides */
+        .ql-toolbar.ql-snow {
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .ql-container.ql-snow {
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            border-radius: 0 0 8px 8px;
+            min-height: 300px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .ql-editor {
+            color: #e2e8f0;
+            font-size: 1rem;
+            line-height: 1.7;
+            min-height: 300px;
+        }
+
+        .ql-editor.ql-blank::before {
+            color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .ql-snow .ql-stroke {
+            stroke: #94a3b8 !important;
+        }
+
+        .ql-snow .ql-fill {
+            fill: #94a3b8 !important;
+        }
+
+        .ql-snow .ql-picker-label {
+            color: #94a3b8 !important;
+        }
+
+        .ql-snow .ql-picker-options {
+            background: #1e293b !important;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .btn-editor {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-editor:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-editor:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-save {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn-publish {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            margin-left: auto;
+        }
+
+        .btn-new {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-new:hover {
+            opacity: 0.9;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 12px 20px;
+            background: #10b981;
+            color: #fff;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 999;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 40px 20px;
+            font-size: 0.9rem;
+        }
+
+        .row-2 {
+            display: flex;
+            gap: 16px;
+        }
+
+        .row-2 .form-group {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <a href="https://amazonreach.pages.dev"
+                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+                <span>🚀</span> AmazonReach
+            </a>
+        </div>
+
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <span>📊</span> Overview
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="inventory.html" class="nav-link">
+                    <span>📦</span> Inventory
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="analytics.html" class="nav-link">
+                    <span>📈</span> Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="blog-editor.html" class="nav-link active">
+                    <span>📝</span> Blog
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <span>⚙️</span> Settings
+                </a>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <div class="avatar">A</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">Admin</div>
+                <div class="user-role" id="userRole">Admin</div>
+            </div>
+            <button class="btn-logout" id="logoutBtn" title="Logout">🚪</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1 class="page-title">📝 Blog Manager</h1>
+        </header>
+
+        <div class="blog-layout">
+            <!-- Post List -->
+            <div class="post-list-panel">
+                <button class="btn-new" onclick="newPost()">+ New Post</button>
+                <div class="post-list" id="postList">
+                    <div class="empty-state">Loading posts...</div>
+                </div>
+            </div>
+
+            <!-- Editor -->
+            <div class="editor-panel">
+                <div class="card" id="editorCard" style="display: none;">
+                    <div class="editor-form">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="postTitle" placeholder="Enter post title...">
+                        </div>
+
+                        <div class="row-2">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="postCategory">
+                                    <option value="Logistics">📦 Logistics</option>
+                                    <option value="Marketing">📢 Marketing</option>
+                                    <option value="Trends">📊 Trends</option>
+                                    <option value="Strategy">🎯 Strategy</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Meta Description</label>
+                                <input type="text" id="postMeta" placeholder="SEO description...">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Content</label>
+                            <div id="editor"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn-editor btn-save" onclick="savePost('draft')">💾 Save Draft</button>
+                            <button class="btn-editor btn-publish" onclick="savePost('published')">🚀 Publish</button>
+                            <button class="btn-editor btn-delete" id="deleteBtn" onclick="deletePost()"
+                                style="display: none;">🗑️ Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" id="emptyEditor">
+                    <div class="empty-state">
+                        Select a post to edit or click <strong>+ New Post</strong> to create one.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        let quill;
+        let currentPostId = null;
+        let posts = [];
+
+        // Initialize Quill editor
+        document.addEventListener('DOMContentLoaded', () => {
+            quill = new Quill('#editor', {
+                theme: 'snow',
+                placeholder: 'Write your blog post here...',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block'],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+
+            loadPosts();
+        });
+
+        function getHeaders() {
+            const headers = { 'Content-Type': 'application/json' };
+            const token = localStorage.getItem('jwt_token');
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            return headers;
+        }
+
+        async function loadPosts() {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/admin/blog`, {
+                    headers: getHeaders(),
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    posts = data.posts;
+                    renderPostList();
+                } else {
+                    document.getElementById('postList').innerHTML =
+                        '<div class="empty-state">⚠️ Could not load posts. Are you an admin?</div>';
+                }
+            } catch (err) {
+                console.error('Load posts error:', err);
+                document.getElementById('postList').innerHTML =
+                    '<div class="empty-state">Failed to connect to server.</div>';
+            }
+        }
+
+        function renderPostList() {
+            const list = document.getElementById('postList');
+
+            if (posts.length === 0) {
+                list.innerHTML = '<div class="empty-state">No posts yet. Create your first one!</div>';
+                return;
+            }
+
+            list.innerHTML = posts.map(p => `
+                <div class="post-item ${p.id === currentPostId ? 'active' : ''}"
+                     onclick="selectPost('${p.id}')">
+                    <div class="post-item-title">${escapeHtml(p.title)}</div>
+                    <div class="post-item-meta">
+                        <span class="status-badge ${p.status}">${p.status}</span>
+                        <span>${p.category || ''}</span>
+                        <span>${formatDate(p.updated_at || p.created_at)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function newPost() {
+            currentPostId = null;
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postCategory').value = 'Strategy';
+            document.getElementById('postMeta').value = '';
+            quill.setContents([]);
+            document.getElementById('editorCard').style.display = '';
+            document.getElementById('emptyEditor').style.display = 'none';
+            document.getElementById('deleteBtn').style.display = 'none';
+            renderPostList();
+        }
+
+        async function selectPost(id) {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/admin/blog/${id}`, {
+                    headers: getHeaders(),
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+                if (data.success && data.post) {
+                    currentPostId = id;
+                    document.getElementById('postTitle').value = data.post.title || '';
+                    document.getElementById('postCategory').value = data.post.category || 'Strategy';
+                    document.getElementById('postMeta').value = data.post.meta_description || '';
+
+                    // Set content — try delta first, fall back to HTML
+                    if (data.post.content) {
+                        quill.root.innerHTML = data.post.content;
+                    } else {
+                        quill.setContents([]);
+                    }
+
+                    document.getElementById('editorCard').style.display = '';
+                    document.getElementById('emptyEditor').style.display = 'none';
+                    document.getElementById('deleteBtn').style.display = '';
+                    renderPostList();
+                }
+            } catch (err) {
+                console.error('Load post error:', err);
+            }
+        }
+
+        async function savePost(status) {
+            const title = document.getElementById('postTitle').value.trim();
+            const category = document.getElementById('postCategory').value;
+            const meta_description = document.getElementById('postMeta').value.trim();
+            const content = quill.root.innerHTML;
+
+            if (!title) {
+                showToast('Title is required', '#ef4444');
+                return;
+            }
+
+            const body = { title, category, content, status, meta_description };
+
+            try {
+                let res;
+                if (currentPostId) {
+                    res = await fetch(`${BACKEND_URL}/api/admin/blog/${currentPostId}`, {
+                        method: 'PUT',
+                        headers: getHeaders(),
+                        credentials: 'include',
+                        body: JSON.stringify(body)
+                    });
+                } else {
+                    res = await fetch(`${BACKEND_URL}/api/admin/blog`, {
+                        method: 'POST',
+                        headers: getHeaders(),
+                        credentials: 'include',
+                        body: JSON.stringify(body)
+                    });
+                }
+
+                const data = await res.json();
+
+                if (data.success) {
+                    if (data.id) currentPostId = data.id;
+                    showToast(status === 'published' ? '🚀 Published!' : '💾 Draft saved!');
+                    await loadPosts();
+                    document.getElementById('deleteBtn').style.display = '';
+                } else {
+                    showToast('Error: ' + (data.error || 'Save failed'), '#ef4444');
+                }
+            } catch (err) {
+                console.error('Save error:', err);
+                showToast('Failed to save post', '#ef4444');
+            }
+        }
+
+        async function deletePost() {
+            if (!currentPostId) return;
+            if (!confirm('Delete this post permanently?')) return;
+
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/admin/blog/${currentPostId}`, {
+                    method: 'DELETE',
+                    headers: getHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    showToast('🗑️ Post deleted');
+                    currentPostId = null;
+                    document.getElementById('editorCard').style.display = 'none';
+                    document.getElementById('emptyEditor').style.display = '';
+                    await loadPosts();
+                }
+            } catch (err) {
+                showToast('Failed to delete', '#ef4444');
+            }
+        }
+
+        function showToast(msg, bg = '#10b981') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.background = bg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+    </script>
+</body>
+
+</html>
