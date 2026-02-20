@@ -269,7 +269,12 @@ router.get('/status', (req, res) => {
     if (req.session.user) {
         res.json({
             authenticated: true,
-            user: req.session.user
+            user: req.session.user,
+            subscription: {
+                plan: req.session.user.subscription_plan || 'free_trial',
+                status: req.session.user.subscription_status || 'active',
+                stripe_customer_id: req.session.user.stripe_customer_id || null
+            }
         });
     } else {
         res.json({ authenticated: false });

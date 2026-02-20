@@ -13,7 +13,7 @@ const db = require('../database');
 const PLANS = {
     basic: {
         name: 'Basic',
-        price: 29,
+        price: 49,
         priceId: process.env.STRIPE_PRICE_ID_BASIC || 'price_basic',
         features: [
             'Up to 100 orders per month',
@@ -51,6 +51,13 @@ const PLANS = {
 };
 
 // ========== Routes ==========
+
+// Get Stripe publishable key (public endpoint)
+router.get('/config', (req, res) => {
+    res.json({
+        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || ''
+    });
+});
 
 // Get available plans
 router.get('/plans', (req, res) => {
@@ -104,8 +111,8 @@ router.post('/create-checkout-session', async (req, res) => {
                 }
             ],
             mode: 'subscription',
-            success_url: `${process.env.BASE_URL || 'http://localhost:3000'}/dashboard/dashboard.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.BASE_URL || 'http://localhost:3000'}/subscribe?canceled=true`,
+            success_url: `${process.env.BASE_URL || 'http://localhost:3000'}/subscribe-success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.BASE_URL || 'http://localhost:3000'}/subscribe-cancel.html`,
             metadata: {
                 userId: user.id.toString(),
                 plan: plan
@@ -232,7 +239,7 @@ async function handleCheckoutCompleted(session) {
 
 async function handleSubscriptionUpdated(subscription) {
     const customerId = subscription.customer;
-    const user = await db.findUserByEmail(customerId); // This needs adjustment
+    const user = await db.findUserByStripeCustomerId(customerId);
 
     if (user) {
         await db.updateSubscription(user.id, {
@@ -255,7 +262,7 @@ async function handleSubscriptionUpdated(subscription) {
 
 async function handleSubscriptionDeleted(subscription) {
     const customerId = subscription.customer;
-    const user = await db.findUserByEmail(customerId); // This needs adjustment
+    const user = await db.findUserByStripeCustomerId(customerId);
 
     if (user) {
         await db.updateUser(user.id, {

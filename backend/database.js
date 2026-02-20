@@ -93,6 +93,17 @@ class Database {
         return this.findUserById(userId);
     }
 
+    async findUserByStripeCustomerId(customerId) {
+        const snapshot = await db.collection(USERS_COLLECTION)
+            .where('stripe_customer_id', '==', customerId)
+            .limit(1)
+            .get();
+        if (snapshot.empty) return null;
+        const doc = snapshot.docs[0];
+        return { id: doc.id, ...doc.data() };
+    }
+
+
     async incrementFailedLogins(userId) {
         const user = await this.findUserById(userId);
         if (!user) return;

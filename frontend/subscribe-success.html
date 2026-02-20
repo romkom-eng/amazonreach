@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Confirmed - AmazonReach</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .success-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a0f1c 0%, #1a1f3c 50%, #0a0f1c 100%);
+            padding: 2rem;
+        }
+
+        .success-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+            animation: scaleIn 0.5s ease-out 0.3s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-card h1 {
+            color: #fff;
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .success-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .success-features {
+            text-align: left;
+            margin: 1.5rem 0 2rem;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .success-features li {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+        }
+
+        .success-features li::before {
+            content: '✓ ';
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .success-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .success-actions .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-dashboard {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-dashboard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-explore {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-explore:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="success-page">
+        <div class="success-card">
+            <div class="success-icon">✓</div>
+            <h1>Welcome to AmazonReach!</h1>
+            <div class="plan-badge" id="planBadge">Pro Plan</div>
+            <p>Your subscription is now active. You have full access to all the features in your plan.</p>
+
+            <ul class="success-features" id="featuresList">
+                <li>Advanced analytics & forecasting</li>
+                <li>Priority support</li>
+                <li>Unlimited integrations</li>
+                <li>AI inventory optimization</li>
+            </ul>
+
+            <div class="success-actions">
+                <a href="/dashboard/dashboard.html" class="btn btn-dashboard">Go to Dashboard →</a>
+                <a href="/" class="btn btn-explore">Back to Homepage</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check for session_id in URL params (from Stripe redirect)
+        const params = new URLSearchParams(window.location.search);
+        const sessionId = params.get('session_id');
+
+        if (sessionId) {
+            console.log('Checkout session:', sessionId);
+        }
+    </script>
+</body>
+
+</html>

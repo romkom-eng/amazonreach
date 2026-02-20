@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Cancelled - AmazonReach</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .cancel-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a0f1c 0%, #1a1f3c 50%, #0a0f1c 100%);
+            padding: 2rem;
+        }
+
+        .cancel-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cancel-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+        }
+
+        .cancel-card h1 {
+            color: #fff;
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .cancel-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .cancel-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .cancel-actions .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-pricing {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-pricing:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-contact {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-contact:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+        .help-text {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cancel-page">
+        <div class="cancel-card">
+            <div class="cancel-icon">🔙</div>
+            <h1>Checkout Cancelled</h1>
+            <p>No worries! Your checkout was cancelled and you haven't been charged. You can return to the pricing page
+                to choose a plan anytime.</p>
+
+            <div class="cancel-actions">
+                <a href="/#pricing" class="btn btn-pricing">View Pricing Plans</a>
+                <a href="/#contact" class="btn btn-contact">Contact Support</a>
+            </div>
+
+            <p class="help-text">
+                Have questions? We're here to help.<br>
+                Email us at <strong>support@amazonreach.com</strong>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

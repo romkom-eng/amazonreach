@@ -283,7 +283,7 @@
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <h3>Starter</h3>
+                        <h3>Basic</h3>
                         <div class="pricing-price">
                             <span class="currency">$</span>
                             <span class="amount">49</span>
@@ -296,7 +296,7 @@
                         <li>✓ Email support</li>
                         <li>✓ 1 marketplace integration</li>
                     </ul>
-                    <a href="/register.html" class="btn btn-outline">Get Started</a>
+                    <button data-plan="basic" class="btn btn-outline">Get Started</button>
                 </div>
 
                 <div class="pricing-card featured">
@@ -316,14 +316,16 @@
                         <li>✓ Unlimited integrations</li>
                         <li>✓ AI inventory optimization</li>
                     </ul>
-                    <a href="/register.html" class="btn btn-primary">Get Started</a>
+                    <button data-plan="pro" class="btn btn-primary">Get Started</button>
                 </div>
 
                 <div class="pricing-card">
                     <div class="pricing-header">
                         <h3>Enterprise</h3>
                         <div class="pricing-price">
-                            <span class="amount">Custom</span>
+                            <span class="currency">$</span>
+                            <span class="amount">299</span>
+                            <span class="period">/month</span>
                         </div>
                     </div>
                     <ul class="pricing-features">
@@ -333,7 +335,7 @@
                         <li>✓ White-label options</li>
                         <li>✓ SLA guarantees</li>
                     </ul>
-                    <a href="#contact" class="btn btn-outline">Contact Sales</a>
+                    <button data-plan="enterprise" class="btn btn-outline">Contact Sales</button>
                 </div>
             </div>
         </div>
@@ -481,8 +483,11 @@
         </div>
     </div>
 
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="script.js"></script>
+    <script src="pricing.js"></script>
     <script src="modal.js"></script>
+
 </body>
 
 </html>
