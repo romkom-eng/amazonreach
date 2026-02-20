@@ -17,7 +17,7 @@ function authorize(allowedRoles = []) {
         }
 
         // 2. Check if user has permission
-        if (allowedRoles.length > 0 && !allowedRoles.includes(req.session.user.role)) {
+        if (allowedRoles.length > 0 && !allowedRoles.includes(req.session.user.role?.trim())) {
             // Log unauthorized access attempt
             await db.createAuditLog({
                 user_id: req.session.user.id,

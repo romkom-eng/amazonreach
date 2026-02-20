@@ -247,19 +247,24 @@ class Database {
     async getPublishedPosts() {
         const snapshot = await db.collection('blog_posts')
             .where('status', '==', 'published')
-            .orderBy('created_at', 'desc')
             .get();
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // Sort in memory to avoid needing a Firestore composite index
+        const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return posts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
 
     async getPostBySlug(slug) {
         const snapshot = await db.collection('blog_posts')
             .where('slug', '==', slug)
-            .where('status', '==', 'published')
             .limit(1)
             .get();
+
         if (snapshot.empty) return null;
-        return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+
+        const postData = snapshot.docs[0].data();
+        if (postData.status !== 'published') return null;
+
+        return { id: snapshot.docs[0].id, ...postData };
     }
 
     async updatePost(postId, data) {
