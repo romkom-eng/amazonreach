@@ -134,6 +134,88 @@ router.post('/create-checkout-session', async (req, res) => {
     }
 });
 
+// Guest checkout (no auth required)
+router.post('/guest-checkout', async (req, res) => {
+    try {
+        const { plan, name, email, phone } = req.body;
+
+        if (!plan || !PLANS[plan]) {
+            return res.status(400).json({ error: 'Invalid plan selected' });
+        }
+
+        if (!email || !name) {
+            return res.status(400).json({ error: 'Name and email are required' });
+        }
+
+        // Check if user already exists
+        let user = await db.findUserByEmail(email);
+        let customerId;
+
+        if (user && user.stripe_customer_id) {
+            customerId = user.stripe_customer_id;
+        } else {
+            // Create Stripe customer
+            const customer = await stripe.customers.create({
+                email,
+                name,
+                phone: phone || undefined,
+                metadata: { source: 'guest_checkout' }
+            });
+            customerId = customer.id;
+
+            if (user) {
+                // Update existing user with Stripe customer ID
+                await db.updateUser(user.id, {
+                    stripe_customer_id: customerId,
+                    phone: phone || user.phone
+                });
+            } else {
+                // Create guest user in Firebase
+                await db.createGuestUser({
+                    email,
+                    name,
+                    phone: phone || '',
+                    stripe_customer_id: customerId,
+                    is_guest: true
+                });
+            }
+        }
+
+        // Create checkout session
+        const session = await stripe.checkout.sessions.create({
+            customer: customerId,
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price: PLANS[plan].priceId,
+                    quantity: 1
+                }
+            ],
+            mode: 'subscription',
+            success_url: `${process.env.BASE_URL || 'http://localhost:3000'}/subscribe-success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.BASE_URL || 'http://localhost:3000'}/subscribe-cancel.html`,
+            metadata: {
+                email,
+                plan,
+                source: 'guest_checkout'
+            }
+        });
+
+        res.json({
+            success: true,
+            sessionId: session.id,
+            url: session.url
+        });
+
+    } catch (error) {
+        console.error('Guest checkout error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to create guest checkout session'
+        });
+    }
+});
+
 // Create customer portal session
 router.post('/create-portal-session', async (req, res) => {
     try {

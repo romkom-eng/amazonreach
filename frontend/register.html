@@ -270,6 +270,10 @@
         const successMessage = document.getElementById('success-message');
         const passwordInput = document.getElementById('password');
 
+        // Check for plan parameter (from checkout-choice page)
+        const urlParams = new URLSearchParams(window.location.search);
+        const pendingPlan = urlParams.get('plan');
+
         // Real-time Checklist Logic (Strict Mode)
         passwordInput.addEventListener('input', () => {
             const val = passwordInput.value;
@@ -330,7 +334,7 @@
                     body: JSON.stringify({
                         email,
                         password,
-                        company_name: companyName, // Map to backend field
+                        company_name: companyName,
                         name: companyName || 'User'
                     })
                 });
@@ -344,16 +348,21 @@
 
                     // Google Analytics: Track Sign-up Conversion
                     if (typeof gtag !== 'undefined') {
-                        gtag('event', 'sign_up', {
-                            method: 'Email'
-                        });
+                        gtag('event', 'sign_up', { method: 'Email' });
                     }
 
-                    successMessage.textContent = 'Account created! Redirecting to dashboard...';
-                    successMessage.style.display = 'block';
-                    setTimeout(() => {
-                        window.location.href = '/dashboard/dashboard.html';
-                    }, 2000);
+                    // If user came from pricing page, redirect to Stripe checkout
+                    if (pendingPlan && pendingPlan !== 'enterprise' && data.token) {
+                        successMessage.textContent = 'Account created! Redirecting to payment...';
+                        successMessage.style.display = 'block';
+                        await startCheckoutAfterRegister(pendingPlan, data.token);
+                    } else {
+                        successMessage.textContent = 'Account created! Redirecting to dashboard...';
+                        successMessage.style.display = 'block';
+                        setTimeout(() => {
+                            window.location.href = '/dashboard/dashboard.html';
+                        }, 2000);
+                    }
                 } else {
                     errorMessage.textContent = data.error || 'Registration failed';
                     errorMessage.style.display = 'block';
@@ -364,6 +373,33 @@
                 errorMessage.style.display = 'block';
             }
         });
+
+        // Create Stripe checkout session after registration
+        async function startCheckoutAfterRegister(plan, token) {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/stripe/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ plan })
+                });
+
+                const data = await res.json();
+
+                if (data.success && data.url) {
+                    window.location.href = data.url;
+                } else {
+                    console.error('Checkout redirect error:', data.error);
+                    window.location.href = '/dashboard/dashboard.html';
+                }
+            } catch (err) {
+                console.error('Checkout redirect error:', err);
+                window.location.href = '/dashboard/dashboard.html';
+            }
+        }
     </script>
 </body>
 

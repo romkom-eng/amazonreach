@@ -32,7 +32,7 @@
         }
     }
 
-    // Create Stripe Checkout Session
+    // Create Stripe Checkout Session (for logged-in users)
     async function startCheckout(plan) {
         const btn = document.querySelector(`[data-plan="${plan}"]`);
         const originalText = btn ? btn.textContent : '';
@@ -46,12 +46,12 @@
             // Check auth first
             const auth = await checkAuth();
             if (!auth) {
-                // Not logged in — redirect to login with plan param
-                window.location.href = `/login.html?plan=${plan}`;
+                // Not logged in — redirect to choice page
+                window.location.href = `/checkout-choice.html?plan=${plan}`;
                 return;
             }
 
-            // Create checkout session
+            // Logged in — go directly to Stripe
             const res = await fetch(`${BACKEND_URL}/api/stripe/create-checkout-session`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
@@ -62,7 +62,6 @@
             const data = await res.json();
 
             if (data.success && data.url) {
-                // Redirect to Stripe Checkout
                 window.location.href = data.url;
             } else {
                 throw new Error(data.error || 'Failed to create checkout session');
@@ -70,7 +69,7 @@
 
         } catch (error) {
             console.error('Checkout error:', error);
-            alert('Unable to start checkout. Please try again or contact support.\n\nError: ' + error.message);
+            alert('Unable to start checkout. Please try again or contact support.');
             if (btn) {
                 btn.disabled = false;
                 btn.textContent = originalText;
@@ -85,7 +84,6 @@
                 e.preventDefault();
                 const plan = btn.getAttribute('data-plan');
                 if (plan === 'enterprise') {
-                    // Enterprise — scroll to contact form
                     const contactSection = document.getElementById('contact');
                     if (contactSection) {
                         contactSection.scrollIntoView({ behavior: 'smooth' });

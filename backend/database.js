@@ -103,6 +103,20 @@ class Database {
         return { id: doc.id, ...doc.data() };
     }
 
+    async createGuestUser(data) {
+        const docRef = await db.collection(USERS_COLLECTION).add({
+            email: data.email,
+            name: data.name,
+            phone: data.phone || '',
+            stripe_customer_id: data.stripe_customer_id || '',
+            is_guest: true,
+            subscription_status: 'none',
+            subscription_plan: 'none',
+            created_at: new Date().toISOString()
+        });
+        return { id: docRef.id, ...data };
+    }
+
 
     async incrementFailedLogins(userId) {
         const user = await this.findUserById(userId);
