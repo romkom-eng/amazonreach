@@ -125,6 +125,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/amazon', amazonRoutes); // Add Amazon Routes
 app.use('/contact-form', contactRoutes); // Add Contact Route
 app.use('/api/ai', require('./routes/ai'));
+app.use('/api/blog', require('./routes/blog')); // Add Public Blog Route
 
 // Landing page
 app.get('/', (req, res) => {

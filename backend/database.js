@@ -244,6 +244,24 @@ class Database {
         return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     }
 
+    async getPublishedPosts() {
+        const snapshot = await db.collection('blog_posts')
+            .where('status', '==', 'published')
+            .orderBy('created_at', 'desc')
+            .get();
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+    async getPostBySlug(slug) {
+        const snapshot = await db.collection('blog_posts')
+            .where('slug', '==', slug)
+            .where('status', '==', 'published')
+            .limit(1)
+            .get();
+        if (snapshot.empty) return null;
+        return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+    }
+
     async updatePost(postId, data) {
         data.updated_at = new Date().toISOString();
         await db.collection('blog_posts').doc(postId).update(data);

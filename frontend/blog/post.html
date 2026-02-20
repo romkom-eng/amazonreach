@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading... - AmazonReach Blog</title>
+    <meta name="description" content="Expert analysis to help you scale your Amazon business globally.">
+    <link rel="stylesheet" href="/styles.css">
+
+    <style>
+        .post-header {
+            padding: 120px 0 60px;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/blog/strategy-header.png');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            color: white;
+            transition: background-image 0.5s ease;
+        }
+
+        .post-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .post-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: white;
+            max-width: 900px;
+            margin: 0 auto 24px;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .post-meta {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .post-content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            font-size: 18px;
+            color: #334155;
+            line-height: 1.8;
+        }
+
+        .post-content h1,
+        .post-content h2,
+        .post-content h3 {
+            color: var(--dark);
+            margin: 2em 0 1em;
+            font-weight: 700;
+        }
+
+        .post-content h1 {
+            font-size: 2.2em;
+        }
+
+        .post-content h2 {
+            font-size: 1.8em;
+        }
+
+        .post-content h3 {
+            font-size: 1.4em;
+        }
+
+        .post-content p {
+            margin-bottom: 1.5em;
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 1.5em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.5em;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1.5em 0;
+        }
+
+        .post-content blockquote {
+            border-left: 4px solid var(--primary);
+            padding-left: 20px;
+            margin: 32px 0;
+            font-style: italic;
+            color: var(--dark);
+            font-weight: 500;
+            background: #F8FAFC;
+            padding: 24px;
+            border-radius: 0 12px 12px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/"
+                    style="text-decoration: none; display: flex; align-items: center; gap: 12px; color: inherit;">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">AmazonReach</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="/#features">Features</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/blog/">Blog</a>
+                <a href="/reviews.html">Reviews</a>
+                <a href="/#about">About</a>
+                <a href="/login.html" class="nav-login">Sign In</a>
+                <a href="/register.html" class="nav-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <header class="post-header" id="postHeader">
+        <div class="container" id="headerContent" style="opacity: 0; transition: opacity 0.3s ease;">
+            <span class="post-tag" id="postCategory">Loading...</span>
+            <h1 class="post-title" id="postTitle">Loading Article...</h1>
+            <div class="post-meta" id="postMeta">
+                Published on ...
+            </div>
+        </div>
+    </header>
+
+    <article class="post-content" id="postContent">
+        <div style="text-align: center; padding: 40px; color: #94a3b8;">
+            Loading article content...
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">🚀</span>
+                        <span class="logo-text">AmazonReach</span>
+                    </div>
+                    <p>Scale your Amazon business globally</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="/#features">Features</a>
+                        <a href="/#pricing">Pricing</a>
+                        <a href="/dashboard/dashboard.html">Dashboard</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="/#about">About</a>
+                        <a href="/blog/">Blog</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AmazonReach. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+
+            if (!slug) {
+                window.location.href = '/blog/';
+                return;
+            }
+
+            try {
+                const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:3000'
+                    : 'https://amazonreach-production.up.railway.app';
+
+                const res = await fetch(`${BACKEND_URL}/api/blog/posts/${slug}`);
+                const data = await res.json();
+
+                if (data.success && data.post) {
+                    const post = data.post;
+                    const date = new Date(post.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+
+                    // Update Document Head
+                    document.title = `${post.title} - AmazonReach Blog`;
+                    if (post.meta_description) {
+                        const metaDesc = document.querySelector('meta[name="description"]');
+                        if (metaDesc) metaDesc.content = post.meta_description;
+                    }
+
+                    // Update Header
+                    const categoryLower = (post.category || 'strategy').toLowerCase();
+                    const imageMap = {
+                        logistics: 'logistics-header.png',
+                        marketing: 'marketing-header.png',
+                        trends: 'trends-header.png',
+                        strategy: 'strategy-header.png'
+                    };
+                    const bgImage = imageMap[categoryLower] || 'strategy-header.png';
+
+                    document.getElementById('postHeader').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/images/blog/${bgImage}')`;
+
+                    document.getElementById('postCategory').textContent = post.category || 'Article';
+                    document.getElementById('postTitle').textContent = post.title;
+                    document.getElementById('postMeta').textContent = `Published on ${date} • ${post.category || 'Article'}`;
+
+                    document.getElementById('headerContent').style.opacity = '1';
+
+                    // Update Content
+                    document.getElementById('postContent').innerHTML = post.content || '<p>No content available.</p>';
+
+                } else {
+                    document.getElementById('postContent').innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <h2>Article not found</h2>
+                            <p style="margin: 20px 0;"><a href="/blog/" style="color: #6366f1; text-decoration: none;">← Back to Blog</a></p>
+                        </div>
+                    `;
+                    document.getElementById('headerContent').style.opacity = '1';
+                }
+            } catch (err) {
+                console.error('Failed to load post:', err);
+                document.getElementById('postContent').innerHTML = `
+                    <div style="text-align: center; color: #ef4444; padding: 40px;">
+                        Failed to load article. Please try again later.
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+
+</html>
