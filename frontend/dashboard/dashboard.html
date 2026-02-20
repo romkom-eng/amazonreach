@@ -2,116 +2,450 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - AmazonReach</title>
-    <link rel="stylesheet" href="dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AmazonReach | Performance Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar-item-active {
+            background-color: rgba(17, 82, 212, 0.1);
+            color: #1152d4;
+            border-right: 3px solid #1152d4;
+        }
+
+        .mock-data-banner {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 24px 32px 0 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+    </style>
 </head>
 
-<body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo">
-            <a href="https://amazonreach.pages.dev"
-                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
-                <span>🚀</span> AmazonReach
-            </a>
-        </div>
-
-        <ul class="nav-links">
-            <li class="nav-item">
-                <a href="dashboard.html" class="nav-link active">
-                    <span>📊</span> Overview
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="inventory.html" class="nav-link">
-                    <span>📦</span> Inventory
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="analytics.html" class="nav-link">
-                    <span>📈</span> Analytics
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="blog-editor.html" class="nav-link">
-                    <span>📝</span> Blog
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="settings.html" class="nav-link">
-                    <span>⚙️</span> Settings
-                </a>
-            </li>
-        </ul>
-
-        <div class="user-profile">
-            <div class="avatar">U</div>
-            <div class="user-info">
-                <div class="user-name" id="userName">User</div>
-                <div class="user-role" id="userRole">Seller</div>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6 flex items-center gap-3">
+                <div class="bg-primary rounded-lg p-1.5 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white">trending_up</span>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">AmazonReach</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Performance Marketing</p>
+                </div>
             </div>
-            <button class="btn-logout" id="logoutBtn" title="Logout">
-                🚪
-            </button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <header class="header">
-            <h1 class="page-title">Dashboard Overview</h1>
-            <div class="date-display">February 5, 2026</div>
-        </header>
-
-        <!-- Warning Banner -->
-        <div class="mock-data-banner">
-            <span>ℹ️</span>
-            <div>
-                <strong>Amazon SP-API Not Connected</strong><br>
-                User account is saved to Firebase. Business metrics below are sample data until you connect your Amazon
-                Seller Account.
+            <nav class="flex-1 px-3 space-y-1 mt-4">
+                <a class="sidebar-item-active flex items-center gap-3 px-4 py-3 rounded-lg transition-colors"
+                    href="dashboard.html">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-medium">Overview</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="inventory.html">
+                    <span class="material-symbols-outlined">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="analytics.html">
+                    <span class="material-symbols-outlined">analytics</span>
+                    <span class="text-sm font-medium">Analytics</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="blog-editor.html">
+                    <span class="material-symbols-outlined">article</span>
+                    <span class="text-sm font-medium">Blog</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="settings.html">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+                <div class="bg-primary/5 dark:bg-primary/10 rounded-xl p-4">
+                    <p class="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Agency Plan</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">You are using 85% of your API quota.</p>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full w-[85%]"></div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </aside>
 
-        <!-- Stats Grid -->
-        <div class="dashboard-grid">
-            <div class="card">
-                <div class="card-title">Total Revenue</div>
-                <div class="card-value" id="totalRevenueDisplay">...</div>
-                <div class="card-trend up" id="revenueTrendDisplay">
-                    <span>-</span> Loading...
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Top Bar -->
+            <header
+                class="header h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <h2 class="page-title text-xl font-semibold text-slate-900 dark:text-white">Dashboard Overview</h2>
+                    <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
+                    <div
+                        class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+                        <span class="material-symbols-outlined text-slate-500 text-sm">calendar_today</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Feb 01, 2026 - Feb 28,
+                            2026</span>
+                        <span class="material-symbols-outlined text-slate-500 text-sm">expand_more</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-5">
+                    <div class="relative">
+                        <button id="logoutBtn" title="Logout"
+                            class="text-slate-500 hover:text-red-500 focus:outline-none flex items-center justify-center p-1 cursor-pointer">
+                            <span class="material-symbols-outlined rounded">logout</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3 pl-5 border-l border-slate-200 dark:border-slate-700">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white" id="userName">User</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" id="userRole">Seller</p>
+                        </div>
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary/10">
+                            <img alt="User Profile" class="w-full h-full object-cover"
+                                data-alt="Portrait of a female business professional"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu2QVN11Tg4KvitRRv8zZfwrScG7ctjEBT5Q8HjTi1MZQe1FxAqMXTBB_lfnBJqPXQIW1tH0to31QBofo5stexv8YU88N1ilR2_tvKnclSNGXLqtw_JimhcWDC13aguRW15mky09XJqUuEbfw2wtlqge5boPyaTtATpNvncs75Y_4ggKfRLyBywh4KGX2oOP04adzTzk_JuOHTzzreufKINBnqu-zb2TFy3XmnRDOo9veUFACNGiG5wK-VpFrl0TinCuX2xFEBavDZ" />
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Warning Banner -->
+            <div class="mock-data-banner">
+                <span class="material-symbols-outlined text-xl">info</span>
+                <div class="text-sm">
+                    <strong>Amazon SP-API Not Connected</strong><br>
+                    <span>Business metrics below are sample data until you connect your Amazon Seller Account.</span>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-title">Active Orders</div>
-                <div class="card-value" id="activeOrdersDisplay">...</div>
-                <div class="card-trend up" id="ordersTrendDisplay">
-                    <span>-</span> Loading...
+            <!-- Dashboard Body -->
+            <div class="p-8 space-y-8">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                    <!-- Total Revenue -->
+                    <div
+                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                                <span class="material-symbols-outlined text-primary">payments</span>
+                            </div>
+                            <span class="text-emerald-500 text-xs font-bold flex items-center">
+                                <span class="material-symbols-outlined text-sm">trending_up</span> 12.5%
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Revenue</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1" id="totalRevenueDisplay">...
+                        </p>
+                    </div>
+                    <!-- Active Orders -->
+                    <div
+                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
+                                <span class="material-symbols-outlined text-purple-600">shopping_cart</span>
+                            </div>
+                            <span class="text-emerald-500 text-xs font-bold flex items-center">
+                                <span class="material-symbols-outlined text-sm">trending_up</span> 5.2%
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Active Orders</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1" id="activeOrdersDisplay">...
+                        </p>
+                    </div>
+                    <!-- Inventory Health -->
+                    <div
+                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
+                                <span class="material-symbols-outlined text-amber-600">inventory</span>
+                            </div>
+                            <span class="text-rose-500 text-xs font-bold flex items-center">
+                                <span class="material-symbols-outlined text-sm">trending_down</span> 1.1%
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Inventory Health</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1" id="inventoryHealthDisplay">
+                            ...</p>
+                    </div>
+                    <!-- ACOS -->
+                    <div
+                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-rose-50 dark:bg-rose-900/30 rounded-lg">
+                                <span class="material-symbols-outlined text-rose-600">ads_click</span>
+                            </div>
+                            <span class="text-emerald-500 text-xs font-bold flex items-center">
+                                <span class="material-symbols-outlined text-sm">trending_down</span> 2.3%
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">ACOS</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">22.4%</p>
+                    </div>
+                    <!-- ROAS -->
+                    <div
+                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg">
+                                <span class="material-symbols-outlined text-emerald-600">show_chart</span>
+                            </div>
+                            <span class="text-emerald-500 text-xs font-bold flex items-center">
+                                <span class="material-symbols-outlined text-sm">trending_up</span> 0.4%
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">ROAS</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">4.4x</p>
+                    </div>
+                </div>
+
+                <!-- Main Chart Section -->
+                <div
+                    class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Revenue Trend</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Daily revenue performance across all
+                                marketplaces</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button
+                                class="px-4 py-2 text-xs font-semibold bg-primary text-white rounded-lg">Daily</button>
+                            <button
+                                class="px-4 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg">Weekly</button>
+                            <button
+                                class="px-4 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg">Monthly</button>
+                        </div>
+                    </div>
+                    <div class="h-80 w-full relative">
+                        <!-- Custom SVG Chart Visualization -->
+                        <svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 300">
+                            <defs>
+                                <lineargradient id="chartGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#1152d4" stop-opacity="0.2"></stop>
+                                    <stop offset="100%" stop-color="#1152d4" stop-opacity="0"></stop>
+                                </lineargradient>
+                            </defs>
+                            <!-- Grid Lines -->
+                            <line class="text-slate-100 dark:text-slate-800" stroke="currentColor" stroke-width="1"
+                                x1="0" x2="1000" y1="50" y2="50"></line>
+                            <line class="text-slate-100 dark:text-slate-800" stroke="currentColor" stroke-width="1"
+                                x1="0" x2="1000" y1="150" y2="150"></line>
+                            <line class="text-slate-100 dark:text-slate-800" stroke="currentColor" stroke-width="1"
+                                x1="0" x2="1000" y1="250" y2="250"></line>
+                            <!-- Area Path -->
+                            <path d="M0,200 Q100,180 200,220 T400,100 T600,150 T800,50 T1000,80 V300 H0 Z"
+                                fill="url(#chartGradient)"></path>
+                            <!-- Line Path -->
+                            <path d="M0,200 Q100,180 200,220 T400,100 T600,150 T800,50 T1000,80" fill="none"
+                                stroke="#1152d4" stroke-linecap="round" stroke-width="3"></path>
+                            <!-- Data Points -->
+                            <circle cx="200" cy="220" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
+                            <circle cx="400" cy="100" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
+                            <circle cx="600" cy="150" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
+                            <circle cx="800" cy="50" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
+                        </svg>
+                        <div class="flex justify-between mt-4 px-2">
+                            <span class="text-xs text-slate-400 font-medium">Oct 01</span>
+                            <span class="text-xs text-slate-400 font-medium">Oct 07</span>
+                            <span class="text-xs text-slate-400 font-medium">Oct 14</span>
+                            <span class="text-xs text-slate-400 font-medium">Oct 21</span>
+                            <span class="text-xs text-slate-400 font-medium">Oct 28</span>
+                            <span class="text-xs text-slate-400 font-medium">Oct 31</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Performing Products -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Top Performing Products</h3>
+                        <button class="text-primary text-sm font-semibold hover:underline">View All Report</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 dark:bg-slate-800/50">
+                                <tr>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                        Product
+                                        Details</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                        Units
+                                        Sold</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                        Revenue
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ACOS
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th class="px-6 py-4"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <!-- Row 1 -->
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded bg-slate-100 dark:bg-slate-800 flex-shrink-0">
+                                                <img alt="Smart Watch" class="w-full h-full object-cover rounded"
+                                                    data-alt="Modern minimalist smart watch white strap"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoA3R0O1oul_O3o0etBScC2aeXBC_PfB8bIvibZFcwEQDEvQ2js7iO7kj6D3WD-V8R4a2OV5R7IlJODwRAsi7cokbMvaUaS4VjD3hFSfXhepP9fvrw6xMpOCd2C_3lgNVWyvj4HrDzvEOO1rWD_S6UvEl77p0bUZ3msef_XqE6zjCclYkc1HE5Vv65rZZfmFvittY84CkI78qnqe3FotFjnmnekDEj5JOJpafaBt7EV_VT09RaR4eK0nAYQD0GAQFhRrN0sZf4Sowk" />
+                                            </div>
+                                            <div>
+                                                <p
+                                                    class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                                                    Elite Series Smart Watch v4</p>
+                                                <p class="text-xs text-slate-500 dark:text-slate-400">SKU: ELT-4-WHT</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-300">452
+                                        Units
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white">$34,804.00
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium text-emerald-600">18.4%</td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                            In Stock
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="material-symbols-outlined text-slate-400 hover:text-primary">more_vert</button>
+                                    </td>
+                                </tr>
+                                <!-- Row 2 -->
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded bg-slate-100 dark:bg-slate-800 flex-shrink-0">
+                                                <img alt="Headphones" class="w-full h-full object-cover rounded"
+                                                    data-alt="Premium wireless noise cancelling headphones gold"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEJksIJ87YPP7JdlrSYuw6y18ePOSS31lRMLreH2_dkar0qF26NilaWPl0T7oHdgkCC1pbwGKKlgLt5a1Wt6GOthzvbp3-Jl3aqhSDuCYIJh9csYVe5HCk81GyoKkASQc15N79pSEU-5O0Dt_7YB3iWX79bktKccDVrVAATp5tIrSuAV1NaxHwk1-sulB9mnYbRrsaajlOnbIh2lEBZDP7Ov5X0w1Vgt3_cWDeAurbVUQ2VYVqhCXlF1KGluD817Md4rqhtCVA3VN0" />
+                                            </div>
+                                            <div>
+                                                <p
+                                                    class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                                                    Aura Pro Wireless Headphones</p>
+                                                <p class="text-xs text-slate-500 dark:text-slate-400">SKU: AUR-PRO-GLD
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-300">318
+                                        Units
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white">$22,260.00
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-400">24.1%
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                                            Low Stock
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="material-symbols-outlined text-slate-400 hover:text-primary">more_vert</button>
+                                    </td>
+                                </tr>
+                                <!-- Row 3 -->
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded bg-slate-100 dark:bg-slate-800 flex-shrink-0">
+                                                <img alt="Water Bottle" class="w-full h-full object-cover rounded"
+                                                    data-alt="Sleek black vacuum insulated water bottle"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYxRdZq98r_6C9sAEojWFYYoknU3Uz1I5vkLZzPHWfQmpVRn9BfGgWDVK01XDPxU5i35vdyvyXk5A0E8K30HKCCLnKHcCdxPi4eJw2_mRvxEmUENSQ64OsNTO2P25Ax4pYb6Yb-vGImxeZN473Ci--cwet4YZMpG_tOzeoQOrk8xQkA02f7MN9JW-YsXa3PRTkCAqTpui65N3TieIbO0Mn9lGuGiVgxBns-Tm437oHzjy1BvVfbd8NLQHAPCK_MpFYkLk_o6rx3I6O" />
+                                            </div>
+                                            <div>
+                                                <p
+                                                    class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                                                    HydroFlow 32oz Insulated Bottle</p>
+                                                <p class="text-xs text-slate-500 dark:text-slate-400">SKU: HYD-32-BLK
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-300">284
+                                        Units
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white">$9,940.00
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium text-emerald-600">12.8%</td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                            In Stock
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="material-symbols-outlined text-slate-400 hover:text-primary">more_vert</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-title">Inventory Health</div>
-                <div class="card-value" id="inventoryHealthDisplay">...</div>
-                <div class="card-trend" id="inventoryTrendDisplay">
-                    <span>-</span> Loading...
-                </div>
-            </div>
-        </div>
+            <!-- Footer -->
+            <footer class="p-8 border-t border-slate-200 dark:border-slate-800 text-center">
+                <p class="text-sm text-slate-500 dark:text-slate-400">© 2026 AmazonReach Marketing Agency. Data
+                    refreshed
+                    every 15 minutes.</p>
+            </footer>
+        </main>
+    </div>
 
-        <!-- Charts Area (Placeholder) -->
-        <div class="card">
-            <div class="card-title">Revenue Trend (Mock)</div>
-            <div class="chart-container">
-                [ Chart Visualization Placeholder ]
-            </div>
-        </div>
-    </main>
-
+    <!-- Script tags from the original dashboard.html -->
     <script src="dashboard.js"></script>
     <script>
         // Check Amazon Connection Status
@@ -134,6 +468,12 @@
                         badge.className = 'status-badge';
                         badge.style.display = 'inline-flex';
                         badge.style.marginLeft = '16px';
+                        badge.style.padding = '4px 8px';
+                        badge.style.borderRadius = '9999px';
+                        badge.style.backgroundColor = '#d1fae5'; // emerald-100
+                        badge.style.color = '#065f46'; // emerald-800
+                        badge.style.fontSize = '12px';
+                        badge.style.fontWeight = '500';
                         badge.innerHTML = '<span>●</span> Amazon Connected';
                         header.querySelector('.page-title').appendChild(badge);
                     }
