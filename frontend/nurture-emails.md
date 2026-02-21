@@ -9,9 +9,9 @@ A single mismatch here often leads to a 90-day account freeze.
 [Link: Download Your Risk Mitigation PDF]
 
 ## Day 2: The Core "Why"
-**Subject**: Why Amazon Suspends Shopify Sellers (And how to avoid it)
+**Subject**: Why Amazon Suspends Sellers (And how to avoid it)
 **Content**:
-It's not just about follow the rules; it's about the algorithm's trust. Using generic barcodes or non-English brand naming triggers "Fraud Prevention" bots.
+It's not just about following the rules; it's about the algorithm's trust. Using generic barcodes or non-English characters in brand naming triggers "Fraud Prevention" bots.
 Here is the step-by-step for the GS1 verification process...
 
 ## Day 3: ROI Focus

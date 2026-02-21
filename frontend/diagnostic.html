@@ -78,10 +78,10 @@
             {
                 id: 'brand',
                 title: "Is your brand name already finalized?",
-                subtitle: "Korean or non-English names trigger high rejection risk.",
+                subtitle: "Local language marks or non-English characters trigger high rejection risk.",
                 options: [
                     { label: "Yes (English Only)", value: "safe", icon: "check_circle", description: "Recommended for US market" },
-                    { label: "Yes (Korean/Mixed)", value: "danger", icon: "warning", description: "High risk of suspension" },
+                    { label: "Yes (Local/Mixed Characters)", value: "danger", icon: "warning", description: "Risk of suspension" },
                     { label: "No / Not Decided", value: "warn", icon: "help", description: "Need strategy first" }
                 ]
             },
@@ -240,22 +240,50 @@
                 // Handle Form
                 const form = document.getElementById('leadCaptureForm');
                 if (form) {
-                    form.addEventListener('submit', (e) => {
+                    form.addEventListener('submit', async (e) => {
                         e.preventDefault();
                         const email = document.getElementById('leadEmail').value;
-                        console.log('Lead Captured:', { email, score, answers });
+                        const submitButton = e.target.querySelector('button');
+                        const originalText = submitButton.innerText;
 
-                        // Simulation of GA Event
-                        if (typeof gtag === 'function') {
-                            gtag('event', 'generate_lead', {
-                                'event_category': 'Diagnostic',
-                                'event_label': 'Diagnostic Results Captured',
-                                'value': score
+                        submitButton.innerText = "Sending Roadmap...";
+                        submitButton.disabled = true;
+
+                        try {
+                            const response = await fetch('/contact-form', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    companyName: 'Diagnostic Lead',
+                                    contactName: 'Potential Seller',
+                                    email: email,
+                                    phone: '',
+                                    inquiryType: 'Diagnostic Results',
+                                    message: `Survival Score: ${score}/100\nAnswers: ${JSON.stringify(answers)}`
+                                })
                             });
-                        }
 
-                        form.classList.add('hidden');
-                        document.getElementById('captureSuccess').classList.remove('hidden');
+                            if (response.ok) {
+                                // Simulation of GA Event
+                                if (typeof gtag === 'function') {
+                                    gtag('event', 'generate_lead', {
+                                        'event_category': 'Diagnostic',
+                                        'event_label': 'Diagnostic Results Captured',
+                                        'value': score
+                                    });
+                                }
+
+                                form.classList.add('hidden');
+                                document.getElementById('captureSuccess').classList.remove('hidden');
+                            } else {
+                                throw new Error('Submission failed');
+                            }
+                        } catch (err) {
+                            console.error(err);
+                            alert('Failed to send roadmap. Please check your connection or try again.');
+                            submitButton.innerText = originalText;
+                            submitButton.disabled = false;
+                        }
                     });
                 }
             }, 200);
