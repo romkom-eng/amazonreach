@@ -66,7 +66,7 @@
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar Navigation -->
         <aside class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col">
-            <div class="p-6 flex items-center gap-3">
+            <a href="/" class="p-6 flex items-center gap-3 hover:opacity-90 transition-opacity cursor-pointer">
                 <div class="bg-primary rounded-lg p-1.5 flex items-center justify-center">
                     <span class="material-symbols-outlined text-white">trending_up</span>
                 </div>
@@ -74,7 +74,7 @@
                     <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">AmazonReach</h1>
                     <p class="text-xs text-slate-500 dark:text-slate-400">Performance Marketing</p>
                 </div>
-            </div>
+            </a>
             <nav class="flex-1 px-3 space-y-1 mt-4">
                 <a class="sidebar-item-active flex items-center gap-3 px-4 py-3 rounded-lg transition-colors"
                     href="dashboard.html">
@@ -318,7 +318,10 @@
         // Check Amazon Connection Status
         async function checkAmazonStatus() {
             try {
-                const response = await fetch(`${BACKEND_URL}/api/amazon/status`, { credentials: 'include' });
+                const response = await fetch(`${BACKEND_URL}/api/amazon/status`, {
+                    credentials: 'include',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('jwt_token')}` }
+                });
                 const data = await response.json();
 
                 if (data.connected) {
