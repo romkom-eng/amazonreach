@@ -290,6 +290,48 @@ class Database {
         await db.collection('blog_posts').doc(postId).delete();
         return { success: true };
     }
+
+    // ========== Professional Audit Methods ==========
+
+    async createAuditRequest(data) {
+        const docRef = await db.collection('audits').add({
+            name: data.name,
+            email: data.email,
+            asin: data.asin || '',
+            keyword: data.keyword || '',
+            monthly_sales: data.monthly_sales || '',
+            status: 'pending', // pending, processing, completed
+            helium10_data: null,
+            report_html: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        });
+        return { id: docRef.id };
+    }
+
+    async getAuditRequests() {
+        const snapshot = await db.collection('audits')
+            .orderBy('created_at', 'desc')
+            .get();
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+    async getAuditById(auditId) {
+        const doc = await db.collection('audits').doc(auditId).get();
+        if (!doc.exists) return null;
+        return { id: doc.id, ...doc.data() };
+    }
+
+    async updateAuditReport(auditId, data) {
+        const updates = {
+            status: data.status || 'completed',
+            helium10_data: data.helium10_data || null,
+            report_html: data.report_html || null,
+            updated_at: new Date().toISOString()
+        };
+        await db.collection('audits').doc(auditId).update(updates);
+        return { id: auditId, ...updates };
+    }
 }
 
 module.exports = new Database();

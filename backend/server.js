@@ -126,6 +126,7 @@ app.use('/api/amazon', amazonRoutes); // Add Amazon Routes
 app.use('/contact-form', contactRoutes); // Add Contact Route
 app.use('/api/ai', require('./routes/ai'));
 app.use('/api/blog', require('./routes/blog')); // Add Public Blog Route
+app.use('/api/audit', require('./routes/audit')); // Add Hybrid Audit Route
 
 // Landing page
 app.get('/', (req, res) => {

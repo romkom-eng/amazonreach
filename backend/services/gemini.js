@@ -185,6 +185,43 @@ Generate a 3-4 sentence executive summary with 2-3 actionable recommendations.`;
 
         return await this.chat(prompt, systemPrompt);
     }
+
+    /**
+     * Generate Professional Strategy Audit Report
+     * Based on user request and manual Helium10 input
+     */
+    async generateAuditReport(auditRequest, helium10Data) {
+        const systemPrompt = `You are a Senior Amazon Strategy Consultant for AmazonReach agency.
+Your goal is to write a highly professional, realistic, and objective "Amazon Scale-up Strategy Report".
+
+Guidelines:
+1. Tone: Professional, authoritative, and realistic. 
+2. Honesty: Do NOT be overly optimistic. Acknowledge high competition and risks. Call out weak areas (e.g., low review count, poor pricing).
+3. Structure: 
+   - Executive Summary
+   - Market Analysis (Competition level)
+   - Current Performance Audit (BSR, Revenue)
+   - 1-Month Growth Strategy (Vine Program, PPC, SEO)
+   - Realistic Revenue Projection (Probability of Success)
+4. Use HTML tags (e.g., <h3>, <ul>, <li>, <strong>) for formatting so it renders beautifully on the dashboard.
+5. Content length: Comprehensive but concise (about 500-700 words).`;
+
+        const prompt = `
+Client Name: ${auditRequest.name}
+ASIN/Keyword: ${auditRequest.asin || auditRequest.keyword}
+Current Monthly Sales: ${auditRequest.monthly_sales || 'Unknown'}
+
+Helium10 Data Points:
+- Monthly Revenue: $${helium10Data.revenue || 'N/A'}
+- BSR: ${helium10Data.bsr || 'N/A'}
+- Review Count: ${helium10Data.reviews || 'N/A'}
+- Top Keyword Search Volume: ${helium10Data.searchVolume || 'N/A'}
+- Category Competition Score: ${helium10Data.competitionScore || 'N/A'}/10
+
+Please generate the professional strategy report now.`;
+
+        return await this.chat(prompt, systemPrompt);
+    }
 }
 
 module.exports = new GeminiService();

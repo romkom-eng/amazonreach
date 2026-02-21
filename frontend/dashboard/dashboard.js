@@ -44,7 +44,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadDashboardData() {
     try {
         // 1. Fetch Sales & Orders
-        const salesRes = await fetch(`${BACKEND_URL}/api/sales`, { credentials: 'include' });
+        const salesRes = await fetch(`${BACKEND_URL}/api/sales`, {
+            credentials: 'include',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('jwt_token')}` }
+        });
         const salesData = await salesRes.json();
 
         let revenue = 0; let revenueGrowth = 0;
