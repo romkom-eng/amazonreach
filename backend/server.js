@@ -194,9 +194,15 @@ app.get('/api/sales', isAuthenticated, hasActiveSubscription, (req, res) => {
             let revenueGrowth = 0;
             let ordersGrowth = 0;
 
-            // Get user's amazon refresh token from DB
+            // Get user's amazon refresh token from DB, or fallback to global .env
             const user = await db.findUserById(req.session.user.id);
-            const refreshToken = user ? user.amazon_refresh_token : null;
+            let refreshToken = user ? user.amazon_refresh_token : null;
+
+            // Fallback to global env token if user hasn't explicitly connected
+            if (!refreshToken && process.env.AMAZON_REFRESH_TOKEN) {
+                refreshToken = process.env.AMAZON_REFRESH_TOKEN;
+            }
+
             let usingMock = !refreshToken;
 
             if (!usingMock) {
@@ -311,7 +317,11 @@ app.get('/api/orders', isAuthenticated, hasActiveSubscription, async (req, res) 
         let ordersData = [];
         let totalCount = 0;
         const user = await db.findUserById(req.session.user.id);
-        const refreshToken = user ? user.amazon_refresh_token : null;
+        let refreshToken = user ? user.amazon_refresh_token : null;
+        if (!refreshToken && process.env.AMAZON_REFRESH_TOKEN) {
+            refreshToken = process.env.AMAZON_REFRESH_TOKEN;
+        }
+
         let usingMock = !refreshToken;
         let source = usingMock ? 'Mock' : 'Amazon';
 
@@ -372,7 +382,10 @@ app.get('/api/inventory', isAuthenticated, hasActiveSubscription, async (req, re
     try {
         let inventoryData = [];
         const user = await db.findUserById(req.session.user.id);
-        const refreshToken = user ? user.amazon_refresh_token : null;
+        let refreshToken = user ? user.amazon_refresh_token : null;
+        if (!refreshToken && process.env.AMAZON_REFRESH_TOKEN) {
+            refreshToken = process.env.AMAZON_REFRESH_TOKEN;
+        }
 
         if (refreshToken) {
             try {

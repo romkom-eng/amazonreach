@@ -29,10 +29,12 @@ router.get('/status', async (req, res) => {
             return res.json({ connected: false });
         }
         const user = await db.findUserById(req.session.user.id);
-        const isConnected = !!(user && user.amazon_refresh_token);
+        const hasUserToken = !!(user && user.amazon_refresh_token);
+        const hasGlobalToken = !!process.env.AMAZON_REFRESH_TOKEN;
+
         res.json({
-            connected: isConnected,
-            merchantId: user ? user.amazon_merchant_id : null
+            connected: hasUserToken || hasGlobalToken,
+            merchantId: user && user.amazon_merchant_id ? user.amazon_merchant_id : (hasGlobalToken ? 'Global_Mock_Merchant' : null)
         });
     } catch (error) {
         console.error('Status Check Error:', error);
