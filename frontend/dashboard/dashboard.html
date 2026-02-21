@@ -171,8 +171,9 @@
                             <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
                                 <span class="material-symbols-outlined text-primary">payments</span>
                             </div>
-                            <span class="text-emerald-500 text-xs font-bold flex items-center">
-                                <span class="material-symbols-outlined text-sm">trending_up</span> 12.5%
+                            <span class="text-xs font-bold flex items-center" id="revenueTrendDisplay">
+                                <span class="text-emerald-500 flex items-center"><span
+                                        class="material-symbols-outlined text-sm">trending_up</span> 12.5%</span>
                             </span>
                         </div>
                         <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Revenue</p>
@@ -186,8 +187,9 @@
                             <div class="p-2 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
                                 <span class="material-symbols-outlined text-purple-600">shopping_cart</span>
                             </div>
-                            <span class="text-emerald-500 text-xs font-bold flex items-center">
-                                <span class="material-symbols-outlined text-sm">trending_up</span> 5.2%
+                            <span class="text-xs font-bold flex items-center" id="ordersTrendDisplay">
+                                <span class="text-emerald-500 flex items-center"><span
+                                        class="material-symbols-outlined text-sm">trending_up</span> 5.2%</span>
                             </span>
                         </div>
                         <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Active Orders</p>
@@ -201,8 +203,9 @@
                             <div class="p-2 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
                                 <span class="material-symbols-outlined text-amber-600">inventory</span>
                             </div>
-                            <span class="text-rose-500 text-xs font-bold flex items-center">
-                                <span class="material-symbols-outlined text-sm">trending_down</span> 1.1%
+                            <span class="text-xs font-bold flex items-center" id="inventoryTrendDisplay">
+                                <span class="text-rose-500 flex items-center"><span
+                                        class="material-symbols-outlined text-sm">trending_down</span> 1.1%</span>
                             </span>
                         </div>
                         <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Inventory Health</p>
@@ -216,12 +219,13 @@
                             <div class="p-2 bg-rose-50 dark:bg-rose-900/30 rounded-lg">
                                 <span class="material-symbols-outlined text-rose-600">ads_click</span>
                             </div>
-                            <span class="text-emerald-500 text-xs font-bold flex items-center">
-                                <span class="material-symbols-outlined text-sm">trending_down</span> 2.3%
+                            <span class="text-xs font-bold flex items-center" id="acosTrendDisplay">
+                                <span class="text-emerald-500 flex items-center"><span
+                                        class="material-symbols-outlined text-sm">trending_down</span> 2.3%</span>
                             </span>
                         </div>
                         <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">ACOS</p>
-                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">22.4%</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1" id="acosDisplay">...</p>
                     </div>
                     <!-- ROAS -->
                     <div
@@ -230,12 +234,13 @@
                             <div class="p-2 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg">
                                 <span class="material-symbols-outlined text-emerald-600">show_chart</span>
                             </div>
-                            <span class="text-emerald-500 text-xs font-bold flex items-center">
-                                <span class="material-symbols-outlined text-sm">trending_up</span> 0.4%
+                            <span class="text-xs font-bold flex items-center" id="roasTrendDisplay">
+                                <span class="text-emerald-500 flex items-center"><span
+                                        class="material-symbols-outlined text-sm">trending_up</span> 0.4%</span>
                             </span>
                         </div>
                         <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">ROAS</p>
-                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">4.4x</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1" id="roasDisplay">...</p>
                     </div>
                 </div>
 
@@ -274,16 +279,17 @@
                             <line class="text-slate-100 dark:text-slate-800" stroke="currentColor" stroke-width="1"
                                 x1="0" x2="1000" y1="250" y2="250"></line>
                             <!-- Area Path -->
-                            <path d="M0,200 Q100,180 200,220 T400,100 T600,150 T800,50 T1000,80 V300 H0 Z"
+                            <path
+                                d="M0,200 C150,190 250,90 400,100 C580,110 650,220 800,100 C900,20 950,50 1000,80 V300 H0 Z"
                                 fill="url(#chartGradient)"></path>
                             <!-- Line Path -->
-                            <path d="M0,200 Q100,180 200,220 T400,100 T600,150 T800,50 T1000,80" fill="none"
-                                stroke="#1152d4" stroke-linecap="round" stroke-width="3"></path>
+                            <path d="M0,200 C150,190 250,90 400,100 C580,110 650,220 800,100 C900,20 950,50 1000,80"
+                                fill="none" stroke="#1152d4" stroke-linecap="round" stroke-width="3"></path>
                             <!-- Data Points -->
-                            <circle cx="200" cy="220" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
+                            <circle cx="200" cy="140" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
                             <circle cx="400" cy="100" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
-                            <circle cx="600" cy="150" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
-                            <circle cx="800" cy="50" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
+                            <circle cx="600" cy="160" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
+                            <circle cx="800" cy="100" fill="#1152d4" r="4" stroke="white" stroke-width="2"></circle>
                         </svg>
                         <div class="flex justify-between mt-4 px-2">
                             <span class="text-xs text-slate-400 font-medium">Oct 01</span>
