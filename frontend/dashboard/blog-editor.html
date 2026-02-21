@@ -2,235 +2,146 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Editor - AmazonReach</title>
-    <link rel="stylesheet" href="dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AmazonReach | Blog Editor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
     <style>
-        .blog-layout {
-            display: flex;
-            gap: 24px;
+        body {
+            font-family: 'Inter', sans-serif;
         }
 
-        .post-list-panel {
-            width: 320px;
-            flex-shrink: 0;
+        .sidebar-item-active {
+            background-color: rgba(17, 82, 212, 0.1);
+            color: #1152d4;
+            border-right: 3px solid #1152d4;
         }
 
-        .editor-panel {
-            flex: 1;
-            min-width: 0;
-        }
-
+        /* Post List Adjustments for Tailwind Layout */
         .post-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 60vh;
+            gap: 12px;
+            max-height: 70vh;
             overflow-y: auto;
             padding-right: 8px;
         }
 
         .post-item {
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
+            padding: 16px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .post-item {
+            background: #1e293b;
+            border-color: #334155;
+            box-shadow: none;
         }
 
         .post-item:hover {
-            border-color: rgba(99, 102, 241, 0.4);
+            border-color: #1152d4;
         }
 
         .post-item.active {
-            border-color: #6366f1;
-            background: rgba(99, 102, 241, 0.08);
+            border-color: #1152d4;
+            background: rgba(17, 82, 212, 0.05);
         }
 
-        .post-item-title {
-            color: #fff;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .post-item-meta {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .status-badge {
-            padding: 2px 8px;
-            border-radius: 100px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-badge.draft {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-        }
-
-        .status-badge.published {
-            background: rgba(16, 185, 129, 0.15);
-            color: #10b981;
-        }
-
-        .editor-form .form-group {
-            margin-bottom: 16px;
-        }
-
-        .editor-form label {
-            display: block;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 6px;
-        }
-
-        .editor-form input,
-        .editor-form select,
-        .editor-form textarea {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 0.9rem;
+        /* Quill Editor overrides for light/dark mode and Tailwind */
+        .ql-toolbar.ql-snow {
+            border-color: #e2e8f0 !important;
+            background: #f8fafc;
+            border-radius: 0.5rem 0.5rem 0 0;
             font-family: 'Inter', sans-serif;
         }
 
-        .editor-form input:focus,
-        .editor-form select:focus,
-        .editor-form textarea:focus {
-            outline: none;
-            border-color: #6366f1;
-        }
-
-        .editor-form select option {
-            background: #1e293b;
-            color: #fff;
-        }
-
-        /* Quill overrides */
-        .ql-toolbar.ql-snow {
-            border-color: rgba(255, 255, 255, 0.12) !important;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 8px 8px 0 0;
+        .dark .ql-toolbar.ql-snow {
+            border-color: #334155 !important;
+            background: #0f172a;
         }
 
         .ql-container.ql-snow {
-            border-color: rgba(255, 255, 255, 0.12) !important;
-            border-radius: 0 0 8px 8px;
-            min-height: 300px;
-            background: rgba(255, 255, 255, 0.03);
+            border-color: #e2e8f0 !important;
+            border-radius: 0 0 0.5rem 0.5rem;
+            min-height: 400px;
+            background: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .dark .ql-container.ql-snow {
+            border-color: #334155 !important;
+            background: #1e293b;
         }
 
         .ql-editor {
-            background-color: #ffffff;
-            color: #1e293b;
-            border-radius: 0 0 8px 8px;
             font-size: 1rem;
             line-height: 1.7;
-            min-height: 300px;
+            min-height: 400px;
+            color: #0f172a;
         }
 
-        .ql-editor.ql-blank::before {
-            color: rgba(255, 255, 255, 0.3) !important;
+        .dark .ql-editor {
+            color: #f8fafc;
         }
 
-        .ql-snow .ql-stroke {
+        .dark .ql-snow .ql-stroke {
             stroke: #94a3b8 !important;
         }
 
-        .ql-snow .ql-fill {
+        .dark .ql-snow .ql-fill {
             fill: #94a3b8 !important;
         }
 
-        .ql-snow .ql-picker-label {
+        .dark .ql-snow .ql-picker-label {
             color: #94a3b8 !important;
         }
 
-        .ql-snow .ql-picker-options {
+        .dark .ql-snow .ql-picker-options {
             background: #1e293b !important;
+            border-color: #334155 !important;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        .btn-editor {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-editor:hover {
-            transform: translateY(-1px);
-        }
-
-        .btn-editor:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-save {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        .btn-publish {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: #fff;
-        }
-
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            margin-left: auto;
-        }
-
-        .btn-new {
-            width: 100%;
-            padding: 10px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 16px;
-            font-size: 0.9rem;
-        }
-
-        .btn-new:hover {
-            opacity: 0.9;
-        }
-
+        /* Toast Animation */
         .toast {
             position: fixed;
             bottom: 24px;
             right: 24px;
-            padding: 12px 20px;
+            padding: 12px 24px;
             background: #10b981;
             color: #fff;
             border-radius: 8px;
@@ -238,6 +149,7 @@
             z-index: 999;
             display: none;
             animation: fadeIn 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         @keyframes fadeIn {
@@ -246,153 +158,221 @@
                 transform: translateY(10px);
             }
         }
-
-        .empty-state {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.4);
-            padding: 40px 20px;
-            font-size: 0.9rem;
-        }
-
-        .row-2 {
-            display: flex;
-            gap: 16px;
-        }
-
-        .row-2 .form-group {
-            flex: 1;
-        }
     </style>
 </head>
 
-<body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo">
-            <a href="https://amazonreach.pages.dev"
-                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
-                <span>🚀</span> AmazonReach
-            </a>
-        </div>
-
-        <ul class="nav-links">
-            <li class="nav-item">
-                <a href="dashboard.html" class="nav-link">
-                    <span>📊</span> Overview
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="inventory.html" class="nav-link">
-                    <span>📦</span> Inventory
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="analytics.html" class="nav-link">
-                    <span>📈</span> Analytics
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="blog-editor.html" class="nav-link active">
-                    <span>📝</span> Blog
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="settings.html" class="nav-link">
-                    <span>⚙️</span> Settings
-                </a>
-            </li>
-        </ul>
-
-        <div class="user-profile">
-            <div class="avatar">A</div>
-            <div class="user-info">
-                <div class="user-name" id="userName">Admin</div>
-                <div class="user-role" id="userRole">Admin</div>
-            </div>
-            <button class="btn-logout" id="logoutBtn" title="Logout">🚪</button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <header class="header">
-            <h1 class="page-title">📝 Blog Manager</h1>
-        </header>
-
-        <div class="blog-layout">
-            <!-- Post List -->
-            <div class="post-list-panel">
-                <button class="btn-new" onclick="newPost()">+ New Post</button>
-                <div class="post-list" id="postList">
-                    <div class="empty-state">Loading posts...</div>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6 flex items-center gap-3">
+                <div class="bg-primary rounded-lg p-1.5 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white">trending_up</span>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">AmazonReach</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Performance Marketing</p>
                 </div>
             </div>
-
-            <!-- Editor -->
-            <div class="editor-panel">
-                <div class="card" id="editorCard" style="display: none;">
-                    <div class="editor-form">
-                        <div class="form-group">
-                            <label>Title</label>
-                            <input type="text" id="postTitle" placeholder="Enter post title...">
-                        </div>
-
-                        <div class="row-3" style="display: flex; gap: 16px;">
-                            <div class="form-group" style="flex: 1;">
-                                <label>Category</label>
-                                <select id="postCategory">
-                                    <option value="Logistics">📦 Logistics</option>
-                                    <option value="Marketing">📢 Marketing</option>
-                                    <option value="Trends">📊 Trends</option>
-                                    <option value="Strategy">🎯 Strategy</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label>Published Date</label>
-                                <input type="date" id="postDate">
-                            </div>
-                            <div class="form-group" style="flex: 2;">
-                                <label>Target Keyword</label>
-                                <input type="text" id="postKeyword" placeholder="e.g. how to sell on amazon">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Meta Description</label>
-                            <input type="text" id="postMeta" placeholder="SEO description...">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Content</label>
-                            <div id="editor"></div>
-                        </div>
-
-                        <div class="btn-group">
-                            <button class="btn-editor btn-save" onclick="savePost('draft')">💾 Save Draft</button>
-                            <button class="btn-editor btn-publish" onclick="savePost('published')">🚀 Publish</button>
-                            <button class="btn-editor btn-delete" id="deleteBtn" onclick="deletePost()"
-                                style="display: none;">🗑️ Delete</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card" id="emptyEditor">
-                    <div class="empty-state">
-                        Select a post to edit or click <strong>+ New Post</strong> to create one.
+            <nav class="flex-1 px-3 space-y-1 mt-4">
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="dashboard.html">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-medium">Overview</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="inventory.html">
+                    <span class="material-symbols-outlined">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="analytics.html">
+                    <span class="material-symbols-outlined">analytics</span>
+                    <span class="text-sm font-medium">Analytics</span>
+                </a>
+                <a class="sidebar-item-active flex items-center gap-3 px-4 py-3 rounded-lg transition-colors"
+                    href="blog-editor.html">
+                    <span class="material-symbols-outlined">article</span>
+                    <span class="text-sm font-medium">Blog</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="settings.html">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+                <div class="bg-primary/5 dark:bg-primary/10 rounded-xl p-4">
+                    <p class="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Agency Plan</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">You are using 85% of your API quota.</p>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full w-[85%]"></div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </aside>
 
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Top Bar -->
+            <header
+                class="header h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <h2 class="page-title text-xl font-semibold text-slate-900 dark:text-white">Blog Content Manager
+                    </h2>
+                    <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
+                </div>
+                <div class="flex items-center gap-5">
+                    <div class="relative">
+                        <button id="logoutBtn" title="Logout"
+                            class="text-slate-500 hover:text-red-500 focus:outline-none flex items-center justify-center p-1 cursor-pointer">
+                            <span class="material-symbols-outlined rounded">logout</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3 pl-5 border-l border-slate-200 dark:border-slate-700">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white" id="userName">User</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" id="userRole">Admin</p>
+                        </div>
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary/10">
+                            <img alt="User Profile" class="w-full h-full object-cover"
+                                data-alt="Portrait of a female business professional"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu2QVN11Tg4KvitRRv8zZfwrScG7ctjEBT5Q8HjTi1MZQe1FxAqMXTBB_lfnBJqPXQIW1tH0to31QBofo5stexv8YU88N1ilR2_tvKnclSNGXLqtw_JimhcWDC13aguRW15mky09XJqUuEbfw2wtlqge5boPyaTtATpNvncs75Y_4ggKfRLyBywh4KGX2oOP04adzTzk_JuOHTzzreufKINBnqu-zb2TFy3XmnRDOo9veUFACNGiG5wK-VpFrl0TinCuX2xFEBavDZ" />
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Body -->
+            <div class="p-8 space-y-8 h-full">
+                <!-- Blog Editor Layout -->
+                <div class="flex gap-8 h-full">
+
+                    <!-- Left Panel: Post List -->
+                    <div class="w-80 flex-shrink-0 flex flex-col h-full">
+                        <button
+                            class="w-full py-3 mb-4 rounded-xl font-bold text-white bg-primary hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                            onclick="newPost()">
+                            <span class="material-symbols-outlined">add</span> Create New Post
+                        </button>
+                        <div class="post-list flex-1 p-1 bg-transparent" id="postList">
+                            <div class="text-center p-8 text-slate-500 animate-pulse">Loading posts...</div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Editor -->
+                    <div
+                        class="flex-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
+
+                        <!-- Empty State -->
+                        <div id="emptyEditor"
+                            class="flex-1 flex flex-col items-center justify-center p-12 text-slate-500 dark:text-slate-400">
+                            <span class="material-symbols-outlined text-6xl mb-4 opacity-50">edit_note</span>
+                            <p class="text-lg">Select a post to edit or create a new one.</p>
+                        </div>
+
+                        <!-- Active Editor -->
+                        <div id="editorCard" class="p-8 flex-1 flex flex-col overflow-y-auto" style="display: none;">
+
+                            <!-- Title -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Post
+                                    Title</label>
+                                <input type="text" id="postTitle" placeholder="Enter post title..."
+                                    class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg font-semibold h-auto" />
+                            </div>
+
+                            <!-- Meta Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                                <div>
+                                    <label
+                                        class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Category</label>
+                                    <select id="postCategory"
+                                        class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                                        <option value="Logistics">📦 Logistics</option>
+                                        <option value="Marketing">📢 Marketing</option>
+                                        <option value="Trends">📊 Trends</option>
+                                        <option value="Strategy">🎯 Strategy</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Date</label>
+                                    <input type="date" id="postDate"
+                                        class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label
+                                        class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Target
+                                        Keyword (SEO)</label>
+                                    <input type="text" id="postKeyword" placeholder="e.g. how to sell on amazon"
+                                        class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                                </div>
+                            </div>
+
+                            <!-- Meta Desc -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Meta
+                                    Description</label>
+                                <input type="text" id="postMeta" placeholder="SEO description..."
+                                    class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                            </div>
+
+                            <!-- Content -->
+                            <div class="mb-8 flex-1 flex flex-col">
+                                <label
+                                    class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Content</label>
+                                <div id="editor" class="flex-1 bg-white dark:bg-slate-900"></div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div
+                                class="flex items-center gap-4 pt-6 border-t border-slate-200 dark:border-slate-800 mt-auto">
+                                <button onclick="savePost('draft')"
+                                    class="px-6 py-2.5 rounded-lg font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">save</span> Save Draft
+                                </button>
+                                <button onclick="savePost('published')"
+                                    class="px-6 py-2.5 rounded-lg font-bold text-white bg-primary hover:bg-primary/90 transition-colors shadow-md shadow-primary/20 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">rocket_launch</span> Publish
+                                </button>
+                                <div class="flex-grow"></div>
+                                <button id="deleteBtn" onclick="deletePost()"
+                                    class="px-4 py-2 rounded-lg font-semibold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/30 transition-colors flex items-center gap-2"
+                                    style="display: none;">
+                                    <span class="material-symbols-outlined text-sm">delete</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="p-8 border-t border-slate-200 dark:border-slate-800 text-center">
+                <p class="text-sm text-slate-500 dark:text-slate-400">© 2026 AmazonReach Marketing Agency.</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
+    <!-- Scripts -->
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <script src="dashboard.js"></script>
     <script>
         let quill;
         let currentPostId = null;
         let posts = [];
+
+        // Formatting utilities for Tailwind lists mapping
+        const statusColorsClass = {
+            'draft': 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+            'published': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+        };
 
         // Initialize Quill editor
         document.addEventListener('DOMContentLoaded', () => {
@@ -409,9 +389,7 @@
                             ['link', 'image'],
                             ['clean']
                         ],
-                        handlers: {
-                            image: imageHandler
-                        }
+                        handlers: { image: imageHandler }
                     }
                 }
             });
@@ -419,7 +397,6 @@
             loadPosts();
         });
 
-        // Custom image handler to compress images before inserting as base64
         function imageHandler() {
             const input = document.createElement('input');
             input.setAttribute('type', 'file');
@@ -429,17 +406,12 @@
             input.onchange = async () => {
                 const file = input.files[0];
                 if (!file) return;
-
-                // Compress image
                 const base64 = await compressImage(file, 800, 0.7);
-
-                // Insert into editor
                 const range = quill.getSelection(true);
                 quill.insertEmbed(range.index, 'image', base64);
             };
         }
 
-        // HTML5 Canvas Image Compression
         function compressImage(file, maxWidth, quality) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -489,12 +461,12 @@
                     renderPostList();
                 } else {
                     document.getElementById('postList').innerHTML =
-                        '<div class="empty-state">⚠️ Could not load posts. Are you an admin?</div>';
+                        '<div class="p-8 text-center text-red-500">⚠️ Could not load posts.</div>';
                 }
             } catch (err) {
                 console.error('Load posts error:', err);
                 document.getElementById('postList').innerHTML =
-                    '<div class="empty-state">Failed to connect to server.</div>';
+                    '<div class="p-8 text-center text-red-500">Failed to connect to server.</div>';
             }
         }
 
@@ -502,23 +474,32 @@
             const list = document.getElementById('postList');
 
             if (posts.length === 0) {
-                list.innerHTML = '<div class="empty-state">No posts yet. Create your first one!</div>';
+                list.innerHTML = '<div class="p-8 text-center text-slate-500">No posts yet. Create your first one!</div>';
                 return;
             }
 
-            list.innerHTML = posts.map(p => `
-                <div class="post-item ${p.id === currentPostId ? 'active' : ''}"
-                     onclick="selectPost('${p.id}')">
-                    <div class="post-item-title">${escapeHtml(p.title)}</div>
-                    <div class="post-item-meta">
-                        <span class="status-badge ${p.status}">${p.status}</span>
-                        <span>${p.category || ''}</span>
+            list.innerHTML = posts.map(p => {
+                const isActive = p.id === currentPostId;
+                const badgeColor = statusColorsClass[p.status] || 'bg-slate-100 text-slate-800';
+
+                return `
+                <div class="post-item ${isActive ? 'active' : ''}" onclick="selectPost('${p.id}')">
+                    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">${escapeHtml(p.title)}</h4>
+                    <div class="flex flex-wrap items-center gap-2 mb-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-md uppercase tracking-wider ${badgeColor}">${p.status}</span>
+                        <span>•</span>
+                        <span>${p.category || 'Uncategorized'}</span>
+                        <span>•</span>
                         <span>${formatDate(p.updated_at || p.created_at)}</span>
-                        <span>👁️ ${p.views || 0} views</span>
-                        <span>🎯 ${p.target_keyword || 'No keyword'}</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-md">
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">visibility</span> ${p.views || 0}</span>
+                        <span>|</span>
+                        <span class="flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px]">my_location</span> ${p.target_keyword || 'No keyword'}</span>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function newPost() {
@@ -528,7 +509,6 @@
             document.getElementById('postMeta').value = '';
             document.getElementById('postKeyword').value = '';
 
-            // Set default date to today's date in local time (YYYY-MM-DD)
             const today = new Date();
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -536,7 +516,7 @@
             document.getElementById('postDate').value = `${year}-${month}-${day}`;
 
             quill.setContents([]);
-            document.getElementById('editorCard').style.display = '';
+            document.getElementById('editorCard').style.display = 'flex';
             document.getElementById('emptyEditor').style.display = 'none';
             document.getElementById('deleteBtn').style.display = 'none';
             renderPostList();
@@ -557,7 +537,6 @@
                     document.getElementById('postMeta').value = data.post.meta_description || '';
                     document.getElementById('postKeyword').value = data.post.target_keyword || '';
 
-                    // Populate Date
                     if (data.post.created_at) {
                         const d = new Date(data.post.created_at);
                         const year = d.getFullYear();
@@ -566,16 +545,15 @@
                         document.getElementById('postDate').value = `${year}-${month}-${day}`;
                     }
 
-                    // Set content — try delta first, fall back to HTML
                     if (data.post.content) {
                         quill.root.innerHTML = data.post.content;
                     } else {
                         quill.setContents([]);
                     }
 
-                    document.getElementById('editorCard').style.display = '';
+                    document.getElementById('editorCard').style.display = 'flex';
                     document.getElementById('emptyEditor').style.display = 'none';
-                    document.getElementById('deleteBtn').style.display = '';
+                    document.getElementById('deleteBtn').style.display = 'flex';
                     renderPostList();
                 }
             } catch (err) {
@@ -596,10 +574,8 @@
                 return;
             }
 
-            // Keep the selected date, otherwise fallback to now
             let created_at = new Date().toISOString();
             if (dateInput) {
-                // Parse date relative to timezone
                 created_at = new Date(dateInput).toISOString();
             }
 
@@ -629,7 +605,7 @@
                     if (data.id) currentPostId = data.id;
                     showToast(status === 'published' ? '🚀 Published!' : '💾 Draft saved!');
                     await loadPosts();
-                    document.getElementById('deleteBtn').style.display = '';
+                    document.getElementById('deleteBtn').style.display = 'flex';
                 } else {
                     showToast('Error: ' + (data.error || 'Save failed'), '#ef4444');
                 }
@@ -655,7 +631,7 @@
                     showToast('🗑️ Post deleted');
                     currentPostId = null;
                     document.getElementById('editorCard').style.display = 'none';
-                    document.getElementById('emptyEditor').style.display = '';
+                    document.getElementById('emptyEditor').style.display = 'flex';
                     await loadPosts();
                 }
             } catch (err) {

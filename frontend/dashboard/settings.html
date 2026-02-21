@@ -2,405 +2,442 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - AmazonReach</title>
-    <link rel="stylesheet" href="dashboard.css">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AmazonReach | Settings</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
     <style>
-        /* Subscription Card Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar-item-active {
+            background-color: rgba(17, 82, 212, 0.1);
+            color: #1152d4;
+            border-right: 3px solid #1152d4;
+        }
+
+        /* Subscription Card Custom Styles overlay on Tailwind */
         .subscription-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, rgba(17, 82, 212, 0.05), rgba(99, 102, 241, 0.05));
         }
 
-        .subscription-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.25rem;
-            flex-wrap: wrap;
-            gap: 0.75rem;
+        .dark .subscription-card {
+            background: linear-gradient(135deg, rgba(17, 82, 212, 0.1), rgba(99, 102, 241, 0.05));
         }
 
-        .subscription-header h3 {
-            font-size: 1.1rem;
-            color: #fff;
-            margin: 0;
+        /* Plan Badges mapping */
+        .plan-badge-free-trial {
+            @apply bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800;
         }
 
-        .plan-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-            padding: 0.375rem 0.75rem;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .plan-badge-basic {
+            @apply bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800;
         }
 
-        .plan-badge.free-trial {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-            border: 1px solid rgba(251, 191, 36, 0.3);
+        .plan-badge-pro {
+            @apply bg-indigo-100 text-indigo-800 border border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800;
         }
 
-        .plan-badge.basic {
-            background: rgba(96, 165, 250, 0.15);
-            color: #60a5fa;
-            border: 1px solid rgba(96, 165, 250, 0.3);
+        .plan-badge-enterprise {
+            @apply bg-purple-100 text-purple-800 border border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800;
         }
 
-        .plan-badge.pro {
-            background: rgba(99, 102, 241, 0.15);
-            color: #818cf8;
-            border: 1px solid rgba(99, 102, 241, 0.3);
+        .status-dot-active {
+            @apply bg-emerald-500 shadow-[0_0_8px_rgba(16, 185, 129, 0.5)];
         }
 
-        .plan-badge.enterprise {
-            background: rgba(168, 85, 247, 0.15);
-            color: #c084fc;
-            border: 1px solid rgba(168, 85, 247, 0.3);
+        .status-dot-inactive {
+            @apply bg-red-500;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        .btn-loading .btn-text {
+            display: none;
+        }
+
+        .btn-loading .spinner {
             display: inline-block;
         }
 
-        .status-dot.active {
-            background: #10b981;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        .spinner {
+            display: none;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
         }
 
-        .status-dot.inactive {
-            background: #ef4444;
-        }
-
-        .subscription-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .detail-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            padding: 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .detail-item label {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
-            display: block;
-        }
-
-        .detail-item span {
-            font-size: 0.95rem;
-            color: #fff;
-            font-weight: 500;
-        }
-
-        .subscription-actions {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-manage {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.625rem 1.25rem;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            text-decoration: none;
-        }
-
-        .btn-manage.primary {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: #fff;
-        }
-
-        .btn-manage.primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-manage.secondary {
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .btn-manage.secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        .btn-manage:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 
-<body>
-    <aside class="sidebar">
-        <div class="logo">
-            <a href="https://amazonreach.pages.dev"
-                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
-                <span>🚀</span> AmazonReach
-            </a>
-        </div>
-        <ul class="nav-links">
-            <li class="nav-item"><a href="dashboard.html" class="nav-link"><span>📊</span> Overview</a></li>
-            <li class="nav-item"><a href="inventory.html" class="nav-link"><span>📦</span> Inventory</a></li>
-            <li class="nav-item"><a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a></li>
-            <li class="nav-item"><a href="blog-editor.html" class="nav-link"><span>📝</span> Blog</a></li>
-            <li class="nav-item"><a href="#" class="nav-link active"><span>⚙️</span> Settings</a></li>
-        </ul>
-        <div class="user-profile">
-            <div class="avatar">U</div>
-            <div class="user-info">
-                <div class="user-name" id="userName">User</div>
-                <div class="user-role" id="userRole">Seller</div>
-            </div>
-            <button class="btn-logout" id="logoutBtn">🚪</button>
-        </div>
-    </aside>
-    <main class="main-content">
-        <header class="header">
-            <h1 class="page-title">Account Settings</h1>
-        </header>
-
-        <!-- Subscription Management Card -->
-        <div class="subscription-card" id="subscriptionCard">
-            <div class="subscription-header">
-                <h3>💳 Subscription</h3>
-                <span class="plan-badge free-trial" id="planBadge">
-                    <span class="status-dot active"></span>
-                    Free Trial
-                </span>
-            </div>
-
-            <div class="subscription-details">
-                <div class="detail-item">
-                    <label>Current Plan</label>
-                    <span id="currentPlan">Free Trial</span>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col">
+            <div class="p-6 flex items-center gap-3">
+                <div class="bg-primary rounded-lg p-1.5 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white">trending_up</span>
                 </div>
-                <div class="detail-item">
-                    <label>Status</label>
-                    <span id="subStatus">Active</span>
-                </div>
-                <div class="detail-item">
-                    <label>Member Since</label>
-                    <span id="memberSince">—</span>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">AmazonReach</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Performance Marketing</p>
                 </div>
             </div>
-
-            <div class="subscription-actions">
-                <button class="btn-manage primary" id="upgradeBtn"
-                    onclick="window.location.href='/checkout-choice.html'">
-                    ⬆️ Upgrade Plan
-                </button>
-                <button class="btn-manage secondary" id="manageBillingBtn" style="display: none;">
-                    💳 Manage Billing
-                </button>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">Integration Center</div>
-            <div class="integration-section">
-                <!-- Amazon Integration Card -->
-                <div class="integration-card">
-                    <div class="integration-left">
-                        <div class="integration-icon">
-                            <!-- Simple Amazon Icon Representation -->
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M17.3999 15.6C17.3999 15.6 13.7999 17.5 11.2999 17.5C8.09991 17.5 6.09991 15.8 6.09991 12.9C6.09991 10.1 8.29991 7.9 11.5999 7.9C13.8999 7.9 15.2999 8.7 15.2999 8.7V7C15.2999 7 13.8999 6 11.4999 6C7.09991 6 3.69991 9.2 3.69991 13.6C3.69991 17.9 6.89991 20 10.9999 20C14.0999 20 17.3999 18.5 17.3999 18.5V15.6Z"
-                                    fill="#FF9900" />
-                                <path
-                                    d="M17.6 6.5V13.8C17.6 13.8 17.1 14.1 16.4 14.1C15.6 14.1 15.3 13.4 15.3 12.9V9.2C15.3 9.2 14.5 9.1 14.2 9.1C13.8 9.1 13 9.2 13 9.9V12.8C13 13.9 13.7 15.7 16.3 15.7C17.8 15.7 19.3 14.6 19.3 14.6V6.5H17.6Z"
-                                    fill="#FF9900" />
-                                <path
-                                    d="M18.8 17.6C18.8 17.6 20.3 18.2 21.2 17.8C22.1 17.4 22.5 16.6 22.5 16.6C22.5 16.6 22.2 17.8 21 18.8C19.8 19.8 18.8 17.6 18.8 17.6Z"
-                                    fill="#FF9900" />
-                            </svg>
-                        </div>
-                        <div class="integration-details">
-                            <h3>Amazon Seller Central</h3>
-                            <p>Sync orders, inventory, and financial data in real-time.</p>
-                        </div>
+            <nav class="flex-1 px-3 space-y-1 mt-4">
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="dashboard.html">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-medium">Overview</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="inventory.html">
+                    <span class="material-symbols-outlined">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="analytics.html">
+                    <span class="material-symbols-outlined">analytics</span>
+                    <span class="text-sm font-medium">Analytics</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    href="blog-editor.html">
+                    <span class="material-symbols-outlined">article</span>
+                    <span class="text-sm font-medium">Blog</span>
+                </a>
+                <a class="sidebar-item-active flex items-center gap-3 px-4 py-3 rounded-lg transition-colors"
+                    href="settings.html">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+                <div class="bg-primary/5 dark:bg-primary/10 rounded-xl p-4">
+                    <p class="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Agency Plan</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">You are using 85% of your API quota.</p>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full w-[85%]"></div>
                     </div>
+                </div>
+            </div>
+        </aside>
 
-                    <div class="integration-action">
-                        <button id="connectAmazonBtn" class="btn-connect">
-                            <span class="spinner"></span>
-                            <span class="btn-text">Connect Store</span>
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Top Bar -->
+            <header
+                class="header h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <h2 class="page-title text-xl font-semibold text-slate-900 dark:text-white">Account Settings</h2>
+                    <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
+                </div>
+                <div class="flex items-center gap-5">
+                    <div class="relative">
+                        <button id="logoutBtn" title="Logout"
+                            class="text-slate-500 hover:text-red-500 focus:outline-none flex items-center justify-center p-1 cursor-pointer">
+                            <span class="material-symbols-outlined rounded">logout</span>
                         </button>
-                        <div id="amazonStatus" class="status-badge" style="display:none;">
-                            <span>●</span> Connected
+                    </div>
+                    <div class="flex items-center gap-3 pl-5 border-l border-slate-200 dark:border-slate-700">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white" id="userName">User</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" id="userRole">Seller</p>
+                        </div>
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary/10">
+                            <img alt="User Profile" class="w-full h-full object-cover"
+                                data-alt="Portrait of a female business professional"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu2QVN11Tg4KvitRRv8zZfwrScG7ctjEBT5Q8HjTi1MZQe1FxAqMXTBB_lfnBJqPXQIW1tH0to31QBofo5stexv8YU88N1ilR2_tvKnclSNGXLqtw_JimhcWDC13aguRW15mky09XJqUuEbfw2wtlqge5boPyaTtATpNvncs75Y_4ggKfRLyBywh4KGX2oOP04adzTzk_JuOHTzzreufKINBnqu-zb2TFy3XmnRDOo9veUFACNGiG5wK-VpFrl0TinCuX2xFEBavDZ" />
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Body -->
+            <div class="p-8 space-y-8 max-w-5xl mx-auto w-full">
+
+                <!-- Subscription Management Card -->
+                <div id="subscriptionCard" class="subscription-card rounded-2xl border border-primary/20 p-8">
+                    <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">credit_card</span> Subscription
+                        </h3>
+                        <span id="planBadge"
+                            class="plan-badge-free-trial inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full status-dot-active inline-block"></span>
+                            Free Trial
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div
+                            class="bg-white/50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50">
+                            <label
+                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Current
+                                Plan</label>
+                            <span id="currentPlan" class="text-lg font-semibold text-slate-900 dark:text-white">Free
+                                Trial</span>
+                        </div>
+                        <div
+                            class="bg-white/50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50">
+                            <label
+                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Status</label>
+                            <span id="subStatus"
+                                class="text-lg font-semibold text-slate-900 dark:text-white">Active</span>
+                        </div>
+                        <div
+                            class="bg-white/50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50">
+                            <label
+                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Member
+                                Since</label>
+                            <span id="memberSince" class="text-lg font-semibold text-slate-900 dark:text-white">—</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <button id="upgradeBtn" onclick="window.location.href='/checkout-choice.html'"
+                            class="px-6 py-2.5 rounded-xl font-bold text-white bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">arrow_upward</span> Upgrade Plan
+                        </button>
+                        <button id="manageBillingBtn" style="display: none;"
+                            class="px-6 py-2.5 rounded-xl font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">receipt_long</span> Manage Billing
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Integrations Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-8">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Integration Center</h3>
+
+                    <div class="space-y-4">
+                        <!-- Amazon Integration Row -->
+                        <div
+                            class="flex flex-col md:flex-row md:items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div class="flex items-start gap-4 mb-4 md:mb-0">
+                                <div
+                                    class="w-12 h-12 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center shadow-sm border border-slate-200 dark:border-slate-700 flex-shrink-0">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M17.3999 15.6C17.3999 15.6 13.7999 17.5 11.2999 17.5C8.09991 17.5 6.09991 15.8 6.09991 12.9C6.09991 10.1 8.29991 7.9 11.5999 7.9C13.8999 7.9 15.2999 8.7 15.2999 8.7V7C15.2999 7 13.8999 6 11.4999 6C7.09991 6 3.69991 9.2 3.69991 13.6C3.69991 17.9 6.89991 20 10.9999 20C14.0999 20 17.3999 18.5 17.3999 18.5V15.6Z"
+                                            fill="#FF9900" />
+                                        <path
+                                            d="M17.6 6.5V13.8C17.6 13.8 17.1 14.1 16.4 14.1C15.6 14.1 15.3 13.4 15.3 12.9V9.2C15.3 9.2 14.5 9.1 14.2 9.1C13.8 9.1 13 9.2 13 9.9V12.8C13 13.9 13.7 15.7 16.3 15.7C17.8 15.7 19.3 14.6 19.3 14.6V6.5H17.6Z"
+                                            fill="#FF9900" />
+                                        <path
+                                            d="M18.8 17.6C18.8 17.6 20.3 18.2 21.2 17.8C22.1 17.4 22.5 16.6 22.5 16.6C22.5 16.6 22.2 17.8 21 18.8C19.8 19.8 18.8 17.6 18.8 17.6Z"
+                                            fill="#FF9900" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-base font-bold text-slate-900 dark:text-white">Amazon Seller Central
+                                    </h4>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Sync orders, inventory,
+                                        and financial data in real-time.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center">
+                                <button id="connectAmazonBtn"
+                                    class="px-5 py-2 rounded-lg font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm flex items-center justify-center gap-2">
+                                    <span class="spinner"></span>
+                                    <span class="btn-text">Connect Store</span>
+                                </button>
+                                <div id="amazonStatus"
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
+                                    style="display:none;">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Connected
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <script>
-            // Backend URL Configuration
-            const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:3000'
-                : 'https://amazonreach-production.up.railway.app';
+            <!-- Footer -->
+            <footer class="p-8 border-t border-slate-200 dark:border-slate-800 text-center mt-auto">
+                <p class="text-sm text-slate-500 dark:text-slate-400">© 2026 AmazonReach Marketing Agency.</p>
+            </footer>
+        </main>
+    </div>
 
-            // Load subscription info
-            async function loadSubscriptionInfo() {
-                try {
-                    const res = await fetch(`${BACKEND_URL}/api/auth/status`, { credentials: 'include' });
-                    const data = await res.json();
+    <script src="dashboard.js"></script>
+    <script>
+        // Backend URL Configuration
+        const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : 'https://amazonreach-production.up.railway.app';
 
-                    if (data.authenticated && data.subscription) {
-                        const sub = data.subscription;
-                        const planNames = {
-                            'free_trial': 'Free Trial',
-                            'basic': 'Basic',
-                            'pro': 'Professional',
-                            'enterprise': 'Enterprise'
-                        };
+        // Load subscription info
+        async function loadSubscriptionInfo() {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/auth/status`, { credentials: 'include' });
+                const data = await res.json();
 
-                        const planName = planNames[sub.plan] || sub.plan;
-                        const planClass = sub.plan === 'free_trial' ? 'free-trial' : sub.plan;
+                if (data.authenticated && data.subscription) {
+                    const sub = data.subscription;
+                    const planNames = {
+                        'free_trial': 'Free Trial',
+                        'basic': 'Basic',
+                        'pro': 'Professional',
+                        'enterprise': 'Enterprise'
+                    };
 
-                        // Update badge
-                        const badge = document.getElementById('planBadge');
-                        badge.className = `plan-badge ${planClass}`;
-                        badge.innerHTML = `<span class="status-dot ${sub.status === 'active' ? 'active' : 'inactive'}"></span> ${planName}`;
+                    const planName = planNames[sub.plan] || sub.plan;
+                    // Class mappings for Tailwind based on plan type
+                    const planClasses = {
+                        'free_trial': 'plan-badge-free-trial',
+                        'basic': 'plan-badge-basic',
+                        'pro': 'plan-badge-pro',
+                        'enterprise': 'plan-badge-enterprise'
+                    };
+                    const planClass = planClasses[sub.plan] || 'plan-badge-free-trial';
+                    const activeClass = sub.status === 'active' ? 'status-dot-active' : 'status-dot-inactive';
 
-                        // Update details
-                        document.getElementById('currentPlan').textContent = planName;
-                        document.getElementById('subStatus').textContent =
-                            sub.status.charAt(0).toUpperCase() + sub.status.slice(1);
+                    // Update badge
+                    const badge = document.getElementById('planBadge');
+                    badge.className = `inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${planClass}`;
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full inline-block ${activeClass}"></span> ${planName}`;
 
-                        // Member since
-                        if (data.user && data.user.created_at) {
-                            const date = new Date(data.user.created_at);
-                            document.getElementById('memberSince').textContent = date.toLocaleDateString('en-US', {
-                                year: 'numeric', month: 'short', day: 'numeric'
-                            });
-                        }
+                    // Update details
+                    document.getElementById('currentPlan').textContent = planName;
+                    document.getElementById('subStatus').textContent =
+                        sub.status.charAt(0).toUpperCase() + sub.status.slice(1);
 
-                        // Show/hide buttons based on plan
-                        if (sub.plan !== 'free_trial' && sub.stripe_customer_id) {
-                            // Has a paid plan — show Manage Billing
-                            document.getElementById('manageBillingBtn').style.display = 'inline-flex';
-                            document.getElementById('upgradeBtn').textContent = '⬆️ Change Plan';
-                        }
+                    // Member since
+                    if (data.user && data.user.created_at) {
+                        const date = new Date(data.user.created_at);
+                        document.getElementById('memberSince').textContent = date.toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'short', day: 'numeric'
+                        });
                     }
-                } catch (err) {
-                    console.error('Failed to load subscription info:', err);
-                }
-            }
 
-            // Manage Billing (Stripe Portal)
-            document.getElementById('manageBillingBtn').addEventListener('click', async () => {
-                const btn = document.getElementById('manageBillingBtn');
-                btn.disabled = true;
-                btn.textContent = 'Loading...';
+                    // Show/hide buttons based on plan
+                    if (sub.plan !== 'free_trial' && sub.stripe_customer_id) {
+                        // Has a paid plan — show Manage Billing
+                        document.getElementById('manageBillingBtn').style.display = 'inline-flex';
+                        document.getElementById('upgradeBtn').innerHTML = '<span class="material-symbols-outlined text-sm">arrow_upward</span> Change Plan';
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load subscription info:', err);
+            }
+        }
+
+        // Manage Billing (Stripe Portal)
+        document.getElementById('manageBillingBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('manageBillingBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">hourglass_empty</span> Loading...';
+
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/stripe/create-portal-session`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+
+                if (data.success && data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert('Unable to open billing portal. Please try again.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-symbols-outlined text-sm">receipt_long</span> Manage Billing';
+                }
+            } catch (err) {
+                console.error('Portal error:', err);
+                alert('Something went wrong. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm">receipt_long</span> Manage Billing';
+            }
+        });
+
+        // Load subscription info on page load
+        loadSubscriptionInfo();
+
+        // Check for connection status URL param
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('amazon_connected') === 'true') {
+            const btn = document.getElementById('connectAmazonBtn');
+            const status = document.getElementById('amazonStatus');
+            if (btn) btn.style.display = 'none';
+            if (status) status.style.display = 'inline-flex';
+
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Button Click Handler
+        const connectBtn = document.getElementById('connectAmazonBtn');
+        if (connectBtn) {
+            connectBtn.addEventListener('click', async () => {
+                const btnText = connectBtn.querySelector('.btn-text');
+
+                // Set Loading State
+                connectBtn.classList.add('btn-loading');
+                connectBtn.disabled = true;
 
                 try {
-                    const res = await fetch(`${BACKEND_URL}/api/stripe/create-portal-session`, {
-                        method: 'POST',
-                        credentials: 'include',
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                    const data = await res.json();
+                    console.log('Fetching auth URL...');
+                    const response = await fetch(`${BACKEND_URL}/api/amazon/auth`, { credentials: 'include' });
+                    const data = await response.json();
 
-                    if (data.success && data.url) {
+                    console.log('Response:', data);
+
+                    if (data.url) {
                         window.location.href = data.url;
                     } else {
-                        alert('Unable to open billing portal. Please try again.');
-                        btn.disabled = false;
-                        btn.textContent = '💳 Manage Billing';
+                        throw new Error('No redirection URL returned from server');
                     }
-                } catch (err) {
-                    console.error('Portal error:', err);
-                    alert('Something went wrong. Please try again.');
-                    btn.disabled = false;
-                    btn.textContent = '💳 Manage Billing';
+                } catch (error) {
+                    console.error('Connection Error:', error);
+                    alert('Could not initiate Amazon connection. Please check console for details.');
+
+                    // Reset State on Error
+                    connectBtn.classList.remove('btn-loading');
+                    connectBtn.disabled = false;
                 }
             });
-
-            // Load subscription info on page load
-            loadSubscriptionInfo();
-
-            // Check for connection status URL param
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('amazon_connected') === 'true') {
-                const btn = document.getElementById('connectAmazonBtn');
-                const status = document.getElementById('amazonStatus');
-                if (btn) btn.style.display = 'none';
-                if (status) status.style.display = 'inline-flex';
-
-                // Clean URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-
-            // Button Click Handler
-            const connectBtn = document.getElementById('connectAmazonBtn');
-            if (connectBtn) {
-                connectBtn.addEventListener('click', async () => {
-                    const btnText = connectBtn.querySelector('.btn-text');
-
-                    // Set Loading State
-                    connectBtn.classList.add('loading');
-                    btnText.textContent = 'Redirecting...';
-                    connectBtn.disabled = true;
-
-                    try {
-                        console.log('Fetching auth URL...');
-                        const response = await fetch(`${BACKEND_URL}/api/amazon/auth`, { credentials: 'include' });
-                        const data = await response.json();
-
-                        console.log('Response:', data);
-
-                        if (data.url) {
-                            window.location.href = data.url;
-                        } else {
-                            throw new Error('No redirection URL returned from server');
-                        }
-                    } catch (error) {
-                        console.error('Connection Error:', error);
-                        alert('Could not initiate Amazon connection. Please check console for details.');
-
-                        // Reset State on Error
-                        connectBtn.classList.remove('loading');
-                        btnText.textContent = 'Connect Store';
-                        connectBtn.disabled = false;
-                    }
-                });
-            }
-        </script>
-    </main>
-    <script src="dashboard.js"></script>
+        }
+    </script>
 </body>
 
 </html>
