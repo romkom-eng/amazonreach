@@ -1,0 +1,31 @@
+name: Automated Blog Posting
+
+on:
+  schedule:
+    # Tuesday at 02:00 UTC
+    - cron: '0 2 * * 2'
+    # Thursday at 02:00 UTC
+    - cron: '0 2 * * 4'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  post-blog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-node: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate and Publish Blog
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+        run: node scripts/generate_daily_post.js
