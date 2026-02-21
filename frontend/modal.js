@@ -16,10 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 modal.classList.add('show');
             }, 10);
 
-            // Auto play video when modal opens
-            if (iframeSrc.indexOf("autoplay=1") === -1) {
-                iframe.src = iframeSrc + (iframeSrc.indexOf("?") > -1 ? "&" : "?") + "autoplay=1";
-            }
+            // Auto play disabled to prevent user confusion
         });
     }
 

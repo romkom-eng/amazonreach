@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Survival Index Diagnostic - AmazonReach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .step-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-2xl">
+        <!-- Progress Bar -->
+        <div class="mb-8 px-4">
+            <div class="flex justify-between mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <span id="stepCounter">Question 1 of 5</span>
+                <span id="progressPercent">20%</span>
+            </div>
+            <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div id="progressBar" class="progress-bar h-full bg-[#1152d4] w-1/5"></div>
+            </div>
+        </div>
+
+        <!-- Diagnostic Container -->
+        <div id="diagnosticContainer" class="glass rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <div id="stepContent" class="step-transition">
+                <!-- Content will be injected by JS -->
+            </div>
+        </div>
+
+        <!-- Back Link -->
+        <div class="mt-8 text-center">
+            <a href="/"
+                class="text-sm font-medium text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center gap-1">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                Return to Homepage
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 'category',
+                title: "What is your main product category?",
+                subtitle: "Category difficulty affects your initial survival rate.",
+                options: [
+                    { label: "Apparel & Accessories", value: "high", icon: "apparel" },
+                    { label: "Electronics & Gadgets", value: "high", icon: "devices" },
+                    { label: "Home & Kitchen", value: "med", icon: "home" },
+                    { label: "Beauty & Personal Care", value: "med", icon: "content_cut" },
+                    { label: "Others", value: "low", icon: "category" }
+                ]
+            },
+            {
+                id: 'brand',
+                title: "Is your brand name already finalized?",
+                subtitle: "Korean or non-English names trigger high rejection risk.",
+                options: [
+                    { label: "Yes (English Only)", value: "safe", icon: "check_circle", description: "Recommended for US market" },
+                    { label: "Yes (Korean/Mixed)", value: "danger", icon: "warning", description: "High risk of suspension" },
+                    { label: "No / Not Decided", value: "warn", icon: "help", description: "Need strategy first" }
+                ]
+            },
+            {
+                id: 'upc',
+                title: "Do you have GS1-certified UPC barcodes?",
+                subtitle: "Generic barcodes often lead to 'Brand Name Mismatch' errors.",
+                options: [
+                    { label: "Yes (GS1 Certified)", value: "safe", icon: "barcode_scanner" },
+                    { label: "No / Generic Barcodes", value: "danger", icon: "block" },
+                    { label: "I don't know", value: "warn", icon: "psychology_alt" }
+                ]
+            },
+            {
+                id: 'photos',
+                title: "Do you have physical photos with your logo?",
+                subtitle: "Photoshop-free photos are mandatory for brand approval.",
+                options: [
+                    { label: "High-quality Studio Photos", value: "safe", icon: "photo_camera" },
+                    { label: "Smartphone Photos", value: "warn", icon: "smartphone" },
+                    { label: "No Photos Yet", value: "danger", icon: "no_photography" }
+                ]
+            },
+            {
+                id: 'worry',
+                title: "What is your primary concern?",
+                subtitle: "We'll tailor the final survival strategy to your needs.",
+                options: [
+                    { label: "Fear of Account Suspension", value: "fear", icon: "security" },
+                    { label: "Zero Sales Risk", value: "profit", icon: "trending_down" },
+                    { label: "Complex Operations", value: "ops", icon: "settings_suggest" }
+                ]
+            }
+        ];
+
+        let currentStep = 0;
+        let answers = {};
+
+        function renderStep() {
+            const step = questions[currentStep];
+            const container = document.getElementById('stepContent');
+
+            // Update UI
+            document.getElementById('stepCounter').innerText = `Question ${currentStep + 1} of ${questions.length}`;
+            document.getElementById('progressPercent').innerText = `${Math.round(((currentStep + 1) / questions.length) * 100)}%`;
+            document.getElementById('progressBar').style.width = `${((currentStep + 1) / questions.length) * 100}%`;
+
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                container.innerHTML = `
+                    <h2 class="text-3xl font-black mb-2 text-slate-900">${step.title}</h2>
+                    <p class="text-slate-500 mb-8 font-medium">${step.subtitle}</p>
+                    <div class="grid gap-4">
+                        ${step.options.map((opt, idx) => `
+                            <button onclick="handleSelect('${step.id}', '${opt.value}')" 
+                                    class="flex items-center gap-4 text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-[#1152d4] hover:bg-blue-50/50 transition-all group">
+                                <span class="material-symbols-outlined text-slate-400 group-hover:text-[#1152d4]">${opt.icon}</span>
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800">${opt.label}</div>
+                                    ${opt.description ? `<div class="text-xs text-slate-400">${opt.description}</div>` : ''}
+                                </div>
+                                <span class="material-symbols-outlined text-slate-200 group-hover:text-[#1152d4]">chevron_right</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 200);
+        }
+
+        function handleSelect(id, value) {
+            answers[id] = value;
+            if (currentStep < questions.length - 1) {
+                currentStep++;
+                renderStep();
+            } else {
+                showResults();
+            }
+        }
+
+        function calculateScore() {
+            let score = 100;
+            if (answers.brand === 'danger') score -= 30;
+            if (answers.brand === 'warn') score -= 15;
+            if (answers.upc === 'danger') score -= 25;
+            if (answers.upc === 'warn') score -= 10;
+            if (answers.photos === 'danger') score -= 25;
+            if (answers.photos === 'warn') score -= 10;
+            if (answers.category === 'high') score -= 5;
+            return Math.max(0, score);
+        }
+
+        function showResults() {
+            const score = calculateScore();
+            const container = document.getElementById('stepContent');
+
+            let type, message, color;
+            if (score <= 40) {
+                type = "High Risk";
+                message = "STOP! You are at 80% risk of permanent account suspension.";
+                color = "text-red-600";
+            } else if (score <= 75) {
+                type = "Needs Preparation";
+                message = "You can enter, but your first-month sales probability is < 20%.";
+                color = "text-amber-600";
+            } else {
+                type = "Ready to Scale";
+                message = "Your foundation is solid. Now focus on acceleration.";
+                color = "text-emerald-600";
+            }
+
+            container.style.opacity = '0';
+            setTimeout(() => {
+                container.innerHTML = `
+                    <div class="text-center">
+                        <div class="inline-block p-4 rounded-full bg-slate-50 mb-6">
+                            <span class="text-6xl font-black ${color}">${score}</span>
+                            <span class="text-slate-400 font-bold">/100</span>
+                        </div>
+                        <h2 class="text-4xl font-black mb-4 ${color}">${type}</h2>
+                        <p class="text-slate-600 mb-8 max-w-md mx-auto leading-relaxed">
+                            ${message}
+                        </p>
+                        
+                        <div class="bg-blue-50 rounded-2xl p-6 mb-8 text-left border border-blue-100">
+                            <h3 class="font-bold text-blue-900 mb-4 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">info</span>
+                                Critical ROI Factor
+                            </h3>
+                            <p class="text-sm text-blue-800 leading-relaxed mb-4">
+                                Most sellers lose <strong>$2,333+</strong> in the first month due to listing mismatches. 
+                                Our 'Expert Co-Pilot' service eliminates this risk.
+                            </p>
+                            <form id="leadCaptureForm" class="space-y-3">
+                                <input type="email" id="leadEmail" placeholder="Enter your business email" required
+                                    class="w-full px-4 py-3 rounded-xl border border-blue-200 focus:ring-2 focus:ring-blue-500 outline-none">
+                                <button type="submit" class="block w-full text-center bg-[#1152d4] text-white font-extrabold py-4 rounded-xl shadow-lg hover:bg-blue-700 transition-all">
+                                    Send My Results & Roadmap
+                                </button>
+                            </form>
+                            <div id="captureSuccess" class="hidden text-center text-sm font-bold text-blue-800 mt-2">
+                                🚀 Check your inbox! Your roadmap is on the way.
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-center gap-4">
+                            <button onclick="location.reload()" class="text-sm font-bold text-slate-400 hover:text-slate-600">Restart Quiz</button>
+                        </div>
+                    </div>
+                `;
+                container.style.opacity = '1';
+
+                // Handle Form
+                const form = document.getElementById('leadCaptureForm');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const email = document.getElementById('leadEmail').value;
+                        console.log('Lead Captured:', { email, score, answers });
+
+                        // Simulation of GA Event
+                        if (typeof gtag === 'function') {
+                            gtag('event', 'generate_lead', {
+                                'event_category': 'Diagnostic',
+                                'event_label': 'Diagnostic Results Captured',
+                                'value': score
+                            });
+                        }
+
+                        form.classList.add('hidden');
+                        document.getElementById('captureSuccess').classList.remove('hidden');
+                    });
+                }
+            }, 200);
+        }
+
+        renderStep();
+    </script>
+</body>
+
+</html>
