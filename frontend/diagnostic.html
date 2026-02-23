@@ -249,17 +249,43 @@
                         submitButton.innerText = "Sending Roadmap...";
                         submitButton.disabled = true;
 
+                        const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                            ? 'http://localhost:3000'
+                            : 'https://amazonreach-production.up.railway.app';
+
+                        // Convert short codes to natural language
+                        const textOptions = {
+                            category: { high: 'Apparel/Electronics (High. Diff)', med: 'Home/Beauty (Med. Diff)', low: 'Other (Low Diff)' },
+                            brand: { safe: 'English Only', danger: 'Local/Mixed Characters', warn: 'Not Decided' },
+                            upc: { safe: 'GS1 Certified', danger: 'No / Generic', warn: 'Unknown' },
+                            photos: { safe: 'Studio Photos', warn: 'Smartphone', danger: 'No Photos Yet' },
+                            worry: { fear: 'Fear of Account Suspension', profit: 'Zero Sales Risk', ops: 'Complex Operations' }
+                        };
+
+                        const formattedAnswers = `
+Amazon Survival Index Results:
+------------------------------
+Final Score: ${score} / 100
+
+Detailed Answers:
+- Product Category: ${textOptions.category[answers.category]}
+- Brand Name Status: ${textOptions.brand[answers.brand]}
+- UPC/Barcode Status: ${textOptions.upc[answers.upc]}
+- Product Photos: ${textOptions.photos[answers.photos]}
+- Primary Concern: ${textOptions.worry[answers.worry]}
+`;
+
                         try {
-                            const response = await fetch('/contact-form', {
+                            const response = await fetch(`${BACKEND_URL}/contact-form`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     companyName: 'Diagnostic Lead',
                                     contactName: 'Potential Seller',
                                     email: email,
-                                    phone: '',
+                                    phone: 'Not provided',
                                     inquiryType: 'Diagnostic Results',
-                                    message: `Survival Score: ${score}/100\nAnswers: ${JSON.stringify(answers)}`
+                                    message: formattedAnswers
                                 })
                             });
 
