@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://amazonreach.pages.dev/sitemap.xml
+Sitemap: https://amazon-reach.com/sitemap.xml
 
 # Allow AI Crawlers for GEO Optimization
 User-agent: GPTBot

@@ -182,7 +182,7 @@ async function sendCustomerConfirmation({ to, customerName, resendApiKey }) {
                     <li>🚀 See how <strong>AI Inventory Management</strong> works</li>
                 </ul>
                 <p style="margin-top: 30px;">
-                    <a href="https://amazonreach.pages.dev" class="btn">Visit Our Platform</a>
+                    <a href="https://amazon-reach.com" class="btn">Visit Our Platform</a>
                 </p>
                 <div class="footer">
                     <p>Best regards,<br>The AmazonReach Team</p>
