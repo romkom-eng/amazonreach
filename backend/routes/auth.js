@@ -243,6 +243,85 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// Google/Firebase Social Login
+router.post('/google', async (req, res) => {
+    try {
+        const { token } = req.body;
+        if (!token) {
+            return res.status(400).json({ success: false, error: 'Token is required' });
+        }
+
+        // Verify Firebase ID Token
+        const admin = require('firebase-admin');
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        const { email, name, picture, uid } = decodedToken;
+
+        if (!email) {
+            return res.status(400).json({ success: false, error: 'Email not found in Google account' });
+        }
+
+        // Check if user exists in our DB
+        let user = await db.findUserByEmail(email);
+
+        if (!user) {
+            // Auto-signup for Google users
+            user = await db.createUser({
+                email,
+                password: '', // No password for OAuth users
+                name: name || 'Google User',
+                company_name: ''
+            });
+
+            await db.createAuditLog({
+                user_id: user.id,
+                action: 'USER_SIGNUP_GOOGLE',
+                details: { email, uid },
+                ip_address: req.ip,
+                user_agent: req.get('User-Agent')
+            });
+        }
+
+        // Check if locked
+        if (user.account_locked) {
+            return res.status(403).json({
+                success: false,
+                error: 'Account is locked. Please contact support.'
+            });
+        }
+
+        // Update last login
+        await db.updateUser(user.id, {
+            last_login: new Date(),
+            ip_address: req.ip
+        });
+
+        await db.createAuditLog({
+            user_id: user.id,
+            action: 'LOGIN_SUCCESS_GOOGLE',
+            ip_address: req.ip,
+            user_agent: req.get('User-Agent')
+        });
+
+        // Create session
+        const sanitizedUser = db.sanitizeUser(user);
+        req.session.user = sanitizedUser;
+
+        // Generate JWT
+        const jwtToken = generateJWT(sanitizedUser);
+
+        res.json({
+            success: true,
+            message: 'Login successful',
+            user: sanitizedUser,
+            token: jwtToken
+        });
+
+    } catch (error) {
+        console.error('Google Auth Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to authenticate with Google' });
+    }
+});
+
 // Logout
 router.post('/logout', (req, res) => {
     const userId = req.session.user?.id;
