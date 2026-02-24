@@ -56,7 +56,8 @@ app.use(cors({
             /^http:\/\/127\.0\.0\.1:\d+$/.test(origin) ||
             origin.endsWith('.pages.dev') ||
             origin.endsWith('.railway.app') ||
-            origin.endsWith('amazonreach.com')) {
+            origin.endsWith('amazonreach.com') ||
+            origin.endsWith('amazon-reach.com')) {
             callback(null, true);
         } else {
             console.log('Blocked by CORS:', origin);
