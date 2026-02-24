@@ -172,7 +172,7 @@ class AmazonService {
                 createdAfter = date.toISOString();
             }
 
-            const path = '/orders/v0/orders';
+            const path = '/orders/v2026-01-01/orders';
             const queryParams = {
                 CreatedAfter: createdAfter,
                 MarketplaceIds: ['ATVPDKIKX0DER'] // US Marketplace ID (Default)
@@ -221,7 +221,7 @@ class AmazonService {
         try {
             const token = await this.getAccessToken(refreshToken);
 
-            const response = await axios.get(`${ENDPOINT} /fba/inventory / v1 / summaries`, {
+            const response = await axios.get(`${ENDPOINT}/fba/inventory/v1/summaries`, {
                 headers: {
                     'x-amz-access-token': token
                 },
