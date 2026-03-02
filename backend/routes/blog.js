@@ -21,7 +21,7 @@ router.get('/posts', async (req, res) => {
         res.json({ success: true, posts: summaryPosts });
     } catch (error) {
         console.error('Public Blog API Error (List):', error);
-        res.status(500).json({ success: false, error: 'Failed to fetch posts' });
+        res.status(500).json({ success: false, error: 'Failed to fetch posts', details: error.message });
     }
 });
 
