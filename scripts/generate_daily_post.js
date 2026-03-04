@@ -1,5 +1,4 @@
-const { Database } = require('../backend/database');
-const db = new Database();
+const db = require('../backend/database');
 
 // Configuration
 const TOPICS = [

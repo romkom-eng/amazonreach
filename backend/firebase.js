@@ -59,13 +59,22 @@ try {
 }
 
 const db = admin.apps.length ? admin.firestore() : {
-    collection: () => ({
-        add: () => Promise.reject(new Error("Firebase not initialized")),
-        where: () => ({ limit: () => ({ get: () => Promise.reject(new Error("Firebase not initialized")) }) }),
-        doc: () => ({ get: () => Promise.reject(new Error("Firebase not initialized")), update: () => Promise.reject(new Error("Firebase not initialized")) }),
-        get: () => Promise.reject(new Error("Firebase not initialized")),
-        orderBy: () => ({ limit: () => ({ get: () => Promise.reject(new Error("Firebase not initialized")) }) })
-    })
+    collection: () => {
+        const mock = {
+            add: () => Promise.reject(new Error("Firebase not initialized")),
+            where: () => mock,
+            limit: () => mock,
+            get: () => Promise.reject(new Error("Firebase not initialized")),
+            doc: () => ({
+                get: () => Promise.reject(new Error("Firebase not initialized")),
+                update: () => Promise.reject(new Error("Firebase not initialized")),
+                delete: () => Promise.reject(new Error("Firebase not initialized"))
+            }),
+            orderBy: () => mock,
+            update: () => Promise.reject(new Error("Firebase not initialized"))
+        };
+        return mock;
+    }
 };
 
 const auth = admin.apps.length ? admin.auth() : {};
